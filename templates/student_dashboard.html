@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Edu Boost Up</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-light: #6a7ef0;
+            --primary-dark: #2a4bd4;
+            --secondary: #3a0ca3;
+            --secondary-light: #4f1bc6;
+            --accent: #7209b7;
+            --accent-light: #8b2bd0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --dark-light: #343a40;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --math: #ff6b6b;
+            --accounting: #4ecdc4;
+            --science: #45aaf2;
+            --text-light: #6c757d;
+            --text-lighter: #adb5bd;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .user-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-message h2 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-message p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .days-remaining {
+            background: linear-gradient(135deg, var(--success), #2dd4bf);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        }
+
+        .days-remaining .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .days-remaining .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Payment Warning */
+        .payment-warning {
+            background: linear-gradient(135deg, var(--warning), #ff4da6);
+            color: white;
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .payment-warning h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-warning p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .pay-btn {
+            background: white;
+            color: var(--warning);
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3rem 0 1.5rem 0;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+
+        /* Enhanced Video Container */
+        .video-section {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .video-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .video-title h3 {
+            color: var(--secondary);
+            font-size: 1.4rem;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .video-control-btn {
+            background: var(--light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .video-control-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .video-container-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .video-container-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border: 3px solid transparent;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .video-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--success), var(--warning));
+            z-index: -1;
+            border-radius: calc(var(--border-radius) + 2px);
+            animation: borderGlow 3s linear infinite;
+            background-size: 400%;
+        }
+
+        @keyframes borderGlow {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: var(--transition);
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid var(--primary-light);
+            border-radius: 50%;
+            animation: ripple 2s infinite;
+        }
+
+        .play-button::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 1px solid var(--accent-light);
+            border-radius: 50%;
+            animation: ripple 2s infinite 0.5s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 15px 40px rgba(67, 97, 238, 0.6);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .play-button:hover {
+            transform: scale(1.2);
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 3;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .video-info {
+            padding: 1.5rem 0 0 0;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .video-info h4 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Mentors Grid */
+        .mentors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mentor-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e9ecef;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mentor-photo-wrapper {
+            flex-shrink: 0;
+        }
+
+        .mentor-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mentor-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mentor-info h3 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .mentor-subject {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .mentor-phone {
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mentor-bio {
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 250px;
+            }
+
+            .mentors-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .video-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .video-container {
+                height: 250px;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .mentor-card {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+            }
+
+            .nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-item {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .nav-link {
+                justify-content: center;
+                text-align: center;
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .welcome-message h2 {
+                font-size: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .video-container {
+                height: 200px;
+            }
+
+            .play-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .mentors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mentor-card {
+                padding: 1.5rem;
+            }
+
+            .sidebar {
+                padding: 1rem;
+            }
+
+            .nav-item {
+                min-width: 100px;
+            }
+        }
+
+        .mentors-portfolio {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .portfolio-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .profile-media {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .profile-portrait {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .portfolio-card:hover .profile-portrait {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+        }
+
+        .minimal-avatar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .initials {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        .portfolio-content {
+            padding: 2rem;
+        }
+
+        .portfolio-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 1rem;
+        }
+
+        .mentor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.2;
+        }
+
+        .specialty-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .bio-excerpt {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .bio-excerpt p {
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .portfolio-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mentors-portfolio {
+                padding: 2rem 1rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .profile-media {
+                height: 240px;
+            }
+
+            .portfolio-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link active"><i class="fas fa-home"></i>Dashboard</a></li>
+                {% if days_remaining > 0 %}
+                <li class="nav-item"><a class="nav-link" href="/student/dashboard/courses"><i
+                            class="fas fa-book-open"></i>My Courses</a></li>
+                <li class="nav-item"><a href="/student/classes" class="nav-link">
+                    <i class="fas fa-chalkboard-teacher"></i> View Classes
+                </a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="/student/request"><i class="fas fa-paper-plane"></i>Send
+                        Request</a></li>
+                <li class="nav-item"><a class="nav-link" href="/student/enrollment"><i
+                            class="fas fa-calendar-alt"></i>My Enrollment</a></li>
+                <li class="nav-item"><a class="nav-link" href="/student/profile"><i class="fas fa-user-edit"></i>Update
+                        Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                </li>
+            </ul>
+
+            <div class="user-profile">
+                <div class="avatar">{{ student.name[0] }}{{ student.surname[0] }}</div>
+                <div class="user-info">
+                    <h3>{{ student.name }} {{ student.surname }}</h3>
+                    <p>Grade {{ student.grade }}</p>
+                    {% if days_remaining > 0 %}
+                    <p style="color: var(--success); margin-top: 0.5rem;">
+                        <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="header">
+                <div class="welcome-message">
+                    <h2>Welcome back, {{ student.name }}!</h2>
+                    <p>Keep pushing, your future is bright 🌟</p>
+                </div>
+                {% if days_remaining > 0 %}
+                <div class="days-remaining">
+                    <span class="number">{{ days_remaining }}</span>
+                    <span class="label">Days Remaining</span>
+                </div>
+                {% endif %}
+            </header>
+
+            {% if days_remaining <= 0 %} <div class="payment-warning">
+                <h2>Your Learning Plan Has Expired</h2>
+                <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
+                <a href="/student/enrollment" class="pay-btn">Renew Now</a>
+    </div>
+    {% else %}
+
+    <!-- Platform Guide -->
+    <div class="section-header">
+        <i class="fas fa-play-circle"></i>
+        <h2>Platform Guide</h2>
+    </div>
+
+    <div class="video-section">
+        <div class="video-header">
+            <div class="video-title">
+                <i class="fas fa-video"></i>
+                <h3>Getting Started with Edu Boost Up</h3>
+            </div>
+            <div class="video-controls">
+                <button class="video-control-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="video-control-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="video-container-wrapper">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+
+            <div class="video-container">
+                <div class="play-overlay" id="playOverlay">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+
+                <iframe src="https://drive.google.com/file/d/1K_6L1fpYetRd-c4EJshdiwd9F0X6Il59/preview" width="100%"
+                    height="380" allow="autoplay" allowfullscreen id="videoFrame">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="video-info">
+            <h4>About This Guide</h4>
+            <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the
+                most of your learning experience. This comprehensive guide will help you get started quickly.</p>
+        </div>
+    </div>
+
+    <!-- Mentors Section -->
+    <div class="section-header">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h2>Your Mentors</h2>
+    </div>
+    <div class="mentors-grid">
+
+        <!-- Mentor Portfolio Grid Section -->
+        <section class="mentors-portfolio">
+            <div class="portfolio-grid">
+                {% for m in mentors %}
+                <article class="portfolio-card">
+                    <!-- Profile Image with Hover Effect -->
+                    <div class="profile-media">
+                        {% if m.profile_image %}
+                        <div class="profile-image-preview">
+                            {% if m.profile_image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}"
+                                alt="Profile Image" id="profile-preview">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='images/default-user.png') }}" alt="Default Profile"
+                                id="profile-preview">
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="minimal-avatar">
+                            <span class="initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content Section -->
+                    <div class="portfolio-content">
+                        <header class="portfolio-header">
+                            <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
+                            <p class="specialty-tag">{{ m.subject_speciality }}</p>
+                        </header>
+
+                        <div class="bio-excerpt">
+                            <p>{{ m.bio }}</p>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+
+
+
+        {% endif %}
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navigation active state
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Video player functionality
+            const playOverlay = document.getElementById('playOverlay');
+            const videoFrame = document.getElementById('videoFrame');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Play button click handler
+            if (playOverlay) {
+                playOverlay.addEventListener('click', function () {
+                    // Show loading spinner
+                    loadingSpinner.style.display = 'block';
+
+                    // Hide play overlay with delay for smooth transition
+                    setTimeout(() => {
+                        playOverlay.classList.add('hidden');
+
+                        // Hide loading spinner after a delay
+                        setTimeout(() => {
+                            loadingSpinner.style.display = 'none';
+                        }, 2000);
+                    }, 500);
+                });
+            }
+
+            // Add hover effect to video container
+            const videoContainer = document.querySelector('.video-container-wrapper');
+            const playButton = document.querySelector('.play-button');
+
+            if (videoContainer && playButton) {
+                videoContainer.addEventListener('mouseenter', function () {
+                    if (!playOverlay.classList.contains('hidden')) {
+                        playButton.style.transform = 'scale(1.15)';
+                    }
+                });
+
+                videoContainer.addEventListener('mouseleave', function () {
+                    if (!playOverlay.classList.contains('hidden')) {
+                        playButton.style.transform = 'scale(1)';
+                    }
+                });
+            }
+
+            // Mentor card animations
+            const mentorCards = document.querySelectorAll('.mentor-card');
+            mentorCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Fullscreen functionality
+            const fullscreenBtn = document.querySelector('.video-control-btn .fa-expand')?.closest('.video-control-btn');
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', function () {
+                    const videoWrapper = document.querySelector('.video-container-wrapper');
+                    if (videoWrapper.requestFullscreen) {
+                        videoWrapper.requestFullscreen();
+                    } else if (videoWrapper.webkitRequestFullscreen) {
+                        videoWrapper.webkitRequestFullscreen();
+                    } else if (videoWrapper.msRequestFullscreen) {
+                        videoWrapper.msRequestFullscreen();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

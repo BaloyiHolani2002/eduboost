@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Class - Edu Boost Up</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-light: #6a7ef0;
+            --primary-dark: #2a4bd4;
+            --secondary: #3a0ca3;
+            --secondary-light: #4f1bc6;
+            --accent: #7209b7;
+            --accent-light: #8b2bd0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --dark-light: #343a40;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --math: #ff6b6b;
+            --accounting: #4ecdc4;
+            --science: #45aaf2;
+            --text-light: #6c757d;
+            --text-lighter: #adb5bd;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+
+        .class-container {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .class-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .logo-section img {
+            height: 60px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .class-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .class-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        #class-form {
+            padding: 2.5rem;
+        }
+
+        .info-note {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-note h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-note p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .form-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container input,
+        .input-container select,
+        .input-container textarea {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f8fafc;
+        }
+
+        .input-container input:focus,
+        .input-container select:focus,
+        .input-container textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .input-container input:focus + .input-icon,
+        .input-container select:focus + .input-icon,
+        .input-container textarea:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .class-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .class-type-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .class-type-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .class-type-option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .class-type-option i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .duration-display {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .class-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.8rem;
+            }
+
+            #class-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .class-type-selector {
+                flex-direction: column;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .class-header {
+                padding: 1.5rem;
+            }
+
+            #class-form {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="class-container">
+        <div class="class-header">
+            <div class="logo-section">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <div class="logo-text">
+                    <h1>Edu Boost Up</h1>
+                </div>
+            </div>
+            <h2><i class="fas fa-chalkboard-teacher"></i> Create New Class</h2>
+            <p>Schedule a new learning session for your students</p>
+        </div>
+
+        <form id="class-form" method="POST">
+            <div class="info-note">
+                <h3><i class="fas fa-info-circle"></i> Class Information</h3>
+                <p>Fill in the details below to create a new class session. All fields marked with * are required.</p>
+            </div>
+
+            <div class="form-layout">
+                <div class="form-group full-width">
+                    <label for="title">Class Title *</label>
+                    <div class="input-container">
+                        <input type="text" id="title" name="title" placeholder="e.g., Introduction to Calculus" required>
+                        <i class="fas fa-heading input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="topic">Topic</label>
+                    <div class="input-container">
+                        <input type="text" id="topic" name="topic" placeholder="e.g., Limits and Derivatives">
+                        <i class="fas fa-book input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Class Type *</label>
+                    <div class="class-type-selector">
+                        <div class="class-type-option" data-type="Online">
+                            <i class="fas fa-video"></i>
+                            <div>Online</div>
+                        </div>
+                        <div class="class-type-option" data-type="Physical">
+                            <i class="fas fa-school"></i>
+                            <div>Physical</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="type" name="type" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="start_time">Start Time *</label>
+                    <div class="input-container">
+                        <input type="datetime-local" id="start_time" name="start_time" required>
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Duration (minutes) *</label>
+                    <div class="input-container">
+                        <input type="number" id="duration" name="duration" min="1" max="480" value="60" required>
+                        <i class="fas fa-clock input-icon"></i>
+                    </div>
+                    <div class="duration-display" id="duration-display">1 hour</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="grade">Grade Level *</label>
+                    <div class="input-container">
+                        <select id="grade" name="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                        <i class="fas fa-graduation-cap input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group full-width" id="link-container">
+                    <label for="link">Meeting/Video Link</label>
+                    <div class="input-container">
+                        <input type="text" id="link" name="link" placeholder="https://meet.google.com/abc-def-ghi">
+                        <i class="fas fa-link input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i>
+                        Create Class
+                    </button>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Class type selection
+        document.querySelectorAll('.class-type-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.class-type-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                document.getElementById('type').value = this.getAttribute('data-type');
+                
+                // Show/hide link field based on type
+                const linkContainer = document.getElementById('link-container');
+                const type = this.getAttribute('data-type');
+                if (type === 'Physical') {
+                    linkContainer.style.display = 'none';
+                } else {
+                    linkContainer.style.display = 'block';
+                }
+            });
+        });
+
+        // Set default class type
+        document.querySelector('.class-type-option[data-type="Online"]').classList.add('selected');
+        document.getElementById('type').value = 'Online';
+
+        // Duration display
+        const durationInput = document.getElementById('duration');
+        const durationDisplay = document.getElementById('duration-display');
+
+        function updateDurationDisplay() {
+            const minutes = parseInt(durationInput.value);
+            if (minutes < 60) {
+                durationDisplay.textContent = `${minutes} minutes`;
+            } else if (minutes === 60) {
+                durationDisplay.textContent = '1 hour';
+            } else {
+                const hours = Math.floor(minutes / 60);
+                const remainingMinutes = minutes % 60;
+                if (remainingMinutes === 0) {
+                    durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+                } else {
+                    durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''} ${remainingMinutes} minutes`;
+                }
+            }
+        }
+
+        durationInput.addEventListener('input', updateDurationDisplay);
+        updateDurationDisplay(); // Initial call
+
+        // Form validation
+        document.getElementById('class-form').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value;
+            const startTime = document.getElementById('start_time').value;
+            const duration = document.getElementById('duration').value;
+            const grade = document.getElementById('grade').value;
+            const type = document.getElementById('type').value;
+
+            if (!title || !startTime || !duration || !grade || !type) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Validate start time is in the future
+            const selectedTime = new Date(startTime);
+            const now = new Date();
+            if (selectedTime <= now) {
+                e.preventDefault();
+                alert('Please select a future date and time for the class.');
+                return;
+            }
+
+            // Validate duration
+            if (duration < 1 || duration > 480) {
+                e.preventDefault();
+                alert('Duration must be between 1 and 480 minutes.');
+                return;
+            }
+        });
+
+        // Set minimum datetime to current time
+        const now = new Date();
+        const timezoneOffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 16);
+        document.getElementById('start_time').min = localISOTime;
+    </script>
+</body>
+</html>
