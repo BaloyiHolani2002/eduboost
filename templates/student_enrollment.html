@@ -800,13 +800,7 @@
         {% if enrollments %}
         <!-- Statistics Overview -->
         <div class="stats-overview">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <div class="stat-number"></div>
-                <div class="stat-label">Active Enrollments</div>
-            </div>
+            
             <div class="stat-card">
                 <div class="stat-icon">
                     <i class="fas fa-clock"></i>
@@ -818,9 +812,7 @@
                 <div class="stat-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="stat-number">{{ ((31 - (enrollments[0].days_remaining if enrollments else 0)) / 31 *
-                    100)|round|int }}%</div>
-                <div class="stat-label">Progress Used</div>
+                
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
