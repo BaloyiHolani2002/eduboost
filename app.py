@@ -340,6 +340,54 @@ def reduce_enrollment_days():
         cur.close()
         conn.close()
 
+# ✅ Schedule job to run daily at midnight (00:00)
+@scheduler.task('cron', id='reduce_days_job', hour=0, minute=0)
+def scheduled_reduce_days():
+    print("⏰ Scheduled job triggered at midnight")
+    reduce_enrollment_days()
+
+
+def reduce_enrollment_days():
+    """Reduce enrollment days by 1 for all active enrollments WITHOUT updating any date fields."""
+    conn = get_db_connection()
+    if not conn:
+        print("❌ DB connection failed for daily reduction")
+        return
+    
+    try:
+        cur = conn.cursor()
+        print("🔄 Running daily reduction WITHOUT updating date...")
+
+        # Only reduce days_remaining (do NOT touch last_updated)
+        cur.execute("""
+            UPDATE Enrollment
+            SET days_remaining = days_remaining - 1
+            WHERE status = 'active'
+            AND days_remaining > 0
+        """)
+        
+        reduced = cur.rowcount
+
+        # Mark expired without touching last_updated
+        cur.execute("""
+            UPDATE Enrollment
+            SET status = 'expired'
+            WHERE status = 'active'
+            AND days_remaining <= 0
+        """)
+        
+        expired = cur.rowcount
+
+        conn.commit()
+        print(f"✅ Reduced: {reduced}, Expired: {expired}")
+
+    except Exception as e:
+        conn.rollback()
+        print("❌ Error:", str(e))
+
+    finally:
+        cur.close()
+        conn.close()
 
 
 

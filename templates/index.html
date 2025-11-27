@@ -122,7 +122,7 @@
             padding: 1.5rem 0;
             box-shadow: var(--shadow);
             position: sticky;
-
+            top: 0;
             z-index: 100;
         }
 
@@ -151,6 +151,17 @@
             background: linear-gradient(135deg, white, #e6ecff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
         }
 
         nav ul {
@@ -187,6 +198,8 @@
             transition: var(--transition);
             text-align: center;
             cursor: pointer;
+            border: none;
+            font-size: 1rem;
         }
 
         .btn-primary {
@@ -239,7 +252,7 @@
         }
 
         .hero h2 {
-            font-size: 3.5rem;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
             margin-bottom: 1.5rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
@@ -248,7 +261,7 @@
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
             color: var(--text-light);
             max-width: 700px;
             margin: 0 auto 3rem;
@@ -265,13 +278,13 @@
         }
 
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             color: var(--secondary);
             margin-bottom: 1rem;
         }
 
         .section-title p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--text-light);
             max-width: 700px;
             margin: 0 auto;
@@ -280,7 +293,7 @@
         /* Features Section */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
             gap: 2rem;
         }
 
@@ -355,7 +368,7 @@
         }
 
         .price {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
@@ -398,7 +411,7 @@
         /* Subjects Section */
         .subjects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
             gap: 2rem;
         }
 
@@ -476,7 +489,6 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             text-align: center;
-
         }
 
         .cta-content {
@@ -484,12 +496,12 @@
         }
 
         .cta h2 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             margin-bottom: 1.5rem;
         }
 
         .cta p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             margin-bottom: 2.5rem;
             opacity: 0.9;
             max-width: 700px;
@@ -515,7 +527,7 @@
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
@@ -558,6 +570,7 @@
         .social-share {
             display: flex;
             gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .social-btn {
@@ -570,6 +583,7 @@
             background: rgba(255, 255, 255, 0.1);
             color: white;
             transition: var(--transition);
+            text-decoration: none;
         }
 
         .social-btn:hover {
@@ -587,68 +601,72 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .hero h2 {
-                font-size: 3rem;
-            }
-
-            .section-title h2 {
-                font-size: 2.2rem;
+            .container {
+                padding: 0 1.5rem;
             }
         }
 
         @media (max-width: 768px) {
             .header-content {
-                flex-direction: column;
-                gap: 1.5rem;
+                flex-wrap: wrap;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                width: 100%;
+                order: 3;
+                margin-top: 1rem;
+                display: none;
+            }
+
+            nav.active {
+                display: block;
             }
 
             nav ul {
-                gap: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            nav a {
+                display: block;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .auth-buttons {
+                margin-left: auto;
             }
 
             .hero {
                 padding: 4rem 0;
             }
 
-            .hero h2 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
             section {
                 padding: 3rem 0;
             }
 
-            .section-title h2 {
-                font-size: 2rem;
-            }
-
-            .section-title p {
-                font-size: 1.1rem;
-            }
-
-            .features-grid,
-            .subjects-grid {
-                grid-template-columns: 1fr;
-            }
-
+            .feature-card,
+            .subject-card,
             .pricing-card {
-                padding: 2rem;
+                padding: 1.5rem;
             }
 
-            .price {
-                font-size: 3rem;
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
             }
 
-            .cta h2 {
-                font-size: 2rem;
+            .cta-content {
+                padding: 3rem 1rem;
             }
 
             .footer-content {
-                grid-template-columns: 1fr;
                 text-align: center;
             }
 
@@ -662,28 +680,28 @@
                 padding: 0 1rem;
             }
 
+            .header-content {
+                gap: 1rem;
+            }
+
             .logo {
-                flex-direction: column;
-                text-align: center;
-                gap: 0.5rem;
+                flex-direction: row;
+                text-align: left;
             }
 
             .logo h1 {
                 font-size: 1.5rem;
             }
 
-            nav ul {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
             .auth-buttons {
                 flex-direction: column;
                 width: 100%;
+                max-width: 200px;
             }
 
             .btn {
                 width: 100%;
+                padding: 0.8rem 1rem;
             }
 
             .hero h2 {
@@ -700,18 +718,8 @@
                 padding: 1.5rem;
             }
 
-            .feature-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-
             .price {
                 font-size: 2.5rem;
-            }
-
-            .cta-content {
-                padding: 3rem 1rem;
             }
 
             .cta h2 {
@@ -720,6 +728,22 @@
 
             .cta p {
                 font-size: 1rem;
+            }
+        }
+
+        /* iPad specific adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 0 2rem;
+            }
+
+            .features-grid,
+            .subjects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -741,12 +765,18 @@
                     <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
                     <h1>Edu Boost Up</h1>
                 </div>
-                <nav>
+                
+                <button class="menu-toggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav id="main-nav">
                     <ul>
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#subjects">Subjects</a></li>
                     </ul>
                 </nav>
+                
                 <div class="auth-buttons">
                     <a href="/login" class="btn btn-outline">Log In</a>
                     <a href="/signup" class="btn btn-primary">Sign Up Free</a>
@@ -928,7 +958,7 @@
                             <i class="fab fa-tiktok"></i>
                         </a>
 
-                        <!-- Instagram -->
+                        <!-- Twitter -->
                         <a href="https://x.com/EDU_BOOST_UP?t=ciqNpaAe3HM18wVxUh4BFQ&s=08" class="social-btn twitter"
                             target="_blank" rel="noopener noreferrer" aria-label="Twitter">
                             <i class="fab fa-twitter"></i>
@@ -941,9 +971,6 @@
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
-
-
-
                 </div>
                 <div class="footer-column">
                     <h3>Quick Links</h3>
@@ -977,6 +1004,59 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('nav');
+            
+            menuToggle.addEventListener('click', function() {
+                nav.classList.toggle('active');
+                
+                // Change icon based on menu state
+                const icon = menuToggle.querySelector('i');
+                if (nav.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when clicking on a link (for mobile)
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        nav.classList.remove('active');
+                        const icon = menuToggle.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
