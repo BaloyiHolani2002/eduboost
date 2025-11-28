@@ -600,10 +600,11 @@
         }
 
         .video-container iframe {
+            transform: scale(1.2) translate(40px, -50px);
+            /* moved more up */
+            transform-origin: center;
             width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+            height: 600px;
         }
 
         .play-overlay {
@@ -801,6 +802,7 @@
             position: relative;
             overflow: hidden;
         }
+
 
         .minimal-avatar:before {
             content: '';
@@ -1014,7 +1016,7 @@
             .video-section {
                 padding: 1.5rem;
             }
-            
+
             .payment-warning {
                 padding: 2rem;
             }
@@ -1061,27 +1063,27 @@
             .sidebar {
                 padding: 1.5rem;
             }
-            
+
             .nav-link {
                 padding: 1rem 1.25rem;
             }
-            
+
             .user-profile {
                 padding: 1.25rem;
             }
         }
-        
+
         /* iPad specific adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
             .sidebar {
                 width: 260px;
             }
-            
+
             .main-content {
                 margin-left: 260px;
                 padding: 2rem;
             }
-            
+
             .portfolio-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -1113,8 +1115,8 @@
                 <li class="nav-item"><a class="nav-link" href="/student/dashboard/courses"><i
                             class="fas fa-book-open"></i>My Courses</a></li>
                 <li class="nav-item"><a href="/student/classes" class="nav-link">
-                    <i class="fas fa-chalkboard-teacher"></i> View Classes
-                </a></li>
+                        <i class="fas fa-chalkboard-teacher"></i> View Classes
+                    </a></li>
                 {% endif %}
                 <li class="nav-item"><a class="nav-link" href="/student/request"><i class="fas fa-paper-plane"></i>Send
                         Request</a></li>
@@ -1155,100 +1157,94 @@
                 {% endif %}
             </header>
 
-            {% if days_remaining <= 0 %}
-            <div class="payment-warning">
+            {% if days_remaining <= 0 %} <div class="payment-warning">
                 <h2>Your Learning Plan Has Expired</h2>
                 <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
                 <a href="/student/enrollment" class="pay-btn">Renew Now</a>
-            </div>
-            {% else %}
+    </div>
+    {% else %}
 
-            <!-- Platform Guide -->
-            <div class="section-header">
-                <i class="fas fa-play-circle"></i>
-                <h2>Platform Guide</h2>
-            </div>
+    <!-- Platform Guide -->
+    <div class="section-header">
+        <i class="fas fa-play-circle"></i>
+        <h2>Platform Guide</h2>
+    </div>
 
-            <div class="video-section">
-                <div class="video-header">
-                    <div class="video-title">
-                        <i class="fas fa-video"></i>
-                        <h3>Getting Started with Edu Boost Up</h3>
+    <div class="video-section">
+        <div class="video-header">
+            <div class="video-title">
+                <i class="fas fa-video"></i>
+                <h3>Getting Started with Edu Boost Up</h3>
+            </div>
+            <div class="video-controls">
+                <button class="video-control-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="video-control-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="video-container-wrapper">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+
+            <div class="video-container">
+
+                <iframe src="https://drive.google.com/file/d/1xORMOQJidu1JYf0RNJVaHloQ9vw0xGBL/preview" width="1120%"
+                    height="600" allow="autoplay" allowfullscreen id="videoFrame">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="video-info">
+            <h4>About This Guide</h4>
+            <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the
+                most of your learning experience. This comprehensive guide will help you get started quickly.</p>
+        </div>
+    </div>
+
+    <!-- Mentors Section -->
+    <div class="section-header">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h2>Your Mentors</h2>
+    </div>
+
+    <div class="mentors-portfolio">
+        <div class="portfolio-grid">
+            {% for m in mentors %}
+            <article class="portfolio-card">
+                <!-- Profile Image with Hover Effect -->
+                <div class="profile-media">
+                    {% if m.profile_image %}
+                    <div class="profile-image-preview">
+                        <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}" alt="Profile Image"
+                            class="profile-portrait">
                     </div>
-                    <div class="video-controls">
-                        <button class="video-control-btn" title="Fullscreen">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="video-control-btn" title="Settings">
-                            <i class="fas fa-cog"></i>
-                        </button>
+                    {% else %}
+                    <div class="minimal-avatar">
+                        <span class="initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Content Section -->
+                <div class="portfolio-content">
+                    <header class="portfolio-header">
+                        <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
+                        <p class="specialty-tag">{{ m.subject_speciality }}</p>
+                    </header>
+
+                    <div class="bio-excerpt">
+                        <p>{{ m.bio }}</p>
                     </div>
                 </div>
-
-                <div class="video-container-wrapper">
-                    <div class="loading-spinner" id="loadingSpinner"></div>
-
-                    <div class="video-container">
-                        <div class="play-overlay" id="playOverlay">
-                            <div class="play-button">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-
-                        <iframe src="https://drive.google.com/file/d/1K_6L1fpYetRd-c4EJshdiwd9F0X6Il59/preview" width="100%"
-                            height="380" allow="autoplay" allowfullscreen id="videoFrame">
-                        </iframe>
-                    </div>
-                </div>
-
-                <div class="video-info">
-                    <h4>About This Guide</h4>
-                    <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the
-                        most of your learning experience. This comprehensive guide will help you get started quickly.</p>
-                </div>
-            </div>
-
-            <!-- Mentors Section -->
-            <div class="section-header">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <h2>Your Mentors</h2>
-            </div>
-
-            <div class="mentors-portfolio">
-                <div class="portfolio-grid">
-                    {% for m in mentors %}
-                    <article class="portfolio-card">
-                        <!-- Profile Image with Hover Effect -->
-                        <div class="profile-media">
-                            {% if m.profile_image %}
-                            <div class="profile-image-preview">
-                                <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}" alt="Profile Image"
-                                    class="profile-portrait">
-                            </div>
-                            {% else %}
-                            <div class="minimal-avatar">
-                                <span class="initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- Content Section -->
-                        <div class="portfolio-content">
-                            <header class="portfolio-header">
-                                <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
-                                <p class="specialty-tag">{{ m.subject_speciality }}</p>
-                            </header>
-
-                            <div class="bio-excerpt">
-                                <p>{{ m.bio }}</p>
-                            </div>
-                        </div>
-                    </article>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </main>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    </main>
     </div>
 
     <script>
@@ -1324,13 +1320,13 @@
             const sidebar = document.getElementById('sidebar');
 
             if (mobileToggle && sidebar) {
-                mobileToggle.addEventListener('click', function() {
+                mobileToggle.addEventListener('click', function () {
                     sidebar.classList.toggle('active');
                 });
             }
-            
+
             // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
                     if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                         sidebar.classList.remove('active');
