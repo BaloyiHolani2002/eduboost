@@ -36,136 +36,86 @@
             --science: #45aaf2;
             --text-light: #6c757d;
             --text-lighter: #adb5bd;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
         }
 
         body {
             background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .container {
             width: 100%;
-            height: 100%;
-            z-index: -1;
+            max-width: 1000px;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.1;
-            animation: float 20s infinite linear;
-        }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: -5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
-        }
-
-        .course-contents-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .logo img {
-            height: 80px;
-            width: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .course-header {
-            background: white;
-            border-radius: var(--border-radius-lg);
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-        .course-header h1 {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .course-header h1 i {
-            font-size: 2.2rem;
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .course-subtitle {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 500;
+        .header-content h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
         }
 
         .contents-accordion {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .lesson-card {
             background: white;
-            border-radius: var(--border-radius-lg);
-            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
             box-shadow: var(--shadow);
             overflow: hidden;
             transition: var(--transition);
+            border: 1px solid #e9ecef;
         }
 
         .lesson-card:hover {
@@ -173,26 +123,27 @@
         }
 
         .lesson-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 2rem;
+            background: var(--light);
+            padding: 1.25rem 1.5rem;
             cursor: pointer;
             transition: var(--transition);
+            border-bottom: 1px solid #e9ecef;
         }
 
         .lesson-header:hover {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-light));
+            background: rgba(67, 97, 238, 0.05);
         }
 
         .lesson-header.active {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-light));
+            background: rgba(67, 97, 238, 0.08);
+            border-bottom: none;
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .lesson-title-section {
@@ -200,34 +151,37 @@
         }
 
         .lesson-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
         }
 
         .lesson-meta {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
         .lesson-meta span {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            opacity: 0.9;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
 
         .lesson-meta i {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
 
         .lesson-type {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
             font-weight: 500;
+            font-size: 0.75rem;
         }
 
         .expand-indicator {
@@ -239,36 +193,37 @@
         }
 
         .expand-indicator i {
-            font-size: 1.2rem;
+            font-size: 1rem;
+            color: var(--primary);
         }
 
         .lesson-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            transition: max-height 0.4s ease-out;
         }
 
         .lesson-content.active {
-            max-height: 2000px;
+            max-height: 1500px;
         }
 
         .lesson-description {
-            padding: 2rem;
+            padding: 1.5rem;
             border-bottom: 1px solid var(--light);
         }
 
         .lesson-description p {
             color: var(--text-light);
-            font-size: 1.1rem;
-            line-height: 1.7;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .resources-section {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .resource-category {
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .resource-category:last-child {
@@ -276,12 +231,12 @@
         }
 
         .resource-category h4 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--secondary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
         }
 
         .resource-category h4 i {
@@ -291,37 +246,37 @@
         .download-options,
         .media-resources {
             display: grid;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .download-card,
         .media-card {
             background: var(--light);
             border-radius: var(--border-radius);
-            padding: 1.5rem;
+            padding: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             transition: var(--transition);
         }
 
         .download-card:hover,
         .media-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: var(--shadow);
         }
 
         .download-icon,
         .media-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1rem;
             flex-shrink: 0;
         }
 
@@ -332,24 +287,24 @@
 
         .download-info h5,
         .media-info h5 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--secondary);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
         }
 
         .download-info p,
         .media-info p {
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-bottom: 0.2rem;
         }
 
         .resource-url {
             font-family: monospace;
             background: rgba(0, 0, 0, 0.05);
-            padding: 0.3rem 0.6rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             word-break: break-all;
         }
 
@@ -357,53 +312,53 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
             border: none;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
         }
 
         .action-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
+            gap: 0.4rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .watch-btn {
             background: linear-gradient(135deg, var(--success), #2dd4bf);
             color: white;
-            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+            box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
         }
 
         .watch-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.4);
         }
 
         .navigation-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -411,72 +366,77 @@
         .nav-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            gap: 0.6rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
-            min-width: 200px;
+            min-width: 180px;
             justify-content: center;
+            font-size: 0.9rem;
         }
 
         .nav-btn.primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
 
         .nav-btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
         }
 
         .nav-btn.secondary {
             background: var(--light);
             color: var(--text-light);
-            border: 2px solid var(--light);
+            border: 1px solid #e9ecef;
         }
 
         .nav-btn.secondary:hover {
             background: white;
             color: var(--primary);
             border-color: var(--primary);
-            transform: translateY(-2px);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .course-contents-container {
+            body {
                 padding: 1rem;
             }
             
-            .course-header {
-                padding: 2rem 1.5rem;
+            .header {
+                padding: 1.25rem 1.5rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
             }
             
-            .course-header h1 {
-                font-size: 2rem;
-                flex-direction: column;
-                gap: 0.5rem;
+            .header-content h1 {
+                font-size: 1.3rem;
+            }
+            
+            .content {
+                padding: 1.5rem;
             }
             
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
+                gap: 0.75rem;
             }
             
             .lesson-meta {
                 flex-direction: column;
-                gap: 0.8rem;
+                gap: 0.5rem;
             }
             
             .download-card,
             .media-card {
                 flex-direction: column;
                 text-align: center;
-                gap: 1rem;
+                gap: 0.75rem;
             }
             
             .navigation-actions {
@@ -486,145 +446,146 @@
             
             .nav-btn {
                 width: 100%;
-                max-width: 300px;
+                max-width: 250px;
             }
         }
 
         @media (max-width: 480px) {
-            .course-header h1 {
-                font-size: 1.7rem;
+            .header-content h1 {
+                font-size: 1.2rem;
             }
             
-            .course-subtitle {
-                font-size: 1rem;
+            .header-content p {
+                font-size: 0.85rem;
+            }
+            
+            .content {
+                padding: 1rem;
             }
             
             .lesson-header {
-                padding: 1.5rem;
+                padding: 1rem;
             }
             
             .lesson-title {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
             }
             
             .lesson-description,
             .resources-section {
-                padding: 1.5rem;
+                padding: 1rem;
             }
             
             .resource-category h4 {
-                font-size: 1.1rem;
+                font-size: 1rem;
+            }
+            
+            .download-card,
+            .media-card {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <body>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <div class="course-contents-container">
-        <div class="logo">
-            <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
-        </div>
-        
-        <div class="course-header">
-            <h1><i class="fas fa-book"></i>Course Contents</h1>
-            <p class="course-subtitle">Click on lesson headings to access learning materials</p>
-        </div>
-
-        <div class="contents-accordion">
-
-{% for c in contents %}
-    <div class="lesson-card">
-        <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}')">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+            </div>
             <div class="header-content">
-                <div class="lesson-title-section">
-                    <h3 class="lesson-title">{{ c.title }}</h3>
-                    <div class="lesson-meta">
-                        <span class="lesson-type">{{ c.type }}</span>
-                        <span class="mentor-info">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                            {{ c.mentor_name }} {{ c.mentor_surname }}
-                        </span>
-                        <span class="upload-date">
-                            <i class="fas fa-calendar"></i>
-                            {{ c.upload_date }}
-                        </span>
-                    </div>
-                </div>
-                <div class="expand-indicator">
-                    <i class="fas fa-chevron-down"></i>
-                </div>
+                <h1>Course Contents</h1>
+                <p>Click on lesson headings to access learning materials</p>
             </div>
         </div>
 
-        <div class="lesson-content" id="lesson-{{ c.content_id }}">
-            <div class="lesson-description">
-                <p>{{ c.description }}</p>
+        <div class="content">
+            <div class="contents-accordion">
+                {% for c in contents %}
+                <div class="lesson-card">
+                    <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}')">
+                        <div class="header-content">
+                            <div class="lesson-title-section">
+                                <h3 class="lesson-title">{{ c.title }}</h3>
+                                <div class="lesson-meta">
+                                    <span class="lesson-type">{{ c.type }}</span>
+                                    <span class="mentor-info">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        {{ c.mentor_name }} {{ c.mentor_surname }}
+                                    </span>
+                                    <span class="upload-date">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ c.upload_date }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="expand-indicator">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lesson-content" id="lesson-{{ c.content_id }}">
+                        <div class="lesson-description">
+                            <p>{{ c.description }}</p>
+                        </div>
+
+                        <div class="resources-section">
+                            {% if c.file_url %}
+                            <div class="resource-category">
+                                <h4><i class="fas fa-file-pdf"></i> Download Study Materials</h4>
+                                <div class="download-options">
+                                    <div class="download-card">
+                                        <div class="download-icon"><i class="fas fa-file-pdf"></i></div>
+                                        <div class="download-info">
+                                            <h5>{{ c.file_name }}</h5>
+                                            <p>Size: {{ c.file_size_mb }} MB</p>
+                                        </div>
+                                        <a href="{{ c.file_url }}" target="_blank" class="btn btn-primary">
+                                            View / Open PDF
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if content_links[c.content_id] %}
+                            <div class="resource-category">
+                                <h4><i class="fas fa-play-circle"></i> Watch Lesson & Resources</h4>
+                                <div class="media-resources">
+                                    {% for link in content_links[c.content_id] %}
+                                    <div class="media-card">
+                                        <div class="media-icon"><i class="fas fa-video"></i></div>
+                                        <div class="media-info">
+                                            <h5>Video / Resource Link</h5>
+                                            <p>Uploaded: {{ link.upload_date }}</p>
+                                            <p class="resource-url">{{ link.file_link }}</p>
+                                        </div>
+                                        <div class="media-actions">
+                                            <a href="{{ link.file_link }}" target="_blank" class="action-btn watch-btn">
+                                                <i class="fas fa-play"></i> Open / Watch
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
 
-            <div class="resources-section">
-
-                {% if c.file_url %}
-                <div class="resource-category">
-                    <h4><i class="fas fa-file-pdf"></i> Download Study Materials</h4>
-                    <div class="download-options">
-                        <div class="download-card">
-                            <div class="download-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="download-info">
-                                <h5>{{ c.file_name }}</h5>
-                                <p>Size: {{ c.file_size_mb }} MB</p>
-                            </div>
-                            <a href="{{ c.file_url }}" target="_blank" class="btn btn-primary">
-                                View / Open PDF
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if content_links[c.content_id] %}
-                <div class="resource-category">
-                    <h4><i class="fas fa-play-circle"></i> Watch Lesson & Resources</h4>
-                    <div class="media-resources">
-                        {% for link in content_links[c.content_id] %}
-                        <div class="media-card">
-                            <div class="media-icon"><i class="fas fa-video"></i></div>
-                            <div class="media-info">
-                                <h5>Video / Resource Link</h5>
-                                <p>Uploaded: {{ link.upload_date }}</p>
-                                <p class="resource-url">{{ link.file_link }}</p>
-                            </div>
-                            <div class="media-actions">
-                                <a href="{{ link.file_link }}" target="_blank" class="action-btn watch-btn">
-                                    <i class="fas fa-play"></i> Open / Watch
-                                </a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-
+            <div class="navigation-actions">
+                <a href="/student/dashboard/courses" class="nav-btn secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Courses
+                </a>
+                <a href="/student/dashboard" class="nav-btn primary">
+                    <i class="fas fa-home"></i> Back to Dashboard
+                </a>
             </div>
         </div>
-    </div>
-{% endfor %}
-</div>
-
-<div class="navigation-actions">
-    <a href="/student/dashboard/courses" class="nav-btn secondary">
-        <i class="fas fa-arrow-left"></i> Back to Courses
-    </a>
-    <a href="/student/dashboard" class="nav-btn primary">
-        <i class="fas fa-home"></i> Back to Dashboard
-    </a>
-</div>
-
     </div>
 
     <script>

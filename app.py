@@ -289,56 +289,6 @@ def signup():
 
     return render_template("signup.html")
 
-# ✅ Schedule job to run daily at midnight
-@scheduler.task('cron', id='reduce_days_job', hour=22, minute=0)
-def scheduled_reduce_days():
-    print("⏰ Scheduled job triggered")
-    reduce_enrollment_days()
-    
-def reduce_enrollment_days():
-    """Reduce enrollment days by 1 for all active enrollments with days_remaining > 0."""
-    conn = get_db_connection()
-    if not conn:
-        print("❌ DB connection failed for daily reduction")
-        return
-    
-    try:
-        cur = conn.cursor()
-        print("🔄 Daily enrollment reduction running...")
-
-        # Reduce days only once every 24h
-        cur.execute("""
-            UPDATE Enrollment 
-            SET days_remaining = days_remaining - 1,
-                last_updated = CURRENT_TIMESTAMP
-            WHERE status = 'active'
-            AND days_remaining > 0
-            AND (last_updated IS NULL OR last_updated < NOW() - INTERVAL '24 hours')
-        """)
-        
-        updated = cur.rowcount
-
-        # Expire finished
-        cur.execute("""
-            UPDATE Enrollment 
-            SET status = 'expired',
-                last_updated = CURRENT_TIMESTAMP
-            WHERE status = 'active'
-            AND days_remaining <= 0
-        """)
-        
-        expired = cur.rowcount
-
-        conn.commit()
-        print(f"✅ Reduced: {updated}, Expired: {expired}")
-
-    except Exception as e:
-        conn.rollback()
-        print("❌ Error in daily reduction:", str(e))
-    
-    finally:
-        cur.close()
-        conn.close()
 
 # ✅ Schedule job to run daily at midnight (00:00)
 @scheduler.task('cron', id='reduce_days_job', hour=0, minute=0)
@@ -394,16 +344,23 @@ def reduce_enrollment_days():
 # ===========================================================
 #  LOGIN FOR ALL USERS AND RESET PASSWORD
 # ===========================================================
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
 
+        # Validate input
+        if not email or not password:
+            return render_template('login.html', 
+                                error='Please enter both email and password',
+                                email=email)
+
         conn = get_db_connection()
         if not conn:
-            return render_template('login.html', error='Database Connection Failed')
+            return render_template('login.html', 
+                                error='Database connection failed. Please try again.',
+                                email=email)
 
         try:
             cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -420,8 +377,11 @@ def login():
                 session['user_name'] = f"{student['name']} {student['surname']}"
                 session['grade'] = student['grade']
                 session['user_role'] = 'student'
+                session['email'] = email
                 cur.close()
                 conn.close()
+                
+                # Redirect based on user role
                 return redirect('/student/dashboard')
 
             # Check Mentor
@@ -430,10 +390,12 @@ def login():
                 WHERE email = %s AND password = %s AND status = 'active'
             """, (email, password))
             mentor = cur.fetchone()
+            
             if mentor:
                 session['user_id'] = mentor['mentor_id']
                 session['user_name'] = f"{mentor['name']} {mentor['surname']}"
                 session['user_role'] = 'mentor'
+                session['email'] = email
                 cur.close()
                 conn.close()
                 return redirect('/employee/dashboard')
@@ -444,23 +406,35 @@ def login():
                 WHERE email = %s AND password = %s
             """, (email, password))
             admin = cur.fetchone()
+            
             if admin:
                 session['user_id'] = admin['admin_id']
                 session['user_name'] = admin['name']
                 session['user_role'] = 'admin'
                 session['role'] = admin['role']
+                session['email'] = email
                 cur.close()
                 conn.close()
                 return redirect('/admin/dashboard')
 
             cur.close()
             conn.close()
-            return render_template('login.html', error='Incorrect Email or Password')
+            
+            # If no user found with these credentials
+            return render_template('login.html', 
+                                error='Invalid email or password. Please try again.',
+                                email=email)
 
         except Exception as e:
             print("LOGIN ERROR:", e)
-            return render_template('login.html', error='Server Error, Please Try Again')
+            if conn:
+                cur.close()
+                conn.close()
+            return render_template('login.html', 
+                                error='Server error. Please try again later.',
+                                email=email)
 
+    # GET request - show login form
     return render_template('login.html')
 
 
