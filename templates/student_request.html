@@ -23,7 +23,7 @@
             --primary-light: #6a7ef0;
             --primary-dark: #2a4bd4;
             --secondary: #3a0ca3;
-            --secondary-light: #4f1bc6;
+            --secondary-light: #e6e1f1;
             --accent: #7209b7;
             --accent-light: #8b2bd0;
             --light: #f8f9fa;
@@ -41,10 +41,13 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --border-radius: 12px;
             --border-radius-lg: 20px;
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-success: linear-gradient(135deg, var(--success), #2dd4bf);
+            --gradient-warning: linear-gradient(135deg, var(--warning), #ff4da6);
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            background: white;
             color: var(--dark);
             line-height: 1.6;
             min-height: 100vh;
@@ -65,7 +68,7 @@
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.1;
+            opacity: 0.05;
             animation: float 20s infinite linear;
         }
 
@@ -105,161 +108,247 @@
             }
         }
 
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
         }
 
         /* Sidebar Styles */
         .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 2rem 1.5rem;
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            position: fixed;
-            height: 100vh;
+            padding: 2rem;
             overflow-y: auto;
-            z-index: 100;
         }
 
-        .logo {
-            text-align: center;
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f3f4;
         }
 
-        .logo img {
-            height: 60px;
-            width: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-menu {
-            list-style: none;
-            flex: 1;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .sidebar-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
             padding: 1rem 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--dark);
             text-decoration: none;
             border-radius: var(--border-radius);
             transition: var(--transition);
             font-weight: 500;
         }
 
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+        .sidebar-nav a:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
             transform: translateX(5px);
         }
 
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-        }
-
-        .user-profile {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-top: auto;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent), var(--warning));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .user-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .user-info p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 2rem;
-            min-height: 100vh;
-        }
-
-        .header {
+        /* Header Styles */
+        header {
             background: white;
-            border-radius: var(--border-radius-lg);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            color: var(--dark);
+            padding: 1.5rem 0;
             box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .welcome-message h2 {
-            font-size: 2rem;
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
         }
 
-        .welcome-message p {
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            margin: 2rem auto;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            max-width: 1200px;
+        }
+
+        .welcome-banner:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .welcome-text h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .welcome-text p {
             color: var(--text-light);
             font-size: 1.1rem;
         }
 
-        .days-remaining {
-            background: linear-gradient(135deg, var(--success), #2dd4bf);
+        .days-badge {
+            background: var(--gradient-success);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             border-radius: var(--border-radius);
             text-align: center;
-            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+            min-width: 150px;
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.3);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
-        .days-remaining .number {
+        .days-badge:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(76, 201, 240, 0.4);
+        }
+
+        .days-badge .number {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 800;
             display: block;
+            position: relative;
+            z-index: 1;
         }
 
-        .days-remaining .label {
-            font-size: 0.9rem;
+        .days-badge .label {
+            font-size: 1rem;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         /* Section Headers */
@@ -275,6 +364,7 @@
             color: var(--primary);
             background: rgba(67, 97, 238, 0.1);
             width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -398,193 +488,464 @@
             color: white;
         }
 
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-column li i {
+            width: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .social-share {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* User info in sidebar */
+        .user-info {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .user-details h4 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .days-remaining-text {
+            color: var(--success) !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .sidebar {
-                width: 250px;
-            }
-            
-            .main-content {
-                margin-left: 250px;
+            .container {
+                padding: 0 1.5rem;
             }
         }
 
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
+                width: 300px;
+                right: -300px;
             }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
+
+            .welcome-banner {
+                padding: 2rem;
             }
-            
-            .dashboard-container {
+
+            .welcome-content {
                 flex-direction: column;
-            }
-            
-            .header {
-                flex-direction: column;
-                gap: 1rem;
                 text-align: center;
-                padding: 1.5rem;
+                gap: 1rem;
             }
-            
+
+            .days-badge {
+                width: 100%;
+                max-width: 200px;
+            }
+
             .form-container {
                 padding: 1.5rem;
             }
-            
+
             .section-header {
                 flex-direction: column;
                 text-align: center;
                 gap: 0.5rem;
             }
-            
-            .nav-menu {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-            
-            .nav-item {
-                flex: 1;
-                min-width: 120px;
-            }
-            
-            .nav-link {
-                justify-content: center;
+
+            .footer-content {
                 text-align: center;
-                padding: 0.8rem;
+            }
+
+            .footer-column h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .social-share {
+                justify-content: center;
             }
         }
 
         @media (max-width: 480px) {
-            .main-content {
-                padding: 0.5rem;
+            .container {
+                padding: 0 1rem;
             }
-            
-            .header {
-                padding: 1.5rem;
+
+            .header-content {
+                gap: 1rem;
             }
-            
-            .welcome-message h2 {
+
+            .logo {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .logo h1 {
                 font-size: 1.5rem;
             }
-            
+
+            .welcome-text h2 {
+                font-size: 1.8rem;
+            }
+
             .form-container {
                 padding: 1rem;
             }
-            
+
             .section-header h2 {
                 font-size: 1.5rem;
             }
-            
-            .sidebar {
-                padding: 1rem;
+
+            .section-header i {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
             }
-            
-            .nav-item {
-                min-width: 100px;
+
+            .sidebar {
+                padding: 1.5rem;
+            }
+        }
+
+        /* iPad specific adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 0 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
- 
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
                 <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <h2>Edu Boost Up</h2>
             </div>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="/student/dashboard" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="#" class="nav-link active">
-                        <i class="fas fa-comments"></i>
-                        <span>Messages</span>
-                    </a>
-                </li>
-                
-            </ul>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <div class="welcome-message">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                {% if days_remaining and days_remaining > 0 %}
+                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
+                <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
+                {% endif %}
+                <li><a href="/student/request" class="active"><i class="fas fa-paper-plane"></i> Send Request</a></li>
+                <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
+                <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-info">
+            <div class="user-avatar">
+                {% if student and student.name and student.surname %}
+                    {{ student.name[0] }}{{ student.surname[0] }}
+                {% else %}
+                    Student
+                {% endif %}
+            </div>
+            <div class="user-details">
+                <h4>
+                    {% if student and student.name and student.surname %}
+                        {{ student.name }} {{ student.surname }}
+                    {% else %}
+                        Student
+                    {% endif %}
+                </h4>
+                <p>Grade {{ grade if grade else 'N/A' }}</p>
+                {% if days_remaining and days_remaining > 0 %}
+                <p class="days-remaining-text">
+                    <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                    <h1>Edu Boost Up</h1>
+                </div>
+                
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <div class="welcome-text">
                     <h2>Send Request to Mentor</h2>
                     <p>Get help from our expert mentors</p>
                 </div>
-                
-            </div>
-
-            <div class="section-header">
-                <i class="fas fa-paper-plane"></i>
-                <h2>Request Form</h2>
-            </div>
-
-            <div class="form-container">
-                {% if success %}
-                <div class="alert alert-success">{{ success }}</div>
+                {% if days_remaining and days_remaining > 0 %}
+                <div class="days-badge">
+                    <span class="number">{{ days_remaining }}</span>
+                    <span class="label">Days Remaining</span>
+                </div>
                 {% endif %}
-
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-4">
-                        <label for="mentor_id" class="form-label">Select Mentor</label>
-                        <select class="form-select" name="mentor_id" id="mentor_id" required>
-                            <option value="" disabled selected>-- Choose Mentor --</option>
-                            {% for m in mentors %}
-                            <option value="{{ m.mentor_id }}">{{ m.name }} {{ m.surname }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="topic" class="form-label">Topic</label>
-                        <input type="text" class="form-control" name="topic" id="topic" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="request_type" class="form-label">Request Type</label>
-                        <select class="form-select" name="request_type" id="request_type" required>
-                            <option value="lesson">Lesson</option>
-                            <option value="clarification">Clarification</option>
-                            <option value="material">Study Material</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" name="message" id="message" rows="4" required></textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="pdf" class="form-label">Attach PDF (optional)</label>
-                        <input type="file" class="form-control" name="pdf" id="pdf" accept=".pdf">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i>Send Request
-                    </button>
-                </form>
             </div>
         </div>
-    </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <i class="fas fa-paper-plane"></i>
+            <h2>Request Form</h2>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="mentor_id" class="form-label">Select Mentor</label>
+                    <select class="form-select" name="mentor_id" id="mentor_id" required>
+                        <option value="" disabled selected>-- Choose Mentor --</option>
+                        {% for m in mentors %}
+                        <option value="{{ m.mentor_id }}">{{ m.name }} {{ m.surname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="topic" class="form-label">Topic</label>
+                    <input type="text" class="form-control" name="topic" id="topic" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="request_type" class="form-label">Request Type</label>
+                    <select class="form-select" name="request_type" id="request_type" required>
+                        <option value="lesson">Lesson</option>
+                        <option value="clarification">Clarification</option>
+                        <option value="material">Study Material</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" name="message" id="message" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="pdf" class="form-label">Attach PDF (optional)</label>
+                    <input type="file" class="form-control" name="pdf" id="pdf" accept=".pdf">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Send Request
+                </button>
+            </form>
+        </div>
+    </main>
+
+   
 
     <script>
-        // Add some interactive enhancements
+        // Sidebar functionality
         document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Open sidebar
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            function closeSidebarFunc() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            sidebarOverlay.addEventListener('click', closeSidebarFunc);
+            
+            // Close sidebar when clicking on a link
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeSidebarFunc();
+                });
+            });
+            
+            // Set active nav item
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
             // Add focus effects to form elements
             const formElements = document.querySelectorAll('.form-control, .form-select');
             

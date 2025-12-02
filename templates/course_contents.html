@@ -44,26 +44,282 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            background: white;
             color: var(--dark);
             line-height: 1.5;
             min-height: 100vh;
-            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        /* Floating Shapes */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            opacity: 0.05;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            color: var(--dark);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .container {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin: 2rem auto;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            max-width: 1200px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .welcome-text h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .welcome-text p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Content Container */
+        .content-container {
             width: 100%;
             max-width: 1000px;
+            margin: 0 auto;
             background: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow);
             overflow: hidden;
+            margin-bottom: 2rem;
         }
 
-        .header {
+        .content-header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 1.5rem 2rem;
@@ -72,7 +328,7 @@
             gap: 1rem;
         }
 
-        .logo {
+        .content-logo {
             width: 50px;
             height: 50px;
             border-radius: var(--border-radius);
@@ -83,24 +339,24 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .logo img {
+        .content-logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .header-content h1 {
+        .content-header h1 {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
         }
 
-        .header-content p {
+        .content-header p {
             font-size: 0.9rem;
             opacity: 0.9;
         }
 
-        .content {
+        .content-body {
             padding: 2rem;
         }
 
@@ -128,6 +384,7 @@
             cursor: pointer;
             transition: var(--transition);
             border-bottom: 1px solid #e9ecef;
+            user-select: none;
         }
 
         .lesson-header:hover {
@@ -139,7 +396,7 @@
             border-bottom: none;
         }
 
-        .header-content {
+        .lesson-header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -201,10 +458,11 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-out;
+            background: #fafbff;
         }
 
         .lesson-content.active {
-            max-height: 1500px;
+            max-height: 2000px;
         }
 
         .lesson-description {
@@ -361,6 +619,7 @@
             gap: 0.75rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 2rem;
         }
 
         .nav-btn {
@@ -400,222 +659,569 @@
             border-color: var(--primary);
         }
 
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-column li i {
+            width: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .social-share {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* User info in sidebar */
+        .user-info {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .user-details h4 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .days-remaining-text {
+            color: var(--success) !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
         /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
             }
-            
-            .header {
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 300px;
+                right: -300px;
+            }
+
+            .welcome-banner {
+                padding: 1.5rem;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .content-header {
                 padding: 1.25rem 1.5rem;
                 flex-direction: column;
                 text-align: center;
                 gap: 0.75rem;
             }
-            
-            .header-content h1 {
+
+            .content-header h1 {
                 font-size: 1.3rem;
             }
-            
-            .content {
+
+            .content-body {
                 padding: 1.5rem;
             }
-            
-            .header-content {
+
+            .lesson-header-content {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.75rem;
             }
-            
+
             .lesson-meta {
                 flex-direction: column;
                 gap: 0.5rem;
             }
-            
+
             .download-card,
             .media-card {
                 flex-direction: column;
                 text-align: center;
                 gap: 0.75rem;
             }
-            
+
             .navigation-actions {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .nav-btn {
                 width: 100%;
                 max-width: 250px;
             }
+
+            .footer-content {
+                text-align: center;
+            }
+
+            .footer-column h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .social-share {
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
-            .header-content h1 {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header-content {
+                gap: 1rem;
+            }
+
+            .logo {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .content-header h1 {
                 font-size: 1.2rem;
             }
-            
-            .header-content p {
+
+            .content-header p {
                 font-size: 0.85rem;
             }
-            
-            .content {
+
+            .content-body {
                 padding: 1rem;
             }
-            
+
             .lesson-header {
                 padding: 1rem;
             }
-            
+
             .lesson-title {
                 font-size: 1.1rem;
             }
-            
+
             .lesson-description,
             .resources-section {
                 padding: 1rem;
             }
-            
+
             .resource-category h4 {
                 font-size: 1rem;
             }
-            
+
             .download-card,
             .media-card {
                 padding: 1rem;
+            }
+
+            .sidebar {
+                padding: 1.5rem;
+            }
+        }
+
+        /* iPad specific adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 0 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
                 <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <h2>Edu Boost Up</h2>
             </div>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                {% if days_remaining and days_remaining > 0 %}
+                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
+                <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
+                {% endif %}
+                <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
+                <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
+                <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-info">
+            <div class="user-avatar">
+                {% if student and student.name and student.surname %}
+                    {{ student.name[0] }}{{ student.surname[0] }}
+                {% else %}
+                    Student
+                {% endif %}
+            </div>
+            <div class="user-details">
+                <h4>
+                    {% if student and student.name and student.surname %}
+                        {{ student.name }} {{ student.surname }}
+                    {% else %}
+                        Student
+                    {% endif %}
+                </h4>
+                <p>Grade {{ grade if grade else 'N/A' }}</p>
+                {% if days_remaining and days_remaining > 0 %}
+                <p class="days-remaining-text">
+                    <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
             <div class="header-content">
-                <h1>Course Contents</h1>
-                <p>Click on lesson headings to access learning materials</p>
+                <div class="logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                    <h1>Edu Boost Up</h1>
+                </div>
+                
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Course Contents: {{ subject }}</h2>
+                    <p>Click on lesson headings to access learning materials</p>
+                </div>
             </div>
         </div>
 
-        <div class="content">
-            <div class="contents-accordion">
-                {% for c in contents %}
-                <div class="lesson-card">
-                    <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}')">
-                        <div class="header-content">
-                            <div class="lesson-title-section">
-                                <h3 class="lesson-title">{{ c.title }}</h3>
-                                <div class="lesson-meta">
-                                    <span class="lesson-type">{{ c.type }}</span>
-                                    <span class="mentor-info">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                        {{ c.mentor_name }} {{ c.mentor_surname }}
-                                    </span>
-                                    <span class="upload-date">
-                                        <i class="fas fa-calendar"></i>
-                                        {{ c.upload_date }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="expand-indicator">
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="content-header">
+                <div class="content-logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                </div>
+                <div class="header-content">
+                    <h1>{{ subject }} - Grade {{ grade }}</h1>
+                    <p>All available lessons and resources for {{ subject }}</p>
+                </div>
+            </div>
 
-                    <div class="lesson-content" id="lesson-{{ c.content_id }}">
-                        <div class="lesson-description">
-                            <p>{{ c.description }}</p>
-                        </div>
-
-                        <div class="resources-section">
-                            {% if c.file_url %}
-                            <div class="resource-category">
-                                <h4><i class="fas fa-file-pdf"></i> Download Study Materials</h4>
-                                <div class="download-options">
-                                    <div class="download-card">
-                                        <div class="download-icon"><i class="fas fa-file-pdf"></i></div>
-                                        <div class="download-info">
-                                            <h5>{{ c.file_name }}</h5>
-                                            <p>Size: {{ c.file_size_mb }} MB</p>
-                                        </div>
-                                        <a href="{{ c.file_url }}" target="_blank" class="btn btn-primary">
-                                            View / Open PDF
-                                        </a>
+            <div class="content-body">
+                <div class="contents-accordion">
+                    {% for c in contents %}
+                    <div class="lesson-card">
+                        <!-- Clickable lesson header -->
+                        <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}', this)">
+                            <div class="lesson-header-content">
+                                <div class="lesson-title-section">
+                                    <h3 class="lesson-title">{{ c.title }}</h3>
+                                    <div class="lesson-meta">
+                                        <span class="lesson-type">{{ c.type }}</span>
+                                        <span class="mentor-info">
+                                            <i class="fas fa-chalkboard-teacher"></i>
+                                            {{ c.mentor_name }} {{ c.mentor_surname }}
+                                        </span>
+                                        <span class="upload-date">
+                                            <i class="fas fa-calendar"></i>
+                                            {{ c.upload_date }}
+                                        </span>
                                     </div>
                                 </div>
+                                <div class="expand-indicator">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
                             </div>
-                            {% endif %}
+                        </div>
 
-                            {% if content_links[c.content_id] %}
-                            <div class="resource-category">
-                                <h4><i class="fas fa-play-circle"></i> Watch Lesson & Resources</h4>
-                                <div class="media-resources">
-                                    {% for link in content_links[c.content_id] %}
-                                    <div class="media-card">
-                                        <div class="media-icon"><i class="fas fa-video"></i></div>
-                                        <div class="media-info">
-                                            <h5>Video / Resource Link</h5>
-                                            <p>Uploaded: {{ link.upload_date }}</p>
-                                            <p class="resource-url">{{ link.file_link }}</p>
-                                        </div>
-                                        <div class="media-actions">
-                                            <a href="{{ link.file_link }}" target="_blank" class="action-btn watch-btn">
-                                                <i class="fas fa-play"></i> Open / Watch
+                        <div class="lesson-content" id="lesson-{{ c.content_id }}">
+                            <div class="lesson-description">
+                                <p>{{ c.description }}</p>
+                            </div>
+
+                            <div class="resources-section">
+                                {% if c.file_url %}
+                                <div class="resource-category">
+                                    <h4><i class="fas fa-file-pdf"></i> Download Study Materials</h4>
+                                    <div class="download-options">
+                                        <div class="download-card">
+                                            <div class="download-icon"><i class="fas fa-file-pdf"></i></div>
+                                            <div class="download-info">
+                                                <h5>{{ c.file_name }}</h5>
+                                                <p>Size: {{ c.file_size_mb }} MB</p>
+                                            </div>
+                                            <a href="{{ c.file_url }}" target="_blank" class="btn btn-primary">
+                                                View / Open PDF
                                             </a>
                                         </div>
                                     </div>
-                                    {% endfor %}
                                 </div>
+                                {% endif %}
+
+                                {% if content_links[c.content_id] %}
+                                <div class="resource-category">
+                                    <h4><i class="fas fa-play-circle"></i> Watch Lesson & Resources</h4>
+                                    <div class="media-resources">
+                                        {% for link in content_links[c.content_id] %}
+                                        <div class="media-card">
+                                            <div class="media-icon"><i class="fas fa-video"></i></div>
+                                            <div class="media-info">
+                                                <h5>Video / Resource Link</h5>
+                                                <p>Uploaded: {{ link.upload_date }}</p>
+                                                <p class="resource-url">{{ link.file_link }}</p>
+                                            </div>
+                                            <div class="media-actions">
+                                                <a href="{{ link.file_link }}" target="_blank" class="action-btn watch-btn">
+                                                    <i class="fas fa-play"></i> Open / Watch
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <div class="navigation-actions">
-                <a href="/student/dashboard/courses" class="nav-btn secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Courses
-                </a>
-                <a href="/student/dashboard" class="nav-btn primary">
-                    <i class="fas fa-home"></i> Back to Dashboard
-                </a>
+                
             </div>
         </div>
-    </div>
+    </main>
 
+    
     <script>
-        function toggleLesson(lessonId) {
-            const lessonContent = document.getElementById(lessonId);
-            const lessonHeader = lessonContent.previousElementSibling;
-            const expandIndicator = lessonHeader.querySelector('.expand-indicator i');
-
-            if (lessonContent.classList.contains('active')) {
-                // Close the lesson
-                lessonContent.classList.remove('active');
-                lessonHeader.classList.remove('active');
-                expandIndicator.style.transform = 'rotate(0deg)';
-            } else {
-                // Close any other open lessons
-                document.querySelectorAll('.lesson-content.active').forEach(content => {
-                    content.classList.remove('active');
-                    content.previousElementSibling.classList.remove('active');
-                    content.previousElementSibling.querySelector('.expand-indicator i').style.transform = 'rotate(0deg)';
-                });
-
-                // Open this lesson
-                lessonContent.classList.add('active');
-                lessonHeader.classList.add('active');
-                expandIndicator.style.transform = 'rotate(180deg)';
+        // Sidebar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Open sidebar
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            function closeSidebarFunc() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
             }
-        }
+            
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            sidebarOverlay.addEventListener('click', closeSidebarFunc);
+            
+            // Close sidebar when clicking on a link
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeSidebarFunc();
+                });
+            });
+            
+            // Set active nav item
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
 
-        // Open first lesson by default
-        document.addEventListener('DOMContentLoaded', function () {
+            // Lesson accordion functionality
+            window.toggleLesson = function(lessonId, headerElement) {
+                const lessonContent = document.getElementById(lessonId);
+                const expandIndicator = headerElement.querySelector('.expand-indicator i');
+
+                if (lessonContent.classList.contains('active')) {
+                    // Close the lesson
+                    lessonContent.classList.remove('active');
+                    headerElement.classList.remove('active');
+                    expandIndicator.style.transform = 'rotate(0deg)';
+                } else {
+                    // Close any other open lessons
+                    document.querySelectorAll('.lesson-content.active').forEach(content => {
+                        content.classList.remove('active');
+                        content.previousElementSibling.classList.remove('active');
+                        content.previousElementSibling.querySelector('.expand-indicator i').style.transform = 'rotate(0deg)';
+                    });
+
+                    // Open this lesson
+                    lessonContent.classList.add('active');
+                    headerElement.classList.add('active');
+                    expandIndicator.style.transform = 'rotate(180deg)';
+                }
+            }
+
+            // Open first lesson by default
             const firstLesson = document.querySelector('.lesson-content');
             if (firstLesson) {
                 firstLesson.classList.add('active');

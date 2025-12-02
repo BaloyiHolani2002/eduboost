@@ -770,6 +770,14 @@ def student_courses():
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
+        # Get student info for sidebar
+        cur.execute("""
+            SELECT name, surname, grade
+            FROM Student
+            WHERE student_id = %s
+        """, (student_id,))
+        student = cur.fetchone()
+
         # 2️⃣ Check enrollment
         cur.execute("""
             SELECT days_remaining 
@@ -795,12 +803,22 @@ def student_courses():
     except Exception as e:
         print(f"Error fetching courses: {e}")
         subjects = []
+        student = None
+        enrollment = None
     finally:
         cur.close()
         conn.close()
 
-    return render_template("student_courses.html", subjects=subjects, grade=grade)
+    # Calculate days_remaining
+    days_remaining = enrollment['days_remaining'] if enrollment else 0
 
+    return render_template(
+        "student_courses.html", 
+        subjects=subjects, 
+        grade=grade,
+        student=student,  # Add student object
+        days_remaining=days_remaining  # Add days_remaining
+    )
 
 @app.route("/student/request", methods=['GET', 'POST'])
 def student_request():
@@ -871,6 +889,7 @@ def student_enrollment():
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
+        # Get enrollment info with student details
         cur.execute("""
             SELECT e.enrollment_id, e.days_remaining, e.status, e.last_updated AS enrollment_date,
                    s.name, s.surname, s.grade
@@ -891,19 +910,28 @@ def student_enrollment():
     if enrollment["status"] != "active" or enrollment["days_remaining"] <= 0:
         return redirect("/student/payment?expired=1")
 
-    # ✅ Pass a list so the template can loop
-    return render_template(
-    "student_enrollment.html",
-    enrollments=[enrollment],
-    payment_info={
-        "bank_name": "ABSA\n/ CAPITEC",          # line break between banks
-        "account_name": "EduBoost / Baloyi",     # remove invalid backslash
-        "account_number": "4103751120\n/ 1843987021",  # line break between account numbers
-        "reference": f"STU-{student_id}"
+    # Create student object from enrollment data
+    student = {
+        "name": enrollment["name"],
+        "surname": enrollment["surname"],
+        "grade": enrollment["grade"]
     }
-)
+    
+    days_remaining = enrollment["days_remaining"]
 
-
+    # ✅ Pass all required variables to template
+    return render_template(
+        "student_enrollment.html",
+        student=student,
+        enrollments=[enrollment],
+        days_remaining=days_remaining,
+        payment_info={
+            "bank_name": "ABSA\n/ CAPITEC",
+            "account_name": "EduBoost / Baloyi",
+            "account_number": "4103751120\n/ 1843987021",
+            "reference": f"STU-{student_id}"
+        }
+    )
 # ===========================================================
 #  MENTORS DESHBOARD AND FANTIONALITIES
 # ===========================================================

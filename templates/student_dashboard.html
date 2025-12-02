@@ -24,7 +24,7 @@
             --primary-light: #6a7ef0;
             --primary-dark: #2a4bd4;
             --secondary: #3a0ca3;
-            --secondary-light: #4f1bc6;
+            --secondary-light: #e6e1f1;
             --accent: #7209b7;
             --accent-light: #8b2bd0;
             --light: #f8f9fa;
@@ -42,12 +42,17 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --border-radius: 12px;
             --border-radius-lg: 20px;
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-success: linear-gradient(135deg, var(--success), #2dd4bf);
+            --gradient-warning: linear-gradient(135deg, var(--warning), #ff4da6);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            background: white;
             color: var(--dark);
             line-height: 1.6;
             min-height: 100vh;
@@ -68,7 +73,7 @@
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.1;
+            opacity: 0.05;
             animation: float 20s infinite linear;
         }
 
@@ -110,184 +115,245 @@
             }
         }
 
-        /* Dashboard Container */
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
         }
 
-        /* Premium Sidebar */
+        /* Sidebar Styles */
         .sidebar {
-            width: 300px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 2rem 1.5rem;
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            position: fixed;
-            height: 100vh;
+            padding: 2rem;
             overflow-y: auto;
-            z-index: 100;
-            transition: var(--transition);
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
         }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding: 1rem;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+        .sidebar.active {
+            right: 0;
         }
 
-        .logo img {
-            height: 65px;
-            width: auto;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: var(--transition);
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f3f4;
         }
 
-        .logo img:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-menu {
-            list-style: none;
-            flex: 1;
-        }
-
-        .nav-item {
-            margin-bottom: 0.75rem;
-        }
-
-        .nav-link {
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1.25rem 1.5rem;
-            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .sidebar-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-sidebar:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
             text-decoration: none;
             border-radius: var(--border-radius);
             transition: var(--transition);
             font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            color: var(--dark);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
             position: relative;
             overflow: hidden;
         }
 
-        .nav-link:before {
+        .btn:before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
 
-        .nav-link:hover:before {
+        .btn:hover:before {
             left: 100%;
         }
 
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.12);
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
             color: white;
-            transform: translateX(8px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.18);
-            color: white;
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-3px);
         }
 
-        .nav-link i {
-            width: 22px;
-            text-align: center;
-            font-size: 1.2rem;
-            transition: var(--transition);
+        .btn-large {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.1rem;
         }
 
-        .nav-link:hover i {
-            transform: scale(1.2);
-        }
-
-        .user-profile {
-            background: var(--glass-bg);
-            border-radius: var(--border-radius);
-            padding: 1.75rem;
-            margin-top: auto;
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            transition: var(--transition);
-        }
-
-        .user-profile:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .avatar {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--accent), var(--warning));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: var(--transition);
-        }
-
-        .avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .user-info h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-        }
-
-        .user-info p {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.95rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 300px;
-            padding: 2.5rem;
-            min-height: 100vh;
-            transition: var(--transition);
-        }
-
-        /* Premium Header */
-        .header {
+        /* Welcome Banner */
+        .welcome-banner {
             background: white;
             border-radius: var(--border-radius-lg);
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
+            padding: 3rem;
+            margin: 2rem auto;
             box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             position: relative;
             overflow: hidden;
+            max-width: 1200px;
         }
 
-        .header:before {
+        .welcome-banner:before {
             content: '';
             position: absolute;
             top: 0;
@@ -297,34 +363,42 @@
             background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
 
-        .welcome-message h2 {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .welcome-text h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             color: var(--secondary);
             margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 700;
         }
 
-        .welcome-message p {
+        .welcome-text p {
             color: var(--text-light);
-            font-size: clamp(1rem, 2.5vw, 1.15rem);
+            font-size: 1.1rem;
         }
 
-        .days-remaining {
-            background: linear-gradient(135deg, var(--success), #2dd4bf);
+        .days-badge {
+            background: var(--gradient-success);
             color: white;
-            padding: 1.5rem 2.5rem;
+            padding: 1.5rem 2rem;
             border-radius: var(--border-radius);
             text-align: center;
+            min-width: 150px;
             box-shadow: 0 8px 20px rgba(76, 201, 240, 0.3);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
         }
 
-        .days-remaining:before {
+        .days-badge:before {
             content: '';
             position: absolute;
             top: -50%;
@@ -336,41 +410,42 @@
             transition: all 0.5s;
         }
 
-        .days-remaining:hover:before {
+        .days-badge:hover:before {
             left: 50%;
         }
 
-        .days-remaining:hover {
+        .days-badge:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 25px rgba(76, 201, 240, 0.4);
         }
 
-        .days-remaining .number {
-            font-size: clamp(2rem, 5vw, 2.8rem);
+        .days-badge .number {
+            font-size: 2.5rem;
             font-weight: 800;
             display: block;
             position: relative;
             z-index: 1;
         }
 
-        .days-remaining .label {
+        .days-badge .label {
             font-size: 1rem;
             opacity: 0.9;
             position: relative;
             z-index: 1;
         }
 
-        /* Premium Payment Warning */
+        /* Payment Warning */
         .payment-warning {
             background: linear-gradient(135deg, var(--warning), #ff4da6);
             color: white;
             border-radius: var(--border-radius-lg);
             padding: 3.5rem;
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin: 2rem auto;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
+            max-width: 1200px;
         }
 
         .payment-warning:before {
@@ -435,62 +510,55 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* Premium Section Headers */
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            margin: 3.5rem 0 2rem 0;
-            position: relative;
+        /* Section Styles */
+        section {
+            padding: 3rem 0;
         }
 
-        .section-header:after {
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2:after {
             content: '';
             position: absolute;
             bottom: -10px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 60px;
             height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
+            background: var(--gradient-primary);
             border-radius: 2px;
         }
 
-        .section-header i {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
-            color: var(--primary);
-            background: rgba(67, 97, 238, 0.1);
-            width: clamp(60px, 10vw, 70px);
-            height: clamp(60px, 10vw, 70px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
+        .section-title p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        .section-header:hover i {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
-        }
-
-        .section-header h2 {
-            font-size: clamp(1.6rem, 4vw, 2rem);
-            color: var(--secondary);
-            font-weight: 700;
-        }
-
-        /* Premium Video Section */
-        .video-section {
+        /* Video Section */
+        .video-card {
             background: white;
             border-radius: var(--border-radius-lg);
             padding: 2.5rem;
-            margin-bottom: 2.5rem;
             box-shadow: var(--shadow);
-            position: relative;
+            max-width: 1200px;
+            margin: 0 auto 2rem;
             transition: var(--transition);
         }
 
-        .video-section:hover {
+        .video-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-hover);
         }
@@ -557,10 +625,11 @@
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
+            margin-bottom: 1.5rem;
         }
 
         .video-container-wrapper:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
         }
 
@@ -605,128 +674,7 @@
             border: none;
         }
 
-        .play-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-            transition: var(--transition);
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .play-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .play-button {
-            width: clamp(60px, 12vw, 90px);
-            height: clamp(60px, 12vw, 90px);
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: clamp(1.2rem, 3vw, 2.2rem);
-            transition: var(--transition);
-            box-shadow: 0 12px 35px rgba(67, 97, 238, 0.4);
-            position: relative;
-            animation: pulse 2s infinite;
-        }
-
-        .play-button::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border: 2px solid var(--primary-light);
-            border-radius: 50%;
-            animation: ripple 2s infinite;
-        }
-
-        .play-button::after {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            border: 1px solid var(--accent-light);
-            border-radius: 50%;
-            animation: ripple 2s infinite 0.5s;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 12px 35px rgba(67, 97, 238, 0.4);
-            }
-
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 18px 45px rgba(67, 97, 238, 0.6);
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 12px 35px rgba(67, 97, 238, 0.4);
-            }
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
-        }
-
-        .play-button:hover {
-            transform: scale(1.2);
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-        }
-
-        .loading-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 3;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
         .video-info {
-            padding: 1.75rem 0 0 0;
             color: var(--text-light);
             line-height: 1.7;
         }
@@ -738,59 +686,53 @@
             font-weight: 600;
         }
 
-        /* Premium Mentors Portfolio */
-        .mentors-portfolio {
-            padding: 2rem 0;
-            width: 100%;
-        }
-
-        .portfolio-grid {
+        /* IMPROVED Mentors Section */
+        .mentors-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .portfolio-card {
+        .mentor-card {
             background: white;
             border-radius: var(--border-radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 320px;
         }
 
-        .portfolio-card:hover {
-            transform: translateY(-10px);
+        .mentor-card:hover {
+            transform: translateY(-8px);
             box-shadow: var(--shadow-hover);
         }
 
-        .profile-media {
+        .mentor-media {
             position: relative;
-            height: clamp(180px, 30vw, 240px);
+            width: 100%;
+            height: 200px;
             overflow: hidden;
+            background: white;
         }
 
-        .profile-portrait {
+        .mentor-portrait {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.6s ease;
         }
 
-        .portfolio-card:hover .profile-portrait {
-            transform: scale(1.08);
+        .mentor-card:hover .mentor-portrait {
+            transform: scale(1.1);
         }
 
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
-        }
-
-        .minimal-avatar {
+        .mentor-avatar {
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -801,25 +743,24 @@
             overflow: hidden;
         }
 
-
-        .minimal-avatar:before {
+        .mentor-avatar:before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(233, 24, 24, 0.2), transparent);
             transform: rotate(45deg);
             transition: all 0.5s;
         }
 
-        .portfolio-card:hover .minimal-avatar:before {
+        .mentor-card:hover .mentor-avatar:before {
             left: 50%;
         }
 
-        .initials {
-            font-size: clamp(2.5rem, 6vw, 4rem);
+        .avatar-initials {
+            font-size: 3.5rem;
             font-weight: 800;
             color: white;
             letter-spacing: 2px;
@@ -827,169 +768,285 @@
             z-index: 1;
         }
 
-        .portfolio-content {
-            padding: clamp(1.5rem, 3vw, 2rem);
+        .mentor-content {
+            padding: 1.5rem;
+            background: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .portfolio-header {
-            margin-bottom: 1.25rem;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 1.25rem;
+        .mentor-header {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
         }
 
         .mentor-name {
-            font-size: clamp(1.3rem, 3vw, 1.5rem);
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--secondary);
-            margin: 0 0 0.75rem 0;
+            margin: 0 0 0.5rem 0;
             line-height: 1.2;
         }
 
-        .specialty-tag {
+        .specialty-badge {
             display: inline-block;
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            color: white;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             margin: 0;
             transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
         }
 
-        .portfolio-card:hover .specialty-tag {
-            background: rgba(67, 97, 238, 0.2);
-            transform: scale(1.05);
+        .mentor-card:hover .specialty-badge {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 255, 255, 0.3);
         }
 
-        .bio-excerpt {
+        .mentor-bio {
             color: var(--text-light);
-            line-height: 1.7;
-            margin-bottom: 1.75rem;
+            line-height: 1.6;
+            flex: 1;
+            overflow: hidden;
         }
 
-        .bio-excerpt p {
+        .mentor-bio p {
             margin: 0;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            font-size: 0.95rem;
         }
 
-        .portfolio-actions {
+        /* Mentor stats row */
+        .mentor-stats {
             display: flex;
-            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light);
         }
 
-        .cta-button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
             color: white;
-            border: none;
-            padding: 0.9rem 1.75rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
-        /* Mobile Toggle */
-        .mobile-toggle {
-            display: none;
-            position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
-            z-index: 1000;
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
             background: var(--primary);
-            color: white;
-            border: none;
-            width: clamp(45px, 10vw, 55px);
-            height: clamp(45px, 10vw, 55px);
-            border-radius: 50%;
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            cursor: pointer;
-            box-shadow: var(--shadow);
+            border-radius: 2px;
+        }
+
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
             transition: var(--transition);
         }
 
-        .mobile-toggle:hover {
-            background: var(--primary-dark);
-            transform: scale(1.1);
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
         }
 
-        /* Profile Image Styling */
-        .profile-image-preview {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+        .footer-column li i {
+            width: 20px;
+            margin-right: 0.5rem;
         }
 
-        .profile-image-preview img {
+        .social-share {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* User info in sidebar */
+        .user-info {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .user-details h4 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .days-remaining-text {
+            color: var(--success) !important;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
         /* Responsive Design */
-        @media (max-width: 1200px) {
-            .sidebar {
-                width: 280px;
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
             }
-
-            .main-content {
-                margin-left: 280px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 2rem;
-            }
-
-            .video-container {
-                height: 350px;
+            
+            .mentors-grid {
+                grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
             }
         }
 
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                transform: translateX(-100%);
-                z-index: 200;
+                width: 300px;
+                right: -300px;
             }
 
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-
-            .mobile-toggle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 1.5rem;
-                text-align: center;
+            .welcome-banner {
                 padding: 2rem;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .days-badge {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .video-card {
+                padding: 1.5rem;
             }
 
             .video-header {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 1rem;
                 text-align: center;
             }
 
@@ -997,22 +1054,18 @@
                 height: 250px;
             }
 
-            .play-button {
-                width: 70px;
-                height: 70px;
-                font-size: 1.8rem;
-            }
-
-            .portfolio-grid {
+            .mentors-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
 
-            .profile-media {
-                height: 200px;
+            .mentor-card {
+                max-width: 350px;
+                margin: 0 auto;
             }
 
-            .video-section {
-                padding: 1.5rem;
+            .mentor-media {
+                height: 180px;
             }
 
             .payment-warning {
@@ -1020,287 +1073,300 @@
             }
         }
 
-        @media (max-width: 576px) {
-            .main-content {
-                padding: 1rem;
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
             }
 
-            .header {
-                padding: 1.5rem;
-            }
-
-            .welcome-message h2 {
-                font-size: 1.8rem;
-            }
-
-            .section-header {
-                flex-direction: column;
-                text-align: center;
+            .header-content {
                 gap: 1rem;
             }
 
-            .section-header:after {
-                left: 50%;
-                transform: translateX(-50%);
+            .logo {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .welcome-text h2 {
+                font-size: 1.8rem;
             }
 
             .video-container {
                 height: 200px;
             }
 
-            .play-button {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-
-            .portfolio-content {
-                padding: 1.5rem;
+            .mentor-content {
+                padding: 1.25rem;
             }
 
             .sidebar {
                 padding: 1.5rem;
             }
 
-            .nav-link {
-                padding: 1rem 1.25rem;
+            .footer-content {
+                text-align: center;
             }
 
-            .user-profile {
-                padding: 1.25rem;
+            .footer-column h3:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .social-share {
+                justify-content: center;
             }
         }
 
         /* iPad specific adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
-            .sidebar {
-                width: 260px;
+            .container {
+                padding: 0 2rem;
             }
 
-            .main-content {
-                margin-left: 260px;
-                padding: 2rem;
-            }
-
-            .portfolio-grid {
+            .mentors-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1200px) {
+            .mentors-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Floating Background Shapes -->
     <div class="floating-shapes">
         <div class="shape"></div>
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
 
-    <button class="mobile-toggle" id="mobileToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
                 <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <h2>Edu Boost Up</h2>
             </div>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
-            <ul class="nav-menu">
-                <li class="nav-item"><a class="nav-link active"><i class="fas fa-home"></i>Dashboard</a></li>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
                 {% if days_remaining > 0 %}
-                <li class="nav-item"><a class="nav-link" href="/student/dashboard/courses"><i
-                            class="fas fa-book-open"></i>My Courses</a></li>
-                <li class="nav-item"><a href="/student/classes" class="nav-link">
-                        <i class="fas fa-chalkboard-teacher"></i> View Classes
-                    </a></li>
+                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
+                <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
                 {% endif %}
-                <li class="nav-item"><a class="nav-link" href="/student/request"><i class="fas fa-paper-plane"></i>Send
-                        Request</a></li>
-                <li class="nav-item"><a class="nav-link" href="/student/enrollment"><i
-                            class="fas fa-calendar-alt"></i>My Enrollment</a></li>
-                <li class="nav-item"><a class="nav-link" href="/student/profile"><i class="fas fa-user-edit"></i>Update
-                        Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-                </li>
+                <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
+                <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
+                <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
+        </nav>
 
-            <div class="user-profile">
-                <div class="avatar">{{ student.name[0] }}{{ student.surname[0] }}</div>
-                <div class="user-info">
-                    <h3>{{ student.name }} {{ student.surname }}</h3>
-                    <p>Grade {{ student.grade }}</p>
-                    {% if days_remaining > 0 %}
-                    <p style="color: var(--success); margin-top: 0.5rem;">
-                        <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
-                    </p>
-                    {% endif %}
-                </div>
+        <div class="user-info">
+            <div class="user-avatar">
+                {{ student.name[0] }}{{ student.surname[0] }}
             </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="header">
-                <div class="welcome-message">
-                    <h2>Welcome back, {{ student.name }}!</h2>
-                    <p>Keep pushing, your future is bright 🌟</p>
-                </div>
+            <div class="user-details">
+                <h4>{{ student.name }} {{ student.surname }}</h4>
+                <p>Grade {{ student.grade }}</p>
                 {% if days_remaining > 0 %}
-                <div class="days-remaining">
-                    <span class="number">{{ days_remaining }}</span>
-                    <span class="label">Days Remaining</span>
-                </div>
+                <p class="days-remaining-text">
+                    <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+                </p>
                 {% endif %}
-            </header>
-
-            {% if days_remaining <= 0 %} <div class="payment-warning">
-                <h2>Your Learning Plan Has Expired</h2>
-                <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
-                <a href="/student/enrollment" class="pay-btn">Renew Now</a>
-    </div>
-    {% else %}
-
-    <!-- Platform Guide -->
-    <div class="section-header">
-        <i class="fas fa-play-circle"></i>
-        <h2>Platform Guide</h2>
-    </div>
-
-    <div class="video-section">
-        <div class="video-header">
-            <div class="video-title">
-                <i class="fas fa-video"></i>
-                <h3>Getting Started with Edu Boost Up</h3>
             </div>
-            <div class="video-controls">
-                <button class="video-control-btn" title="Fullscreen">
-                    <i class="fas fa-expand"></i>
-                </button>
-                <button class="video-control-btn" title="Settings">
-                    <i class="fas fa-cog"></i>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                    <h1>Edu Boost Up</h1>
+                </div>
+                
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
         </div>
+    </header>
 
-        <div class="video-container-wrapper">
-            <div class="loading-spinner" id="loadingSpinner"></div>
+    <!-- Main Content -->
+    <main class="main-content">
+       
 
-            <div class="video-container">
-                <iframe src="https://drive.google.com/file/d/1EdxmnZ51uCbRAYrj1E7i29MlihynaKK8/preview" 
-                        allow="autoplay" allowfullscreen id="videoFrame">
-                </iframe>
+        {% if days_remaining <= 0 %}
+        <!-- Payment Warning -->
+        <div class="payment-warning">
+            <h2>Your Learning Plan Has Expired</h2>
+            <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
+            <a href="/student/enrollment" class="pay-btn">Renew Now</a>
+        </div>
+        {% else %}
+
+        <!-- Platform Guide -->
+        <section>
+
+            <div class="video-card">
+                <div class="video-header">
+                    <div class="video-title">
+                        <i class="fas fa-video"></i>
+                        <h3>Getting Started with Edu Boost Up</h3>
+                    </div>
+                    <div class="video-controls">
+                        <button class="video-control-btn" title="Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="video-control-btn" title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="video-container-wrapper">
+                    <div class="video-container">
+                        <iframe src="https://drive.google.com/file/d/1EdxmnZ51uCbRAYrj1E7i29MlihynaKK8/preview" 
+                                allow="autoplay" allowfullscreen id="videoFrame">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="video-info">
+                    <h4>About This Guide</h4>
+                    <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the most of your learning experience. This comprehensive guide will help you get started quickly.</p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="video-info">
-            <h4>About This Guide</h4>
-            <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the
-                most of your learning experience. This comprehensive guide will help you get started quickly.</p>
-        </div>
-    </div>
+        <!-- IMPROVED Mentors Section -->
+        <section>
+            <div class="section-title">
+                <h2>Your Mentors</h2>
+                <p>Meet the experts who will guide you through your academic journey</p>
+            </div>
 
-    <!-- Mentors Section -->
-    <div class="section-header">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <h2>Your Mentors</h2>
-    </div>
-
-    <div class="mentors-portfolio">
-        <div class="portfolio-grid">
-            {% for m in mentors %}
-            <article class="portfolio-card">
-                <!-- Profile Image with Hover Effect -->
-                <div class="profile-media">
-                    {% if m.profile_image %}
-                    <div class="profile-image-preview">
-                        <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}" alt="Profile Image"
-                            class="profile-portrait">
+            <div class="mentors-grid">
+                {% for m in mentors %}
+                <article class="mentor-card">
+                    <!-- Mentor Image -->
+                    <div class="mentor-media">
+                        {% if m.profile_image %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}" 
+                             alt="{{ m.name }} {{ m.surname }}" class="mentor-portrait">
+                        {% else %}
+                        <div class="mentor-avatar">
+                            <span class="avatar-initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% else %}
-                    <div class="minimal-avatar">
-                        <span class="initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
-                    </div>
-                    {% endif %}
-                </div>
 
-                <!-- Content Section -->
-                <div class="portfolio-content">
-                    <header class="portfolio-header">
-                        <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
-                        <p class="specialty-tag">{{ m.subject_speciality }}</p>
-                    </header>
+                    <!-- Mentor Content -->
+                    <div class="mentor-content">
+                        <header class="mentor-header">
+                            <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
+                            <p class="specialty-badge">{{ m.subject_speciality }}</p>
+                        </header>
 
-                    <div class="bio-excerpt">
-                        <p>{{ m.bio }}</p>
+                        <div class="mentor-bio">
+                            <p>{{ m.bio }}</p>
+                        </div>
+
+                        <!-- Optional mentor stats (you can customize these) -->
+                        <div class="mentor-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Expert</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-star"></i>
+                                <span>5.0 Rating</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <span>100+ Students</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </article>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
     </main>
-    </div>
+
+   
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Navigation active state
+        // Sidebar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Open sidebar
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            function closeSidebarFunc() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            sidebarOverlay.addEventListener('click', closeSidebarFunc);
+            
+            // Close sidebar when clicking on a link
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeSidebarFunc();
+                });
+            });
+            
+            // Set active nav item
             const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-link');
-
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
             navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '#')) {
                     link.classList.add('active');
                 }
             });
-
-            // Video player functionality
-            const playOverlay = document.getElementById('playOverlay');
-            const videoFrame = document.getElementById('videoFrame');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-
-            // Play button click handler
-            if (playOverlay) {
-                playOverlay.addEventListener('click', function () {
-                    // Show loading spinner
-                    loadingSpinner.style.display = 'block';
-
-                    // Hide play overlay with delay for smooth transition
-                    setTimeout(() => {
-                        playOverlay.classList.add('hidden');
-
-                        // Hide loading spinner after a delay
-                        setTimeout(() => {
-                            loadingSpinner.style.display = 'none';
-                        }, 2000);
-                    }, 500);
-                });
-            }
-
-            // Add hover effect to video container
-            const videoContainer = document.querySelector('.video-container-wrapper');
-            const playButton = document.querySelector('.play-button');
-
-            if (videoContainer && playButton) {
-                videoContainer.addEventListener('mouseenter', function () {
-                    if (!playOverlay.classList.contains('hidden')) {
-                        playButton.style.transform = 'scale(1.15)';
-                    }
-                });
-
-                videoContainer.addEventListener('mouseleave', function () {
-                    if (!playOverlay.classList.contains('hidden')) {
-                        playButton.style.transform = 'scale(1)';
-                    }
-                });
-            }
-
-            // Fullscreen functionality
+            
+            // Video fullscreen functionality
             const fullscreenBtn = document.querySelector('.video-control-btn .fa-expand')?.closest('.video-control-btn');
             if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('click', function () {
+                fullscreenBtn.addEventListener('click', function() {
                     const videoWrapper = document.querySelector('.video-container-wrapper');
                     if (videoWrapper.requestFullscreen) {
                         videoWrapper.requestFullscreen();
@@ -1311,25 +1377,6 @@
                     }
                 });
             }
-
-            // Mobile menu toggle
-            const mobileToggle = document.getElementById('mobileToggle');
-            const sidebar = document.getElementById('sidebar');
-
-            if (mobileToggle && sidebar) {
-                mobileToggle.addEventListener('click', function () {
-                    sidebar.classList.toggle('active');
-                });
-            }
-
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function (event) {
-                if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
-                    if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
-                        sidebar.classList.remove('active');
-                    }
-                }
-            });
         });
     </script>
 </body>

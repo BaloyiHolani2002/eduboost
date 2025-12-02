@@ -23,7 +23,7 @@
             --primary-light: #6a7ef0;
             --primary-dark: #2a4bd4;
             --secondary: #3a0ca3;
-            --secondary-light: #4f1bc6;
+            --secondary-light: #e6e1f1;
             --accent: #7209b7;
             --accent-light: #8b2bd0;
             --light: #f8f9fa;
@@ -36,23 +36,22 @@
             --science: #45aaf2;
             --text-light: #6c757d;
             --text-lighter: #adb5bd;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            background: white;
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
-            padding: 2rem 1rem;
-            position: relative;
             overflow-x: hidden;
         }
 
+        /* Floating Shapes */
         .floating-shapes {
             position: fixed;
             top: 0;
@@ -67,7 +66,7 @@
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.1;
+            opacity: 0.05;
             animation: float 20s infinite linear;
         }
 
@@ -107,79 +106,271 @@
             }
         }
 
-        .logo {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
         }
 
-        .logo img {
-            height: 70px;
-            width: auto;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        /* Header Styles */
+        header {
+            background: white;
+            color: var(--dark);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             transition: var(--transition);
         }
 
-        .logo img:hover {
-            transform: scale(1.05);
+        .logo:hover {
+            transform: translateY(-2px);
         }
 
-        .profile-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .logo img {
+            height: 50px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .profile-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .profile-header h2 {
-            font-size: 2.8rem;
-            font-weight: 800;
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--secondary);
-            margin-bottom: 1rem;
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
             gap: 1rem;
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
-        .profile-header h2::before {
-            content: '👤';
-            font-size: 2.5rem;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        .sidebar-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
         }
 
-        .profile-header p {
-            font-size: 1.2rem;
+        .sidebar-logo h2 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
             color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .profile-card {
+        .close-sidebar:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin: 2rem auto;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            max-width: 1200px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .welcome-text h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .welcome-text p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow);
             overflow: hidden;
-            transition: var(--transition);
         }
 
-        .profile-card:hover {
-            box-shadow: var(--shadow-hover);
-        }
-
-        .profile-preview {
+        .content-header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 3rem 2rem;
-            text-align: center;
             color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .content-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .content-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .content-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content-body {
+            padding: 2rem;
+        }
+
+        /* Profile Preview */
+        .profile-preview {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
             position: relative;
             overflow: hidden;
         }
@@ -196,10 +387,10 @@
         }
 
         .profile-avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 1rem;
             border: 4px solid rgba(255, 255, 255, 0.3);
             position: relative;
             z-index: 1;
@@ -222,7 +413,7 @@
 
         .profile-avatar.default::before {
             content: '👤';
-            font-size: 3rem;
+            font-size: 2.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -237,22 +428,21 @@
         }
 
         .profile-name {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
+            color: white;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .profile-email {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
+            color: white;
             font-weight: 500;
         }
 
-        .profile-form {
-            padding: 3rem;
-        }
-
+        /* Form Styles */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -296,7 +486,7 @@
         .input-container input,
         .input-container select {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
+            padding: 0.75rem 1rem 0.75rem 3rem;
             border: 2px solid #e2e8f0;
             border-radius: var(--border-radius);
             font-size: 1rem;
@@ -337,28 +527,29 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        .file-upload-section {
-            background: linear-gradient(135deg, #f8f9ff, #f0f4ff);
+        /* File Upload */
+        .file-upload {
+            background: var(--light);
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 1.5rem;
             border: 2px dashed #e2e8f0;
             transition: var(--transition);
             text-align: center;
         }
 
-        .file-upload-section:hover {
+        .file-upload:hover {
             border-color: var(--primary);
-            background: linear-gradient(135deg, #f0f4ff, #e6ecff);
+            background: rgba(67, 97, 238, 0.05);
             transform: translateY(-2px);
         }
 
         .file-upload-label {
             display: inline-flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.5rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 1rem 2rem;
+            padding: 0.75rem 1.5rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: var(--transition);
@@ -382,8 +573,8 @@
         }
 
         .current-image img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--primary-light);
@@ -396,6 +587,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
+        /* Form Actions */
         .form-actions {
             display: flex;
             gap: 1rem;
@@ -406,61 +598,198 @@
         }
 
         .btn {
-            padding: 1rem 2rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
         }
 
         .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.1);
+            background: var(--light);
+            color: var(--text-light);
+            border: 1px solid #e9ecef;
         }
 
         .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
+            background: white;
+            color: var(--primary);
+            border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.2);
+        }
+
+        /* User info in sidebar */
+        .user-info {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .user-details h4 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .days-remaining-text {
+            color: var(--success) !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-column li i {
+            width: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .social-share {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
         }
 
         /* Responsive Design */
@@ -470,12 +799,19 @@
                 gap: 1.5rem;
             }
 
-            .profile-form {
-                padding: 2rem 1.5rem;
+            .content-body {
+                padding: 1.5rem;
             }
 
-            .profile-preview {
-                padding: 2rem 1.5rem;
+            .content-header {
+                padding: 1.25rem 1.5rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .content-header h1 {
+                font-size: 1.3rem;
             }
 
             .form-actions {
@@ -484,33 +820,54 @@
 
             .btn {
                 width: 100%;
+                justify-content: center;
             }
 
-            .profile-header h2 {
-                font-size: 2.2rem;
+            .sidebar {
+                width: 300px;
+                right: -300px;
+            }
+
+            .welcome-banner {
+                padding: 1.5rem;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
             }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 1rem 0.5rem;
+            .container {
+                padding: 0 1rem;
             }
 
-            .profile-header h2 {
-                font-size: 1.8rem;
+            .header-content {
+                gap: 1rem;
             }
 
-            .profile-form {
-                padding: 1.5rem 1rem;
+            .logo {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .content-body {
+                padding: 1rem;
             }
 
             .profile-preview {
-                padding: 1.5rem 1rem;
+                padding: 1.5rem;
             }
 
             .profile-avatar {
-                width: 100px;
-                height: 100px;
+                width: 80px;
+                height: 80px;
             }
 
             .file-upload-label {
@@ -518,133 +875,303 @@
                 justify-content: center;
             }
         }
+
+        /* iPad specific adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 0 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Floating Background Shapes -->
     <div class="floating-shapes">
         <div class="shape"></div>
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
 
-    <div class="profile-container">
-        <div class="profile-header">
-            <h2>Update Profile</h2>
-            <p>Keep your information up to date for better learning experience</p>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <h2>Edu Boost Up</h2>
+            </div>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
-        <div class="profile-card">
-            <!-- Profile Preview Section -->
-            <!-- Profile Preview Section -->
-        <div class="profile-preview">
-            <div class="profile-avatar {% if not student.profile_image %}default{% endif %}">
-                {% if student.profile_image %}
-                <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Profile Image">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                {% if days_remaining and days_remaining > 0 %}
+                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
+                <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
+                {% endif %}
+                <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
+                <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
+                <li><a href="/student/profile" class="active"><i class="fas fa-user-edit"></i> Update Profile</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-info">
+            <div class="user-avatar">
+                {% if student and student.name and student.surname %}
+                    {{ student.name[0] }}{{ student.surname[0] }}
+                {% else %}
+                    Student
                 {% endif %}
             </div>
-            <div class="profile-info">
-                <div class="profile-name">{{ student.name }} {{ student.surname }}</div>
-                <div class="profile-email">{{ student.email }}</div>
+            <div class="user-details">
+                <h4>
+                    {% if student and student.name and student.surname %}
+                        {{ student.name }} {{ student.surname }}
+                    {% else %}
+                        Student
+                    {% endif %}
+                </h4>
+                <p>Grade {{ grade if grade else 'N/A' }}</p>
+                {% if days_remaining and days_remaining > 0 %}
+                <p class="days-remaining-text">
+                    <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+                </p>
+                {% endif %}
             </div>
         </div>
+    </aside>
 
-        <!-- Profile Form Section -->
-        <form method="POST" enctype="multipart/form-data" class="profile-form">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="name" class="form-label">First Name</label>
-                    <div class="input-container">
-                        <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
-                        <i class="fas fa-user input-icon"></i>
-                    </div>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                    <h1>Edu Boost Up</h1>
                 </div>
-
-                <div class="form-group">
-                    <label for="surname" class="form-label">Surname</label>
-                    <div class="input-container">
-                        <input type="text" name="surname" class="form-control" value="{{ student.surname }}" required>
-                        <i class="fas fa-user input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <div class="input-container">
-                        <input type="email" class="form-control" value="{{ student.email }}" disabled>
-                        <i class="fas fa-envelope input-icon"></i>
-                    </div>
-                    <small class="text-muted">Email cannot be changed</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <div class="input-container">
-                        <input type="text" name="phone" class="form-control" value="{{ student.phone }}">
-                        <i class="fas fa-phone input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="grade" class="form-label">Grade Level</label>
-                    <div class="input-container">
-                        <i class="fas fa-graduation-cap input-icon"></i>
-                        <select id="grade" name="grade" required>
-                                <option value="{{ student.grade }}">Grade {{ student.grade }}</option>
-                                <option value="10">Grade 10</option>
-                                <option value="11">Grade 11</option>
-                                <option value="12">Grade 12</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="profile_image" class="form-label"></label>
-                    <div class="file-upload">
-                        <input type="file" name="profile_image" class="form-control" accept="image/*" hidden>
-                        
-                        {% if student.profile_image %}
-                        <div class="current-image">
-                            <p><strong>Current Image:</strong></p>
-                            <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Current Profile Image">
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <a href="/student/dashboard" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Cancel
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Profile
+                
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
-        </form>
         </div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Update Profile</h2>
+                    <p>Keep your information up to date for better learning experience</p>
+                </div>
+                {% if days_remaining and days_remaining > 0 %}
+                <div class="days-badge">
+                    <span class="number">{{ days_remaining }}</span>
+                    <span class="label">Days Remaining</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Profile Container -->
+        <div class="profile-container">
+            <div class="content-header">
+                <div class="content-logo">
+                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                </div>
+                <div class="header-content">
+                    <h1>Profile Information</h1>
+                    <p>Edit your personal details and profile picture</p>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Profile Preview Section -->
+                <div class="profile-preview">
+                    <div class="profile-avatar {% if not student.profile_image %}default{% endif %}">
+                        {% if student.profile_image %}
+                        <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Profile Image">
+                        {% endif %}
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">{{ student.name }} {{ student.surname }}</div>
+                        <div class="profile-email">{{ student.email }}</div>
+                    </div>
+                </div>
+
+                <!-- Profile Form Section -->
+                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name" class="form-label">First Name</label>
+                            <div class="input-container">
+                                <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="surname" class="form-label">Surname</label>
+                            <div class="input-container">
+                                <input type="text" name="surname" class="form-control" value="{{ student.surname }}" required>
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-container">
+                                <input type="email" class="form-control" value="{{ student.email }}" disabled>
+                                <i class="fas fa-envelope input-icon"></i>
+                            </div>
+                            <small class="text-muted">Email cannot be changed</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <div class="input-container">
+                                <input type="text" name="phone" class="form-control" value="{{ student.phone }}">
+                                <i class="fas fa-phone input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="grade" class="form-label">Grade Level</label>
+                            <div class="input-container">
+                                <i class="fas fa-graduation-cap input-icon"></i>
+                                <select id="grade" name="grade" required>
+                                    <option value="{{ student.grade }}" selected>Grade {{ student.grade }}</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                    <option value="12">Grade 12</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="profile_image" class="form-label">Profile Picture</label>
+                            <div class="file-upload">
+                                <label for="profile_image" class="file-upload-label">
+                                    <i class="fas fa-upload"></i> Upload New Image
+                                </label>
+                                <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*">
+                                
+                                {% if student.profile_image %}
+                                <div class="current-image">
+                                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                        <strong>Current Image:</strong>
+                                    </p>
+                                    <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Current Profile Image" id="currentImage">
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/student/dashboard" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    
 
     <script>
-        // Add interactive functionality
+        // Sidebar functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // File upload preview
-            const fileInput = document.querySelector('.file-upload');
-            const currentImage = document.querySelector('.current-image');
+            const menuToggle = document.getElementById('menuToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
             
-            fileInput.addEventListener('change', function(e) {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        currentImage.innerHTML = `
-                            <p style="color: var(--text-light); margin-bottom: 0.8rem; font-weight: 500;">New Image Preview:</p>
-                            <img src="${e.target.result}" alt="Profile Preview" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-light);">
-                        `;
-                    }
-                    
-                    reader.readAsDataURL(this.files[0]);
+            // Open sidebar
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            function closeSidebarFunc() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            sidebarOverlay.addEventListener('click', closeSidebarFunc);
+            
+            // Close sidebar when clicking on a link
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    closeSidebarFunc();
+                });
+            });
+            
+            // Set active nav item
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
                 }
             });
+
+            // File upload preview
+            const fileInput = document.getElementById('profile_image');
+            const currentImage = document.getElementById('currentImage');
+            
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            if (!currentImage) {
+                                // Create new image preview container
+                                const container = document.querySelector('.file-upload');
+                                const previewDiv = document.createElement('div');
+                                previewDiv.className = 'current-image';
+                                previewDiv.innerHTML = `
+                                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                        <strong>New Image Preview:</strong>
+                                    </p>
+                                    <img src="${e.target.result}" alt="Profile Preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-light);">
+                                `;
+                                container.appendChild(previewDiv);
+                            } else {
+                                // Update existing image
+                                currentImage.src = e.target.result;
+                                currentImage.alt = "Profile Preview";
+                                currentImage.previousElementSibling.innerHTML = '<strong>New Image Preview:</strong>';
+                            }
+                        }
+                        
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
 
             // Add focus animations to form inputs
             const inputs = document.querySelectorAll('input, select');
@@ -660,10 +1187,47 @@
 
             // Add loading state to submit button
             const form = document.querySelector('form');
-            form.addEventListener('submit', function(e) {
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-                submitBtn.disabled = true;
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                    submitBtn.disabled = true;
+                });
+            }
+
+            // Animate form elements on scroll
+            const formGroups = document.querySelectorAll('.form-group');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateY(20px)';
+                group.style.transition = 'all 0.5s ease-out';
+                group.style.transitionDelay = `${index * 0.1}s`;
+                observer.observe(group);
+            });
+
+            // Add hover effects for buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('btn-disabled')) {
+                        this.style.transform = 'translateY(-1px)';
+                    }
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('btn-disabled')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
             });
         });
     </script>
