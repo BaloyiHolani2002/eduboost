@@ -905,9 +905,13 @@ def student_enrollment():
         cur.close()
         conn.close()
 
+    # ✅ ADD THIS EXPIRATION CHECK
     if not enrollment:
+        # No enrollment found - redirect to payment
         return redirect("/student/payment?no_enrollment=1")
+    
     if enrollment["status"] != "active" or enrollment["days_remaining"] <= 0:
+        # Enrollment expired - redirect to payment
         return redirect("/student/payment?expired=1")
 
     # Create student object from enrollment data
@@ -932,6 +936,69 @@ def student_enrollment():
             "reference": f"STU-{student_id}"
         }
     )
+
+
+@app.route("/student/payment")
+def student_payment():
+    # Ensure student is logged in
+    if 'user_role' not in session or session['user_role'] != 'student' or 'user_id' not in session:
+        return redirect('/login')
+    
+    student_id = session['user_id']
+    
+    # Check why they're redirected here
+    expired = request.args.get('expired')
+    no_enrollment = request.args.get('no_enrollment')
+    
+    # Get student info
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        cur.execute("SELECT name, surname, grade FROM Student WHERE student_id = %s", (student_id,))
+        student = cur.fetchone()
+        
+        # Get enrollment status
+        cur.execute("""
+            SELECT status, days_remaining 
+            FROM Enrollment 
+            WHERE student_id = %s 
+            ORDER BY enrollment_id DESC 
+            LIMIT 1
+        """, (student_id,))
+        enrollment = cur.fetchone()
+        
+    finally:
+        cur.close()
+        conn.close()
+    
+    # Determine message based on why they're here
+    if expired == '1':
+        message = "Your enrollment has expired. Please renew your subscription to continue accessing content."
+        title = "Enrollment Expired"
+    elif no_enrollment == '1':
+        message = "You don't have an active enrollment. Please subscribe to access content."
+        title = "No Active Enrollment"
+    else:
+        message = "Make a payment to renew or start your enrollment."
+        title = "Payment Required"
+    
+    # Payment information
+    payment_info = {
+        "bank_name": "ABSA / CAPITEC",
+        "account_name": "EduBoost / Baloyi",
+        "account_number": "4103751120 / 1843987021",
+        "reference": f"STU-{student_id}"
+    }
+    
+    return render_template(
+        "student_payment.html",
+        student=student,
+        title=title,
+        message=message,
+        payment_info=payment_info
+    )
+
 # ===========================================================
 #  MENTORS DESHBOARD AND FANTIONALITIES
 # ===========================================================
