@@ -556,7 +556,7 @@ def student_dashboard():
         if not enroll:
             cur.execute("""
                 INSERT INTO Enrollment (student_id, enrollment_days, days_remaining, status)
-                VALUES (%s, 20, 20, 'active')
+                VALUES (%s, 0, 0, 'expired')
                 RETURNING days_remaining
             """, (student_id,))
             enroll = cur.fetchone()
