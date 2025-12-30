@@ -579,11 +579,13 @@
                             <td>{{ loop.index }}</td>
                             <td>
                                 {% if mentor.profile_image %}
-                                <img src="{{ url_for('static', filename=mentor.profile_image.split('static/')[-1]) }}"
-                                    class="profile-img" alt="{{ mentor.name }} {{ mentor.surname }}">
-                                {% else %}
-                                <img src="{{ url_for('static', filename='images/default-user.png') }}" class="profile-img" alt="Default Profile">
-                                {% endif %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ mentor.profile_image) }}" 
+                             alt="{{ mentor.name }} {{ mentor.surname }}" class="mentor-portrait">
+                        {% else %}
+                        <div class="mentor-avatar">
+                            <span class="avatar-initials">{{ mentor.name[0] }}{{ mentor.surname[0] }}</span>
+                        </div>
+                        {% endif %}
                             </td>
                             <td>
                                 <strong>{{ mentor.name }} {{ mentor.surname }}</strong>

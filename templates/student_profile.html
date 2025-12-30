@@ -1002,7 +1002,7 @@
                 <div class="profile-preview">
                     <div class="profile-avatar {% if not student.profile_image %}default{% endif %}">
                         {% if student.profile_image %}
-                        <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Profile Image">
+                        <img src="{{ student.profile_image }}" alt="Current Profile Image">
                         {% endif %}
                     </div>
                     <div class="profile-info">
@@ -1073,7 +1073,7 @@
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         <strong>Current Image:</strong>
                                     </p>
-                                    <img src="{{ url_for('static', filename=student.profile_image) }}" alt="Current Profile Image" id="currentImage">
+                                    <img src="{{ student.profile_image }}" alt="Current Profile Image">
                                 </div>
                                 {% endif %}
                             </div>

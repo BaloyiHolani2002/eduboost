@@ -553,16 +553,7 @@ def student_dashboard():
         """, (student_id,))
         enroll = cur.fetchone()
 
-        if not enroll:
-            cur.execute("""
-                INSERT INTO Enrollment (student_id, enrollment_days, days_remaining, status)
-                VALUES (%s, 0, 0, 'expired')
-                RETURNING days_remaining
-            """, (student_id,))
-            enroll = cur.fetchone()
-            conn.commit()
-
-        days_remaining = enroll['days_remaining']
+        days_remaining = enroll['days_remaining'] if enroll else 0
 
         # 4️⃣ Load mentors with images
         cur.execute("""
@@ -1818,7 +1809,8 @@ def add_enrollment_days():
                 UPDATE Enrollment
                 SET enrollment_days = enrollment_days + %s,
                     days_remaining = days_remaining + %s,
-                    last_updated = CURRENT_TIMESTAMP
+                    last_updated = CURRENT_TIMESTAMP,
+                    status = 'active'
                 WHERE enrollment_id = %s
             """, (additional_days, additional_days, enrollment_id))
             conn.commit()
