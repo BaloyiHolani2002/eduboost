@@ -374,9 +374,11 @@
             0% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -995,7 +997,7 @@
                     <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
                     <h1>Edu Boost Up</h1>
                 </div>
-                
+
                 <button class="menu-toggle" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -1169,7 +1171,7 @@
                             <i class="fab fa-tiktok"></i>
                         </a>
 
-                        
+
                         <!-- WhatsApp Channel (one-way broadcast) -->
                         <a href="https://whatsapp.com/channel/0029Vb6OldI47XeFwcgVPr3o"
                             class="social-btn whatsapp-channel" target="_blank" rel="noopener noreferrer"
@@ -1206,53 +1208,57 @@
             </div>
 
             <div class="copyright">
-                <p>&copy; 2025 Edu Boost Up. All rights reserved. | Learn, grow, and rise — Edu Boost Up empowers your
-                    academic journey.</p>
+                <p>
+                    &copy; <span id="year"></span> Edu Boost Up. All rights reserved. |
+                    Learn, grow, and rise — Edu Boost Up empowers your academic journey.
+                </p>
             </div>
         </div>
     </footer>
 
+
     <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
         // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.getElementById('menuToggle');
             const closeSidebar = document.getElementById('closeSidebar');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
+
             // Open sidebar
-            menuToggle.addEventListener('click', function() {
+            menuToggle.addEventListener('click', function () {
                 sidebar.classList.add('active');
                 sidebarOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             });
-            
+
             // Close sidebar
             function closeSidebarFunc() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
-            
+
             closeSidebar.addEventListener('click', closeSidebarFunc);
             sidebarOverlay.addEventListener('click', closeSidebarFunc);
-            
+
             // Close sidebar when clicking on a link (for mobile)
             const sidebarLinks = document.querySelectorAll('.sidebar-nav a, .sidebar-buttons a');
             sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     closeSidebarFunc();
                 });
             });
-            
+
             // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
+
                     const targetId = this.getAttribute('href');
                     if (targetId === '#') return;
-                    
+
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         window.scrollTo({
