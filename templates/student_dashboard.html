@@ -1014,7 +1014,7 @@
             .container {
                 padding: 0 1.5rem;
             }
-            
+
             .mentors-grid {
                 grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
             }
@@ -1206,7 +1206,7 @@
                     <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
                     <h1>Edu Boost Up</h1>
                 </div>
-                
+
                 <button class="menu-toggle" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -1216,157 +1216,158 @@
 
     <!-- Main Content -->
     <main class="main-content">
-       
 
-        {% if days_remaining <= 0 %}
-        <!-- Payment Warning -->
-        <div class="payment-warning">
-            <h2>Your Learning Plan Has Expired</h2>
-            <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
-            <a href="/student/enrollment" class="pay-btn">Renew Now</a>
-        </div>
-        {% else %}
 
-        <!-- Platform Guide -->
-        <section>
-
-            <div class="video-card">
-                <div class="video-header">
-                    <div class="video-title">
-                        <i class="fas fa-video"></i>
-                        <h3>Getting Started with Edu Boost Up</h3>
-                    </div>
-                    <div class="video-controls">
-                        <button class="video-control-btn" title="Fullscreen">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button class="video-control-btn" title="Settings">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="video-container-wrapper">
-                    <div class="video-container">
-                        <iframe src="https://drive.google.com/file/d/1EdxmnZ51uCbRAYrj1E7i29MlihynaKK8/preview" 
-                                allow="autoplay" allowfullscreen id="videoFrame">
-                        </iframe>
-                    </div>
-                </div>
-
-                <div class="video-info">
-                    <h4>About This Guide</h4>
-                    <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors, and make the most of your learning experience. This comprehensive guide will help you get started quickly.</p>
-                </div>
+        {% if days_remaining <= 0 %} <!-- Payment Warning -->
+            <div class="payment-warning">
+                <h2>Your Learning Plan Has Expired</h2>
+                <p>You currently have <strong>0 days</strong> remaining. Please renew to continue accessing lessons.</p>
+                <a href="/student/enrollment" class="pay-btn">Renew Now</a>
             </div>
-        </section>
+            {% else %}
 
-        <!-- IMPROVED Mentors Section -->
-        <section>
-            <div class="section-title">
-                <h2>Your Mentors</h2>
-                <p>Meet the experts who will guide you through your academic journey</p>
-            </div>
+            <!-- Platform Guide -->
+            <section>
 
-            <div class="mentors-grid">
-                {% for m in mentors %}
-                <article class="mentor-card">
-                    <!-- Mentor Image -->
-                    <div class="mentor-media">
-                        {% if m.profile_image %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}" 
-                             alt="{{ m.name }} {{ m.surname }}" class="mentor-portrait">
-                        {% else %}
-                        <div class="mentor-avatar">
-                            <span class="avatar-initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
+                <div class="video-card">
+                    <div class="video-header">
+                        <div class="video-title">
+                            <i class="fas fa-video"></i>
+                            <h3>Getting Started with Edu Boost Up</h3>
                         </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Mentor Content -->
-                    <div class="mentor-content">
-                        <header class="mentor-header">
-                            <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
-                            <p class="specialty-badge">{{ m.subject_speciality }}</p>
-                        </header>
-
-                        <div class="mentor-bio">
-                            <p>{{ m.bio }}</p>
-                        </div>
-
-                        <!-- Optional mentor stats (you can customize these) -->
-                        <div class="mentor-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span>Expert</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                <span>5.0 Rating</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-users"></i>
-                                <span>100+ Students</span>
-                            </div>
+                        <div class="video-controls">
+                            <button class="video-control-btn" title="Fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button class="video-control-btn" title="Settings">
+                                <i class="fas fa-cog"></i>
+                            </button>
                         </div>
                     </div>
-                </article>
-                {% endfor %}
-            </div>
-        </section>
-        {% endif %}
+
+                    <div class="video-container-wrapper">
+                        <div class="video-container">
+                            <iframe src="https://drive.google.com/file/d/1haZ4FquwAuSlDUlj-I8DbugAi0v_6uX2/preview"
+                                allow="autoplay" allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <div class="video-info">
+                        <h4>About This Guide</h4>
+                        <p>Learn how to navigate the Edu Boost Up platform, access your courses, interact with mentors,
+                            and make the most of your learning experience. This comprehensive guide will help you get
+                            started quickly.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IMPROVED Mentors Section -->
+            <section>
+                <div class="section-title">
+                    <h2>Your Mentors</h2>
+                    <p>Meet the experts who will guide you through your academic journey</p>
+                </div>
+
+                <div class="mentors-grid">
+                    {% for m in mentors %}
+                    <article class="mentor-card">
+                        <!-- Mentor Image -->
+                        <div class="mentor-media">
+                            {% if m.profile_image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ m.profile_image) }}"
+                                alt="{{ m.name }} {{ m.surname }}" class="mentor-portrait">
+                            {% else %}
+                            <div class="mentor-avatar">
+                                <span class="avatar-initials">{{ m.name[0] }}{{ m.surname[0] }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Mentor Content -->
+                        <div class="mentor-content">
+                            <header class="mentor-header">
+                                <h3 class="mentor-name">{{ m.name }} {{ m.surname }}</h3>
+                                <p class="specialty-badge">{{ m.subject_speciality }}</p>
+                            </header>
+
+                            <div class="mentor-bio">
+                                <p>{{ m.bio }}</p>
+                            </div>
+
+                            <!-- Optional mentor stats (you can customize these) -->
+                            <div class="mentor-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Expert</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>5.0 Rating</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>100+ Students</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
     </main>
 
-   
+
 
     <script>
         // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.getElementById('menuToggle');
             const closeSidebar = document.getElementById('closeSidebar');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
+
             // Open sidebar
-            menuToggle.addEventListener('click', function() {
+            menuToggle.addEventListener('click', function () {
                 sidebar.classList.add('active');
                 sidebarOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             });
-            
+
             // Close sidebar
             function closeSidebarFunc() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
-            
+
             closeSidebar.addEventListener('click', closeSidebarFunc);
             sidebarOverlay.addEventListener('click', closeSidebarFunc);
-            
+
             // Close sidebar when clicking on a link
             const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
             sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     closeSidebarFunc();
                 });
             });
-            
+
             // Set active nav item
             const currentPath = window.location.pathname;
             const navLinks = document.querySelectorAll('.sidebar-nav a');
-            
+
             navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath || 
+                if (link.getAttribute('href') === currentPath ||
                     (currentPath === '/' && link.getAttribute('href') === '#')) {
                     link.classList.add('active');
                 }
             });
-            
+
             // Video fullscreen functionality
             const fullscreenBtn = document.querySelector('.video-control-btn .fa-expand')?.closest('.video-control-btn');
             if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('click', function() {
+                fullscreenBtn.addEventListener('click', function () {
                     const videoWrapper = document.querySelector('.video-container-wrapper');
                     if (videoWrapper.requestFullscreen) {
                         videoWrapper.requestFullscreen();
