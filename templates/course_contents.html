@@ -106,6 +106,167 @@
             }
         }
 
+        /* Loading Animation */
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-hover);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* PDF Modal */
+        .pdf-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 0;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+        }
+
+        .empty-state i {
+            color: var(--text-lighter);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+        }
+
         /* Container */
         .container {
             width: 100%;
@@ -196,6 +357,9 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .sidebar-nav a:hover {
@@ -385,6 +549,7 @@
             transition: var(--transition);
             border-bottom: 1px solid #e9ecef;
             user-select: none;
+            outline: none;
         }
 
         .lesson-header:hover {
@@ -516,6 +681,7 @@
             align-items: center;
             gap: 1rem;
             transition: var(--transition);
+            position: relative;
         }
 
         .download-card:hover,
@@ -578,6 +744,7 @@
             border: none;
             cursor: pointer;
             font-size: 0.85rem;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -601,6 +768,7 @@
             font-weight: 600;
             transition: var(--transition);
             font-size: 0.8rem;
+            white-space: nowrap;
         }
 
         .watch-btn {
@@ -816,6 +984,44 @@
             font-size: 0.85rem;
         }
 
+        /* Print Styles */
+        @media print {
+            .sidebar,
+            .menu-toggle,
+            .nav-btn,
+            .action-btn,
+            .floating-shapes,
+            .sidebar-overlay,
+            footer {
+                display: none !important;
+            }
+            
+            .lesson-content {
+                max-height: none !important;
+                display: block !important;
+            }
+            
+            .lesson-header {
+                background: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            header {
+                position: static;
+                box-shadow: none;
+            }
+            
+            .main-content {
+                padding: 0;
+            }
+            
+            .welcome-banner,
+            .content-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .container {
@@ -894,6 +1100,11 @@
             .social-share {
                 justify-content: center;
             }
+
+            .modal-content {
+                width: 95%;
+                height: 95%;
+            }
         }
 
         @media (max-width: 480px) {
@@ -950,6 +1161,14 @@
 
             .sidebar {
                 padding: 1.5rem;
+            }
+
+            .toast-notification {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+                justify-content: center;
             }
         }
 
@@ -1069,11 +1288,22 @@
             </div>
 
             <div class="content-body">
+                {% if not contents %}
+                <div class="empty-state">
+                    <i class="fas fa-book-open fa-3x"></i>
+                    <h3>No Content Available Yet</h3>
+                    <p>Course materials will be uploaded soon. Check back later!</p>
+                </div>
+                {% else %}
                 <div class="contents-accordion">
                     {% for c in contents %}
                     <div class="lesson-card">
                         <!-- Clickable lesson header -->
-                        <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}', this)">
+                        <div class="lesson-header" onclick="toggleLesson('lesson-{{ c.content_id }}', this)" 
+                             tabindex="0" 
+                             role="button" 
+                             aria-expanded="false"
+                             onkeydown="handleLessonKeydown(event, 'lesson-{{ c.content_id }}', this)">
                             <div class="lesson-header-content">
                                 <div class="lesson-title-section">
                                     <h3 class="lesson-title">{{ c.title }}</h3>
@@ -1111,8 +1341,11 @@
                                                 <h5>{{ c.file_name }}</h5>
                                                 <p>Size: {{ c.file_size_mb }} MB</p>
                                             </div>
-                                            <a href="{{ c.file_url }}" target="_blank" class="btn btn-primary">
-                                                View / Open PDF
+                                            <button onclick="openPDFViewer('{{ c.file_url }}', '{{ c.file_name }}')" class="btn btn-primary">
+                                                <i class="fas fa-eye"></i> View PDF
+                                            </button>
+                                            <a href="{{ c.file_url }}" download class="btn btn-primary">
+                                                <i class="fas fa-download"></i> Download
                                             </a>
                                         </div>
                                     </div>
@@ -1127,12 +1360,16 @@
                                         <div class="media-card">
                                             <div class="media-icon"><i class="fas fa-video"></i></div>
                                             <div class="media-info">
-                                                <h5>Video / Resource Link</h5>
+                                                <h5>Video Resource {{ loop.index }}</h5>
                                                 <p>Uploaded: {{ link.upload_date }}</p>
-                                                <p class="resource-url">{{ link.file_link }}</p>
+                                                {% if link.description %}
+                                                <p class="resource-url">{{ link.description|truncate(50) }}</p>
+                                                {% endif %}
                                             </div>
                                             <div class="media-actions">
-                                                <a href="{{ link.file_link }}" target="_blank" class="action-btn watch-btn">
+                                                <a href="{{ link.file_link }}" target="_blank" 
+                                                   onclick="trackResourceAccess('video', 'Video Resource {{ loop.index }}')"
+                                                   class="action-btn watch-btn">
                                                     <i class="fas fa-play"></i> Open / Watch
                                                 </a>
                                             </div>
@@ -1146,6 +1383,7 @@
                     </div>
                     {% endfor %}
                 </div>
+                {% endif %}
 
                 
             </div>
@@ -1200,33 +1438,145 @@
             window.toggleLesson = function(lessonId, headerElement) {
                 const lessonContent = document.getElementById(lessonId);
                 const expandIndicator = headerElement.querySelector('.expand-indicator i');
+                const isExpanded = lessonContent.classList.contains('active');
 
-                if (lessonContent.classList.contains('active')) {
+                if (isExpanded) {
                     // Close the lesson
                     lessonContent.classList.remove('active');
                     headerElement.classList.remove('active');
+                    headerElement.setAttribute('aria-expanded', 'false');
                     expandIndicator.style.transform = 'rotate(0deg)';
                 } else {
                     // Close any other open lessons
                     document.querySelectorAll('.lesson-content.active').forEach(content => {
                         content.classList.remove('active');
                         content.previousElementSibling.classList.remove('active');
+                        content.previousElementSibling.setAttribute('aria-expanded', 'false');
                         content.previousElementSibling.querySelector('.expand-indicator i').style.transform = 'rotate(0deg)';
                     });
 
                     // Open this lesson
                     lessonContent.classList.add('active');
                     headerElement.classList.add('active');
+                    headerElement.setAttribute('aria-expanded', 'true');
                     expandIndicator.style.transform = 'rotate(180deg)';
+                    
+                    // Track lesson view
+                    trackLessonView(lessonId);
                 }
             }
 
-            // Open first lesson by default
+            // Keyboard support for lesson headers
+            window.handleLessonKeydown = function(event, lessonId, headerElement) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleLesson(lessonId, headerElement);
+                }
+            }
+
+            // Open first lesson by default if there are lessons
             const firstLesson = document.querySelector('.lesson-content');
             if (firstLesson) {
                 firstLesson.classList.add('active');
                 firstLesson.previousElementSibling.classList.add('active');
+                firstLesson.previousElementSibling.setAttribute('aria-expanded', 'true');
                 firstLesson.previousElementSibling.querySelector('.expand-indicator i').style.transform = 'rotate(180deg)';
+                trackLessonView(firstLesson.id);
+            }
+
+            // Add loading states to download buttons
+            const downloadButtons = document.querySelectorAll('.btn-primary, .watch-btn');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const resourceType = this.classList.contains('watch-btn') ? 'video' : 'pdf';
+                    const resourceName = this.closest('.download-card, .media-card').querySelector('h5').textContent;
+                    
+                    // Show loading state
+                    this.classList.add('loading');
+                    
+                    // Track resource access
+                    trackResourceAccess(resourceType, resourceName);
+                    
+                    // Remove loading state after a delay (simulating load)
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                    }, 1500);
+                });
+            });
+        });
+
+        // Open PDF in modal viewer
+        function openPDFViewer(url, title) {
+            const modal = document.createElement('div');
+            modal.className = 'pdf-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${title}</h3>
+                        <button class="close-modal" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe src="${url}" frameborder="0"></iframe>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.pdf-modal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Analytics tracking functions
+        function trackLessonView(lessonId) {
+            // Send analytics data to your backend
+            console.log('Lesson viewed:', lessonId);
+            // Example: fetch('/api/track/lesson-view', { method: 'POST', body: JSON.stringify({ lessonId }) });
+        }
+
+        function trackResourceAccess(resourceType, resourceName) {
+            // Track resource downloads/views
+            console.log(`${resourceType} accessed: ${resourceName}`);
+            
+            // Show toast notification
+            showToast(`Opening ${resourceType}: ${resourceName}`);
+        }
+
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            
+            document.body.appendChild(toast);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('pdf-modal')) {
+                closeModal();
             }
         });
     </script>
