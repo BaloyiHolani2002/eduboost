@@ -1338,14 +1338,12 @@
                                         <div class="download-card">
                                             <div class="download-icon"><i class="fas fa-file-pdf"></i></div>
                                             <div class="download-info">
-                                                <h5>{{ c.file_name }}</h5>
-                                                <p>Size: {{ c.file_size_mb }} MB</p>
+                                                <h5>{{ c.title }}</h5>
+                                                <p>Get the document</p>
                                             </div>
-                                            <button onclick="openPDFViewer('{{ c.file_url }}', '{{ c.file_name }}')" class="btn btn-primary">
-                                                <i class="fas fa-eye"></i> View PDF
-                                            </button>
+                                            
                                             <a href="{{ c.file_url }}" download class="btn btn-primary">
-                                                <i class="fas fa-download"></i> Download
+                                                <i class="fas fa-eye"></i>  View PDF
                                             </a>
                                         </div>
                                     </div>
