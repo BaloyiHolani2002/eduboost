@@ -23,12 +23,11 @@ from werkzeug.utils import secure_filename
 # ===========================================================
 app = Flask(__name__)
 app.secret_key = 'edu-boost-up-secret-key-2024'  # CHANGE WHEN GOING LIVE
+app.config['UPLOAD_FOLDER'] = os.path.join("static", "uploads")
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # ===========================================================
@@ -127,8 +126,6 @@ def check_db():
     return f"✅ Database connected successfully! TIME = {result[0]}"
 
 
-
-
 # ===========================================================
 # SIGN UP PAGES AND RESET PASSWORD
 # ===========================================================
@@ -200,6 +197,28 @@ def luhn_check(id_num):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    # Check if registration is open
+    if request.method == 'GET':
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        try:
+            cur.execute("""
+                SELECT message FROM Notification 
+                WHERE notification_type = 'registration_status' 
+                ORDER BY date_sent DESC LIMIT 1
+            """)
+            notification = cur.fetchone()
+            
+            if notification and 'closed' in notification[0].lower():
+                return redirect('/registration-closed')
+                
+        except Exception as e:
+            print(f"Error checking registration status: {e}")
+        finally:
+            cur.close()
+            conn.close()
+    
     if request.method == 'POST':
 
         student_id = request.form.get('student_id')
@@ -344,7 +363,6 @@ def reduce_enrollment_days():
     finally:
         cur.close()
         conn.close()
-
 
 
 # ===========================================================
@@ -1976,7 +1994,7 @@ def admin_view_enrollments():
 def admin_view_students():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT student_id, name, surname, phone, email, grade, status FROM Student ORDER BY name")
+    cur.execute("SELECT student_id, name, phone, surname, email, grade, status FROM Student ORDER BY name")
     students = cur.fetchall()
     cur.close()
     conn.close()
