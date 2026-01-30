@@ -1994,7 +1994,7 @@ def admin_view_enrollments():
 def admin_view_students():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT student_id, name, surname, email, grade, status FROM Student ORDER BY name")
+    cur.execute("SELECT student_id, name, surname, phone, email, grade, status FROM Student ORDER BY name")
     students = cur.fetchall()
     cur.close()
     conn.close()
