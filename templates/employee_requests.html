@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +31,8 @@
             --dark-light: #343a40;
             --success: #4cc9f0;
             --warning: #f72585;
+            --whatsapp: #25D366;
+            --whatsapp-hover: #1da851;
             --math: #ff6b6b;
             --accounting: #4ecdc4;
             --science: #45aaf2;
@@ -98,9 +101,11 @@
             0% {
                 transform: translateY(0) rotate(0deg);
             }
+
             50% {
                 transform: translateY(-20px) rotate(180deg);
             }
+
             100% {
                 transform: translateY(0) rotate(360deg);
             }
@@ -408,7 +413,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: 0.5s;
         }
 
@@ -440,6 +445,22 @@
             box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
         }
 
+        .btn-whatsapp {
+            background: linear-gradient(135deg, var(--whatsapp), var(--whatsapp-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, var(--whatsapp-hover), var(--whatsapp));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-icon {
+            font-size: 1.1rem;
+        }
+
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -457,14 +478,38 @@
             margin-top: 2rem;
         }
 
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .status-display {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        .status-display.completed {
+            color: var(--success);
+            font-weight: 600;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .table-responsive {
                 font-size: 0.9rem;
             }
-            
-            th, td {
+
+            th,
+            td {
                 padding: 1rem 0.8rem;
+            }
+
+            .action-buttons {
+                min-width: 130px;
             }
         }
 
@@ -512,9 +557,14 @@
             .search-box input {
                 width: 100%;
             }
+
+            .action-buttons {
+                min-width: 110px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="floating-shapes">
         <div class="shape"></div>
@@ -557,7 +607,8 @@
                 <div class="stat-label">Completed</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ requests|selectattr('request_type', 'equalto', 'material')|list|length }}</div>
+                <div class="stat-value">{{ requests|selectattr('request_type', 'equalto', 'material')|list|length }}
+                </div>
                 <div class="stat-label">Material Requests</div>
             </div>
         </div>
@@ -591,6 +642,7 @@
                             <th>Status</th>
                             <th>Created</th>
                             <th>Attachment</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -617,14 +669,30 @@
                             <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
                             <td>
                                 {% if r.pdf_url %}
-                                <a href="{{ url_for('static', filename=r.pdf_url.replace('uploads/', 'uploads/')) }}" 
-                                   download 
-                                   class="btn btn-info">
+                                <a href="{{ url_for('static', filename='uploads/' + r.pdf_url.split('uploads/')[-1]) }}"
+                                    download class="btn btn-info">
                                     <i class="fas fa-download"></i> Download
                                 </a>
                                 {% else %}
                                 <span style="color: var(--text-light);">N/A</span>
                                 {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    {% if r.status != 'completed' %}
+                                    <button class="btn btn-whatsapp mark-completed-btn"
+                                        data-request-id="{{ r.request_id }}" data-phone="{{ r.student_phone }}">
+                                        <i class="fab fa-whatsapp whatsapp-icon"></i> Reply via WhatsApp
+                                    </button>
+                                    {% else %}
+                                    <button class="btn btn-whatsapp" disabled>
+                                        <i class="fab fa-whatsapp whatsapp-icon"></i> Already Replied
+                                    </button>
+                                    {% endif %}
+                                    <div class="status-display {% if r.status == 'completed' %}completed{% endif %}">
+                                        Status: {{ r.status|title }}
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -649,10 +717,10 @@
 
     <script>
         // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function() {
+        document.getElementById('searchInput').addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
             const rows = document.querySelectorAll('#requestsTable tbody tr');
-            
+
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -660,10 +728,10 @@
         });
 
         // Status filter functionality
-        document.getElementById('statusFilter').addEventListener('change', function() {
+        document.getElementById('statusFilter').addEventListener('change', function () {
             const filterValue = this.value.toLowerCase();
             const rows = document.querySelectorAll('#requestsTable tbody tr');
-            
+
             rows.forEach(row => {
                 const status = row.querySelector('.status-badge').textContent.toLowerCase();
                 if (!filterValue || status.includes(filterValue)) {
@@ -674,9 +742,166 @@
             });
         });
 
+        // WhatsApp button functionality
+        document.querySelectorAll('.mark-completed-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const requestId = this.getAttribute('data-request-id');
+                const phoneNumber = this.getAttribute('data-phone');
+                const row = this.closest('tr');
+
+                // Format phone number for WhatsApp (remove any non-digit characters)
+                const formattedPhone = phoneNumber.replace(/\D/g, '');
+
+                // Create WhatsApp URL with pre-filled message
+                const whatsappUrl = `https://wa.me/${formattedPhone}?text=Hello! I'm responding to your request on Edu Boost Up.`;
+
+                // Open WhatsApp in new tab
+                window.open(whatsappUrl, '_blank');
+
+                // Update status on server
+                try {
+                    const response = await fetch(`/update-request-status/${requestId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            status: 'completed'
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Update UI
+                        const statusBadge = row.querySelector('.status-badge');
+                        const statusDisplay = row.querySelector('.status-display');
+
+                        // Update status badge
+                        statusBadge.className = 'status-badge status-completed';
+                        statusBadge.textContent = 'Completed';
+
+                        // Update status display
+                        statusDisplay.textContent = 'Status: Completed';
+                        statusDisplay.className = 'status-display completed';
+
+                        // Disable the button
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fab fa-whatsapp whatsapp-icon"></i> Already Replied';
+
+                        // Update stats cards
+                        updateStatsCards();
+
+                        // Show success message
+                        alert('Request marked as completed! The status has been updated.');
+                    } else {
+                        throw new Error('Failed to update status');
+                    }
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    alert('Failed to update status. Please try again.');
+                }
+            });
+        });
+
+        // Function to update stats cards
+        function updateStatsCards() {
+            // This would typically involve fetching updated stats from the server
+            // For now, we'll just refresh the page to get updated stats
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+
+        // WhatsApp button functionality
+        document.querySelectorAll('.mark-completed-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const requestId = this.getAttribute('data-request-id');
+                const rawPhoneNumber = this.getAttribute('data-phone');
+                const row = this.closest('tr');
+
+                console.log('Request ID:', requestId); // Debug log
+                console.log('Phone number:', rawPhoneNumber); // Debug log
+
+                if (!requestId || requestId === 'None' || requestId === 'null') {
+                    alert('Error: Request ID is missing. Cannot update status.');
+                    return;
+                }
+
+                // Format phone number for WhatsApp
+                const formattedPhone = formatPhoneNumberForWhatsApp(rawPhoneNumber);
+
+                if (!formattedPhone) {
+                    alert('Invalid phone number. Cannot open WhatsApp.');
+                    return;
+                }
+
+                // Create WhatsApp URL with pre-filled message
+                const message = encodeURIComponent("Hello! I'm responding to your request on Edu Boost Up.");
+                const whatsappUrl = `https://wa.me/${formattedPhone}?text=${message}`;
+
+                // Open WhatsApp in new tab
+                const whatsappWindow = window.open(whatsappUrl, '_blank');
+
+                // Update status on server
+                try {
+                    console.log(`Updating request ${requestId} to completed...`); // Debug log
+
+                    const response = await fetch(`/update-request-status/${requestId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            status: 'completed'
+                        })
+                    });
+
+                    console.log('Response status:', response.status); // Debug log
+
+                    const result = await response.json();
+                    console.log('Response data:', result); // Debug log
+
+                    if (response.ok && result.success) {
+                        // Update UI
+                        const statusBadge = row.querySelector('.status-badge');
+                        const statusDisplay = row.querySelector('.status-display');
+
+                        // Update status badge
+                        statusBadge.className = 'status-badge status-completed';
+                        statusBadge.textContent = 'Completed';
+
+                        // Update status display
+                        statusDisplay.textContent = 'Status: Completed';
+                        statusDisplay.className = 'status-display completed';
+
+                        // Disable the button
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fab fa-whatsapp whatsapp-icon"></i> Already Replied';
+
+                        // Show success message
+                        showNotification('Request marked as completed! Status updated.', 'success');
+
+                        // Refresh the page after 2 seconds to update stats
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        throw new Error(result.error || 'Failed to update status');
+                    }
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    showNotification('Failed to update status: ' + error.message, 'error');
+
+                    // If WhatsApp window opened, close it
+                    if (whatsappWindow) {
+                        whatsappWindow.close();
+                    }
+                }
+            });
+        });
+
         // Add tooltip for message preview
         document.querySelectorAll('.message-preview').forEach(preview => {
-            preview.addEventListener('mouseenter', function() {
+            preview.addEventListener('mouseenter', function () {
                 if (this.scrollWidth > this.clientWidth) {
                     const tooltip = document.createElement('div');
                     tooltip.className = 'message-tooltip';
@@ -693,27 +918,23 @@
                         box-shadow: var(--shadow);
                     `;
                     document.body.appendChild(tooltip);
-                    
+
                     this.tooltip = tooltip;
-                    
+
                     const rect = this.getBoundingClientRect();
                     tooltip.style.left = rect.left + 'px';
                     tooltip.style.top = (rect.bottom + 5) + 'px';
                 }
             });
-            
-            preview.addEventListener('mouseleave', function() {
+
+            preview.addEventListener('mouseleave', function () {
                 if (this.tooltip) {
                     this.tooltip.remove();
                     this.tooltip = null;
                 }
             });
         });
-
-        // Export functionality
-        function exportRequests() {
-            alert('Export functionality would generate a CSV file of all student requests.');
-        }
     </script>
 </body>
+
 </html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Requests - Admin Dashboard</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-light: #6a7ef0;
+            --primary-dark: #2a4bd4;
+            --secondary: #3a0ca3;
+            --secondary-light: #4f1bc6;
+            --accent: #7209b7;
+            --accent-light: #8b2bd0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --dark-light: #343a40;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --whatsapp: #25D366;
+            --whatsapp-hover: #1da851;
+            --text-light: #6c757d;
+            --text-lighter: #adb5bd;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-section img {
+            height: 60px;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        .logo-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h2 {
+            font-size: 2.2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-select {
+            padding: 0.7rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light);
+        }
+
+        th {
+            padding: 1.2rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--secondary);
+            border-bottom: 1px solid #e9ecef;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1.2rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .student-contact {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .topic {
+            font-weight: 500;
+            color: var(--dark);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .message-preview {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .status-pending {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--warning);
+        }
+
+        .status-completed {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .status-in-progress {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .type-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .type-material {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .type-support {
+            background: rgba(114, 9, 183, 0.1);
+            color: var(--accent);
+        }
+
+        .type-other {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--text-light);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, var(--whatsapp), var(--whatsapp-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, var(--whatsapp-hover), var(--whatsapp));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-lighter);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 1rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .table-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .table-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+                <div class="logo-text">
+                    <h1>Edu Boost Up</h1>
+                    <p>Admin Dashboard - Student Requests</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="page-title">
+            <h2><i class="fas fa-comments"></i> All Student Requests</h2>
+            <p>Manage and review all student requests and inquiries</p>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total }}</div>
+                <div class="stat-label">Total Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.pending }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.in_progress }}</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-list"></i> Request Details</h3>
+                <div class="table-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search requests...">
+                    </div>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="in-progress">In Progress</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                {% if requests %}
+                <table id="requestsTable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Contact</th>
+                            <th>Topic</th>
+                            <th>Message</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Assigned Mentor</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in requests %}
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <div class="student-name">{{ r.student_name }} {{ r.student_surname }}</div>
+                                    <div class="student-contact">{{ r.student_email }}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="student-info">
+                                    <div class="student-contact">{{ r.student_phone }}</div>
+                                    <div class="student-contact">{{ r.student_email }}</div>
+                                </div>
+                            </td>
+                            <td class="topic" title="{{ r.topic }}">{{ r.topic }}</td>
+                            <td class="message-preview" title="{{ r.message }}">{{ r.message }}</td>
+                            <td>
+                                <span class="type-badge type-{{ r.request_type|lower|replace(' ', '-') }}">
+                                    {{ r.request_type }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ r.status|lower|replace(' ', '-') }}">
+                                    {{ r.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if r.mentor_name %}
+                                    {{ r.mentor_name }} {{ r.mentor_surname }}
+                                {% else %}
+                                    <span style="color: var(--text-light);">Not assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="https://wa.me/{{ r.student_phone|replace('+', '')|replace(' ', '') }}" 
+                                       target="_blank" 
+                                       class="btn btn-whatsapp">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                    </a>
+                                    <button class="btn btn-info view-message-btn" 
+                                            data-message="{{ r.message }}"
+                                            data-topic="{{ r.topic }}">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No Requests Found</h3>
+                    <p>There are currently no student requests to display.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--border-radius-lg); max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 id="modalTopic" style="color: var(--secondary);"></h3>
+                <button id="closeModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light);">&times;</button>
+            </div>
+            <div id="modalMessage" style="color: var(--dark); line-height: 1.6;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#requestsTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Status filter functionality
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#requestsTable tbody tr');
+            
+            rows.forEach(row => {
+                const status = row.querySelector('.status-badge').textContent.toLowerCase();
+                if (!filterValue || status.includes(filterValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Message modal functionality
+        const modal = document.getElementById('messageModal');
+        const modalTopic = document.getElementById('modalTopic');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModal = document.getElementById('closeModal');
+
+        document.querySelectorAll('.view-message-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const topic = this.getAttribute('data-topic');
+                const message = this.getAttribute('data-message');
+                
+                modalTopic.textContent = topic;
+                modalMessage.textContent = message;
+                modal.style.display = 'flex';
+            });
+        });
+
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Format phone numbers for WhatsApp
+        document.querySelectorAll('.btn-whatsapp').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const phone = this.href.split('wa.me/')[1];
+                const formattedPhone = phone.replace(/\D/g, '');
+                
+                // If number starts with 0, assume South Africa (+27)
+                if (formattedPhone.startsWith('0')) {
+                    const saNumber = '27' + formattedPhone.substring(1);
+                    this.href = 'https://wa.me/' + saNumber;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -24,6 +24,12 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.secret_key = 'edu-boost-up-secret-key-2024'  # CHANGE WHEN GOING LIVE
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # ===========================================================
 # LOCAL DATABASE CONFIG (fallback)
@@ -586,11 +592,6 @@ def student_dashboard():
         days_remaining=days_remaining
     )
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @app.route("/student/profile", methods=['GET', 'POST'])
 def student_profile():
@@ -844,7 +845,7 @@ def student_request():
                 file = request.files['pdf']
                 if file.filename != '':
                     filename = secure_filename(file.filename)
-                    pdf_file_path = os.path.join(UPLOAD_FOLDER, filename)
+                    pdf_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     file.save(pdf_file_path)
                     pdf_file_url = f"uploads/{filename}"  # store relative path in DB
 
@@ -990,6 +991,7 @@ def student_payment():
         payment_info=payment_info
     )
 
+
 # ===========================================================
 #  MENTORS DESHBOARD AND FANTIONALITIES
 # ===========================================================
@@ -1106,10 +1108,15 @@ def upload_pdf():
         conn = get_db_connection()
         cur = conn.cursor()
 
+        # Save file
+        filename = secure_filename(file.filename)
+        pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(pdf_path)
+
         cur.execute("""
-    INSERT INTO Content (mentor_id, title, description, subject, grade, pdf_file, file_name, file_size_mb)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING content_id
-""", (session["mentor_id"], title, description, subject, grade, pdf_path, file_name, file_size_mb))
+            INSERT INTO Content (mentor_id, title, description, subject, grade, pdf_file, file_name, file_size_mb)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING content_id
+        """, (session["mentor_id"], title, description, subject, grade, pdf_path, file_name, file_size_mb))
 
         conn.commit()
         cur.close()
@@ -1227,43 +1234,6 @@ def employee_manage_contents():
         content_links=content_links
     )
 
-    # Ensure logged in as mentor
-    if 'user_role' not in session or session['user_role'] != 'mentor':
-        flash("Please login as a mentor first.", "warning")
-        return redirect("/login")
-
-    mentor_id = session['user_id']  # Unified session key
-
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-
-    # Get all content uploaded by this mentor
-    cur.execute("""
-        SELECT C.content_id, C.title, C.subject, C.grade, C.file_url, C.upload_date
-        FROM Content C
-        WHERE C.mentor_id = %s
-        ORDER BY C.upload_date DESC
-    """, (mentor_id,))
-    contents = cur.fetchall()
-
-    # Get multiple video links per content
-    content_links = {}
-    for c in contents:
-        cur.execute("""
-            SELECT file_link 
-            FROM ContentRecord 
-            WHERE content_id = %s
-        """, (c['content_id'],))
-        content_links[c['content_id']] = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    return render_template(
-        "manage_contents.html",
-        contents=contents,
-        content_links=content_links
-    )
 
 @app.route("/employee/manage-contents/delete/<int:content_id>", methods=["POST"])
 def delete_content(content_id):
@@ -1315,6 +1285,107 @@ def employee_requests():
         conn.close()
 
     return render_template("employee_requests.html", requests=requests)
+
+
+@app.route("/update-request-status/<int:request_id>", methods=["POST"])
+def update_request_status(request_id):
+    # Check if user is logged in as mentor or admin
+    if 'user_role' not in session or session.get('user_role') not in ['mentor', 'admin']:
+        return jsonify({'error': 'Unauthorized', 'success': False}), 401
+    
+    try:
+        # Parse JSON data
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided', 'success': False}), 400
+            
+        new_status = data.get('status')
+        
+        if not new_status:
+            return jsonify({'error': 'Status is required', 'success': False}), 400
+            
+        if new_status not in ['pending', 'in-progress', 'completed']:
+            return jsonify({'error': 'Invalid status', 'success': False}), 400
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        try:
+            # Check if request exists
+            cur.execute("""
+                SELECT request_id FROM Request WHERE request_id = %s
+            """, (request_id,))
+            
+            if cur.fetchone() is None:
+                return jsonify({'error': 'Request not found', 'success': False}), 404
+            
+            # Update the request status (updated_at will be auto-updated by trigger)
+            cur.execute("""
+                UPDATE Request 
+                SET status = %s 
+                WHERE request_id = %s
+                RETURNING request_id, status, updated_at
+            """, (new_status, request_id))
+            
+            updated_request = cur.fetchone()
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': 'Status updated successfully',
+                'request_id': updated_request[0],
+                'status': updated_request[1],
+                'updated_at': updated_request[2].isoformat() if updated_request[2] else None
+            })
+            
+        except Exception as e:
+            conn.rollback()
+            print(f"Database error updating request status: {e}")
+            return jsonify({'error': 'Database error', 'success': False}), 500
+        finally:
+            cur.close()
+            conn.close()
+            
+    except Exception as e:
+        print(f"Error in update_request_status: {e}")
+        return jsonify({'error': 'Server error', 'success': False}), 500
+
+
+@app.route("/debug-requests")
+def debug_requests():
+    # Check if user is logged in as mentor or admin
+    if 'user_role' not in session or session.get('user_role') not in ['mentor', 'admin']:
+        return "Unauthorized", 401
+    
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        cur.execute("""
+            SELECT R.request_id, R.topic, R.status, R.request_type, R.created_at, R.updated_at,
+                   S.name AS student_name, S.surname AS student_surname, S.phone AS student_phone
+            FROM Request R
+            LEFT JOIN Student S ON R.student_id = S.student_id
+            ORDER BY R.created_at DESC
+            LIMIT 5
+        """)
+        requests = cur.fetchall()
+        
+        # Convert to list for better display
+        requests_list = []
+        for r in requests:
+            requests_list.append(dict(r))
+            
+        return jsonify({
+            'count': len(requests_list),
+            'requests': requests_list
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 
 @app.route("/employee/profile/edit", methods=["GET", "POST"])
@@ -1403,7 +1474,6 @@ def employee_change_password():
 
     return render_template("employee_change_password.html", error=error)
 
-
 @app.route("/employee/content/uploaded")
 def upload_success():
     return render_template("employee_content_uploaded.html")
@@ -1427,6 +1497,8 @@ def create_new_class():
         duration = request.form.get("duration")
         grade = request.form.get("grade")
         link = request.form.get("link")
+        subject = request.form.get("subject", topic)  # Use topic as subject if not provided
+        start_date = request.form.get("start_date", datetime.now().date())  # Use current date if not provided
 
         if not title or not grade:
             flash("Title and Grade are required.", "danger")
@@ -1437,9 +1509,9 @@ def create_new_class():
 
         try:
             cur.execute("""
-                INSERT INTO Class (mentor_id, title, topic, type, start_time, duration, grade, link)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, (mentor_id, title, topic, class_type, start_time, duration, grade, link))
+                INSERT INTO Class (mentor_id, title, topic, type, start_time, duration, grade, link, subject, start_date)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (mentor_id, title, topic, class_type, start_time, duration, grade, link, subject, start_date))
             conn.commit()
             flash("✅ Class posted successfully!", "success")
             return redirect('/employee/dashboard')
@@ -1471,10 +1543,10 @@ def view_classes():
 
     try:
         cur.execute("""
-            SELECT class_id, title, topic, type, start_time, duration, grade, link, upload_date
+            SELECT class_id, title, topic, type, start_time, duration, grade, link, upload_date, subject, start_date
             FROM Class
             WHERE mentor_id = %s
-            ORDER BY start_time DESC
+            ORDER BY start_date DESC, start_time DESC
         """, (mentor_id,))
 
         classes = cur.fetchall()
@@ -1525,10 +1597,6 @@ def mentor_delete_class(class_id):
         conn.close()
 
     return redirect("/employee/classes")
-
-
-
-
 
 
 # ===========================================================
@@ -1591,21 +1659,52 @@ def admin_required(f):
 def admin_dashboard():
     conn = get_db_connection()
     stats = {}
+    recent_requests = []
+    registration_status = 'open'
+    
     if conn:
         try:
-            cur = conn.cursor()
+            cur = conn.cursor(cursor_factory=RealDictCursor)
             
             # Count students
-            cur.execute("SELECT COUNT(*) FROM Student")
-            stats['students'] = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) as count FROM Student")
+            stats['students'] = cur.fetchone()['count']
             
-            # Count mentors (if you have a Mentor table)
-            cur.execute("SELECT COUNT(*) FROM Mentor")
-            stats['mentors'] = cur.fetchone()[0]
+            # Count mentors
+            cur.execute("SELECT COUNT(*) as count FROM Mentor")
+            stats['mentors'] = cur.fetchone()['count']
             
-            # Count enrollments
-            cur.execute("SELECT COUNT(*) FROM Enrollment")
-            stats['enrollments'] = cur.fetchone()[0]
+            # Count classes - FIXED: Using new columns
+            cur.execute("SELECT COUNT(*) as count FROM Class WHERE start_date >= CURRENT_DATE")
+            stats['classes'] = cur.fetchone()['count']
+            
+            # Count active enrollments
+            cur.execute("SELECT COUNT(*) as count FROM Enrollment WHERE status = 'active' AND days_remaining > 0")
+            stats['active_enrollments'] = cur.fetchone()['count']
+            
+            # Get recent student requests - Now includes updated_at
+            cur.execute("""
+                SELECT r.request_id, r.message, r.status, r.created_at, r.updated_at,
+                       s.name as student_name, s.surname as student_surname, s.phone as student_phone,
+                       m.name as mentor_name
+                FROM Request r
+                LEFT JOIN Student s ON r.student_id = s.student_id
+                LEFT JOIN Mentor m ON r.mentor_id = m.mentor_id
+                ORDER BY r.created_at DESC
+                LIMIT 5
+            """)
+            recent_requests = cur.fetchall()
+            
+            # Get registration status - Using notification_type column
+            cur.execute("""
+                SELECT message FROM Notification 
+                WHERE notification_type = 'registration_status' 
+                ORDER BY date_sent DESC LIMIT 1
+            """)
+            notification = cur.fetchone()
+            
+            if notification and ('closed' in notification['message'].lower() or 'not open' in notification['message'].lower()):
+                registration_status = 'closed'
             
             cur.close()
         except Exception as e:
@@ -1615,9 +1714,12 @@ def admin_dashboard():
     
     return render_template(
         'admin_dashboard.html', 
-        admin_name=session.get('admin_name'), 
-        stats=stats
+        admin_name=session.get('user_name'),
+        stats=stats,
+        recent_requests=recent_requests,
+        registration_status=registration_status
     )
+
 
 # ----------------- LOGOUT ----------------------
 @app.route('/admin/logout')
@@ -1647,9 +1749,6 @@ def admin_notifications():
 
     # GET
     return render_template('admin_notifications.html')
-
-
-# Allowed image extensions
 
 
 # --- Add employee (mentor/staff) form + POST handler ---
@@ -1700,16 +1799,45 @@ def admin_view_mentors():
     return render_template('admin_view_mentors.html', mentors=mentors)
 
 
-    # --- Edit mentor ---
+@app.route("/admin/toggle-registration", methods=["POST"])
+def toggle_registration():
+    if 'user_role' not in session or session.get('user_role') != 'admin':
+        return jsonify({'error': 'Unauthorized', 'success': False}), 401
+    
+    data = request.get_json()
+    status = data.get('status', 'open')
+    message = data.get('message', '')
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    try:
+        # Insert notification about registration status
+        if not message:
+            message = f"Registration is currently {status}. Students will {'not ' if status == 'closed' else ''}be able to register for classes."
+        
+        # Insert notification with notification_type
+        cur.execute("""
+            INSERT INTO Notification (message, notification_type, date_sent)
+            VALUES (%s, 'registration_status', CURRENT_TIMESTAMP)
+        """, (message,))
+        
+        conn.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Registration has been {status} successfully.',
+            'status': status
+        })
+        
+    except Exception as e:
+        conn.rollback()
+        print(f"Error toggling registration: {e}")
+        return jsonify({'error': 'Failed to update registration status', 'success': False}), 500
+    finally:
+        cur.close()
+        conn.close()
 
-
-# Upload folder location
-app.config['UPLOAD_FOLDER'] = os.path.join("static", "uploads")
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/admin/mentors/edit/<int:mentor_id>', methods=['GET', 'POST'])
 @admin_required
@@ -1848,13 +1976,206 @@ def admin_view_enrollments():
 def admin_view_students():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT student_id, name, surname, email, grade, status FROM Student ORDER BY name")
+    cur.execute("SELECT student_id, name, surname, phone, email, grade, status FROM Student ORDER BY name")
     students = cur.fetchall()
     cur.close()
     conn.close()
     return render_template('admin_view_students.html', students=students)
 
 
+# ===========================================================
+# NEW ADMIN ROUTES FOR MISSING PAGES
+# ===========================================================
+
+@app.route("/admin/requests")
+def admin_requests():
+    # Check if user is logged in as admin
+    if 'user_role' not in session or session.get('user_role') != 'admin':
+        flash("Please login as administrator.", "warning")
+        return redirect("/login")
+    
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        # Get all student requests with details - Now includes updated_at
+        cur.execute("""
+            SELECT r.request_id, r.topic, r.message, r.request_type, r.status, 
+                   r.created_at, r.updated_at, r.pdf_url,
+                   s.name as student_name, s.surname as student_surname, 
+                   s.phone as student_phone, s.email as student_email,
+                   m.name as mentor_name, m.surname as mentor_surname,
+                   m.phone as mentor_phone, m.email as mentor_email
+            FROM Request r
+            LEFT JOIN Student s ON r.student_id = s.student_id
+            LEFT JOIN Mentor m ON r.mentor_id = m.mentor_id
+            ORDER BY r.created_at DESC
+        """)
+        requests = cur.fetchall()
+        
+        # Get stats for filters
+        cur.execute("SELECT COUNT(*) as total FROM Request")
+        total = cur.fetchone()['total']
+        
+        cur.execute("SELECT COUNT(*) as pending FROM Request WHERE status = 'pending'")
+        pending = cur.fetchone()['pending']
+        
+        cur.execute("SELECT COUNT(*) as completed FROM Request WHERE status = 'completed'")
+        completed = cur.fetchone()['completed']
+        
+        cur.execute("SELECT COUNT(*) as in_progress FROM Request WHERE status = 'in-progress'")
+        in_progress = cur.fetchone()['in_progress']
+        
+        return render_template("admin_requests.html",
+                             requests=requests,
+                             stats={
+                                 'total': total,
+                                 'pending': pending,
+                                 'completed': completed,
+                                 'in_progress': in_progress
+                             })
+                             
+    except Exception as e:
+        print(f"Error loading admin requests: {e}")
+        flash("Failed to load student requests.", "danger")
+        return render_template("admin_requests.html",
+                             requests=[],
+                             stats={'total': 0, 'pending': 0, 'completed': 0, 'in_progress': 0})
+    finally:
+        cur.close()
+        conn.close()
+
+
+@app.route("/admin/classes/upcoming")
+def admin_upcoming_classes():
+    # Check if user is logged in as admin
+    if 'user_role' not in session or session.get('user_role') != 'admin':
+        flash("Please login as administrator.", "warning")
+        return redirect("/login")
+    
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        # Get upcoming classes with details - Now includes subject and start_date
+        cur.execute("""
+            SELECT c.class_id, c.title, c.subject, c.topic, c.grade,
+                   c.start_date, c.start_time, c.duration,
+                   c.upload_date,
+                   m.name as mentor_name, m.surname as mentor_surname,
+                   m.email as mentor_email, m.phone as mentor_phone
+            FROM Class c
+            LEFT JOIN Mentor m ON c.mentor_id = m.mentor_id
+            WHERE c.start_date >= CURRENT_DATE OR c.start_date IS NULL
+            ORDER BY c.start_date ASC NULLS LAST, c.start_time ASC
+        """)
+        classes = cur.fetchall()
+        
+        # Get stats
+        cur.execute("""
+            SELECT COUNT(*) as total, 
+                   COUNT(CASE WHEN start_date >= CURRENT_DATE THEN 1 END) as upcoming
+            FROM Class 
+        """)
+        stats = cur.fetchone()
+        stats['active'] = stats['upcoming']
+        stats['full'] = 0  # Placeholder since we don't have max_students column
+        
+        # Get subjects and grades for filters
+        cur.execute("SELECT DISTINCT subject FROM Class WHERE subject IS NOT NULL ORDER BY subject")
+        subjects = [row['subject'] for row in cur.fetchall()]
+        
+        cur.execute("SELECT DISTINCT grade FROM Class WHERE grade IS NOT NULL ORDER BY grade")
+        grades = [row['grade'] for row in cur.fetchall()]
+        
+        # Get topics for filters
+        cur.execute("SELECT DISTINCT topic FROM Class WHERE topic IS NOT NULL AND topic != '' ORDER BY topic")
+        topics = [row['topic'] for row in cur.fetchall()]
+        
+        return render_template("admin_upcoming_classes.html",
+                             classes=classes,
+                             stats=stats,
+                             subjects=subjects,
+                             topics=topics,
+                             grades=grades)
+                             
+    except Exception as e:
+        print(f"Error loading upcoming classes: {e}")
+        flash("Failed to load upcoming classes.", "danger")
+        return render_template("admin_upcoming_classes.html",
+                             classes=[],
+                             stats={'total': 0, 'full': 0, 'active': 0},
+                             subjects=[],
+                             topics=[],
+                             grades=[])
+    finally:
+        cur.close()
+        conn.close()
+
+
+# ===========================================================
+# REGISTRATION SYSTEM ROUTES
+# ===========================================================
+
+@app.route("/check-registration-status")
+def check_registration_status():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    try:
+        # Get latest registration status - Using notification_type column
+        cur.execute("""
+            SELECT message FROM Notification 
+            WHERE notification_type = 'registration_status' 
+            ORDER BY date_sent DESC LIMIT 1
+        """)
+        notification = cur.fetchone()
+        
+        if notification and ('closed' in notification[0].lower() or 'not open' in notification[0].lower()):
+            return jsonify({
+                'status': 'closed',
+                'message': notification[0]
+            })
+        else:
+            return jsonify({
+                'status': 'open',
+                'message': 'Registration is open. You can sign up now.'
+            })
+            
+    except Exception as e:
+        print(f"Error checking registration status: {e}")
+        return jsonify({'status': 'open', 'message': 'Registration is open.'})
+    finally:
+        cur.close()
+        conn.close()
+
+
+@app.route("/registration-closed")
+def registration_closed():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    try:
+        # Get the registration closed message - Using notification_type column
+        cur.execute("""
+            SELECT message FROM Notification 
+            WHERE notification_type = 'registration_status' 
+            ORDER BY date_sent DESC LIMIT 1
+        """)
+        notification = cur.fetchone()
+        
+        message = "Registration is currently closed. We will open registrations at the beginning of the next term."
+        if notification and ('closed' in notification[0].lower() or 'not open' in notification[0].lower()):
+            message = notification[0]
+            
+    except Exception as e:
+        print(f"Error fetching registration message: {e}")
+        message = "Registration is currently closed. We will open registrations at the beginning of the next term."
+    finally:
+        cur.close()
+        conn.close()
+    
+    return render_template("registration_closed.html", message=message)
 
 
 # ===========================================================
@@ -1868,4 +2189,6 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Create upload folder if it doesn't exist
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    app.run(debug=True, port=5000)

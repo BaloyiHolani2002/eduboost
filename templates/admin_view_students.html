@@ -561,7 +561,13 @@
                             <td>
                                 <div class="student-name">{{ s.name }} {{ s.surname }}</div>
                             </td>
-                            <td class="student-email">{{ s.email }}</td>
+                            <td class="student-email">
+                               <ul>
+                                <li>{{ s.email }} </li>
+                                <li>{{ s.phone }}</li>
+                               </ul> 
+                               
+                            </td>
                             <td>
                                 <span class="grade-badge grade-{{ s.grade }}">
                                     Grade {{ s.grade }}

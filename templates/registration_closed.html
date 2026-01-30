@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Closed - Edu Boost Up</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-light: #6a7ef0;
+            --primary-dark: #2a4bd4;
+            --secondary: #3a0ca3;
+            --secondary-light: #4f1bc6;
+            --accent: #7209b7;
+            --accent-light: #8b2bd0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --warning: #f72585;
+            --text-light: #6c757d;
+            --text-lighter: #adb5bd;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .logo img {
+            height: 80px;
+            width: auto;
+            border-radius: 12px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .registration-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 6px solid var(--warning);
+            margin-bottom: 2rem;
+        }
+
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(247, 37, 133, 0.1), rgba(114, 9, 183, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+
+        .icon-container i {
+            font-size: 3rem;
+            color: var(--warning);
+        }
+
+        .registration-card h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .message-box {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .message-box p {
+            color: var(--dark);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .next-term-info {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .next-term-info h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .info-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .contact-info h4 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .contact-details {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .contact-item i {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .registration-card {
+                padding: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .registration-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .icon-container {
+                width: 80px;
+                height: 80px;
+            }
+
+            .icon-container i {
+                font-size: 2.5rem;
+            }
+
+            .contact-details {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
+            </div>
+            <h1>Edu Boost Up</h1>
+            <p>Quality Education for Grades 10-12</p>
+        </div>
+
+        <div class="registration-card">
+            <div class="icon-container">
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <h2>Registration Currently Closed</h2>
+            
+            <div class="message-box">
+                <p>{{ message }}</p>
+            </div>
+
+            <div class="next-term-info">
+                <h3><i class="fas fa-calendar-alt"></i> Next Term Information</h3>
+                <p>We will be opening registrations for the next academic term. Here's what you can expect:</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Registration opens: Beginning of next term</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-book"></i>
+                        <span>Subjects: Math, Physics, Accounting & more</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Grades: 10, 11 & 12</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Experienced mentors</span>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Return to Homepage
+                </a>
+                <a href="/login" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i> Existing Student Login
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: var(--text-light); margin-top: 2rem;">
+            <p>&copy; 2026 Edu Boost Up. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-check for registration status every 5 minutes
+        setInterval(() => {
+            fetch('/check-registration-status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'open') {
+                        // If registration opens, redirect to signup
+                        window.location.href = '/signup';
+                    }
+                })
+                .catch(error => console.error('Error checking status:', error));
+        }, 300000); // 5 minutes
+
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageBox = document.querySelector('.message-box');
+            messageBox.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+            });
+            
+            messageBox.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
