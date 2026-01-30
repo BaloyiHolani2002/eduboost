@@ -47,11 +47,8 @@ LOCAL_DB = {
 # ===========================================================
 scheduler = APScheduler()
 scheduler.init_app(app)
+scheduler.start()  # Start scheduler immediately
 
-@app.before_serving
-def start_scheduler():
-    if not scheduler.running:
-        scheduler.start()
 
 # ===========================================================
 # DATABASE CONNECTION HANDLER (LOCAL OR RAILWAY)
@@ -1874,13 +1871,13 @@ def admin_edit_mentor(mentor_id):
         return redirect('/admin/mentors')
 
     if request.method == 'POST':
-        name = request.form.get('name')
-        surname = request.form.get('surname')
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        subject_speciality = request.form.get('subject_speciality')
-        bio = request.form.get('bio')
-        status = request.form.get('status')
+        name = request.form.get("name")
+        surname = request.form.get("surname")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        subject_speciality = request.form.get("subject_speciality")
+        bio = request.form.get("bio")
+        status = request.form.get("status")
 
         # Handle profile image upload
         file = request.files.get('profile_image')
@@ -2212,4 +2209,5 @@ def logout():
 if __name__ == '__main__':
     # Create upload folder if it doesn't exist
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
     app.run(debug=True, port=5000)
