@@ -47,7 +47,11 @@ LOCAL_DB = {
 # ===========================================================
 scheduler = APScheduler()
 scheduler.init_app(app)
-scheduler.start()
+
+@app.before_first_request
+def start_scheduler():
+    if not scheduler.running:
+        scheduler.start()
 
 
 # ===========================================================
