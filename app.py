@@ -48,11 +48,10 @@ LOCAL_DB = {
 scheduler = APScheduler()
 scheduler.init_app(app)
 
-@app.before_first_request
+@app.before_serving
 def start_scheduler():
     if not scheduler.running:
         scheduler.start()
-
 
 # ===========================================================
 # DATABASE CONNECTION HANDLER (LOCAL OR RAILWAY)
