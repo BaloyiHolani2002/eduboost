@@ -383,7 +383,6 @@
             padding: 2.5rem;
             box-shadow: var(--shadow);
             margin-bottom: 2rem;
-            position: relative;
         }
 
         .alert {
@@ -468,133 +467,25 @@
             box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
         }
 
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        /* File Input Styling */
+        input[type="file"] {
+            padding: 0.8rem;
         }
 
-        /* Success Message Styles */
-        .success-container {
-            text-align: center;
-            padding: 3rem 2rem;
-            display: none;
-        }
-
-        .success-container.show {
-            display: block;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .form-content {
-            display: block;
-        }
-
-        .form-content.hide {
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .success-icon {
-            font-size: 5rem;
-            color: var(--success);
-            margin-bottom: 1.5rem;
-            animation: successPulse 2s infinite;
-        }
-
-        @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .success-message {
-            font-size: 2rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .success-details {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .countdown-timer {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(67, 97, 238, 0.1);
+        input[type="file"]::file-selector-button {
+            background: var(--light);
+            border: 2px solid var(--light);
+            padding: 0.5rem 1rem;
             border-radius: var(--border-radius);
-            display: inline-block;
-            min-width: 200px;
+            margin-right: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
         }
 
-        .countdown-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .redirect-message {
-            color: var(--text-light);
-            margin-top: 1.5rem;
-            font-size: 1rem;
-        }
-
-        .redirect-message a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .redirect-message a:hover {
-            text-decoration: underline;
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            display: none;
-        }
-
-        .loading-overlay.show {
-            display: flex;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--light);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        input[type="file"]::file-selector-button:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: white;
         }
 
         /* Footer */
@@ -792,14 +683,6 @@
                 gap: 0.5rem;
             }
 
-            .success-message {
-                font-size: 1.5rem;
-            }
-
-            .success-details {
-                font-size: 1rem;
-            }
-
             .footer-content {
                 text-align: center;
             }
@@ -853,23 +736,6 @@
             .sidebar {
                 padding: 1.5rem;
             }
-
-            .success-container {
-                padding: 2rem 1rem;
-            }
-
-            .success-message {
-                font-size: 1.3rem;
-            }
-
-            .countdown-timer {
-                font-size: 1.2rem;
-                min-width: 150px;
-            }
-
-            .countdown-number {
-                font-size: 2rem;
-            }
         }
 
         /* iPad specific adjustments */
@@ -885,11 +751,6 @@
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-    </div>
-
     <!-- Floating Background Shapes -->
     <div class="floating-shapes">
         <div class="shape"></div>
@@ -914,12 +775,12 @@
 
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="/student/dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                {% if days_remaining > 0 %}
+                <li><a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                {% if days_remaining and days_remaining > 0 %}
                 <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
                 <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
-                <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
                 {% endif %}
+                <li><a href="/student/request" class="active"><i class="fas fa-paper-plane"></i> Send Request</a></li>
                 <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
                 <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
                 <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -994,113 +855,53 @@
 
         <!-- Form Container -->
         <div class="form-container">
-            <div class="form-content" id="formContent">
-                <form method="POST" enctype="multipart/form-data" id="requestForm">
-                    <div class="mb-4">
-                        <label for="mentor_id" class="form-label">Select Mentor</label>
-                        <select class="form-select" name="mentor_id" id="mentor_id" required>
-                            <option value="" disabled selected>-- Choose Mentor --</option>
-                            {% for m in mentors %}
-                            <option value="{{ m.mentor_id }}">{{ m.name }} {{ m.surname }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
 
-                    <div class="mb-4">
-                        <label for="topic" class="form-label">Topic</label>
-                        <input type="text" class="form-control" name="topic" id="topic" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="request_type" class="form-label">Request Type</label>
-                        <select class="form-select" name="request_type" id="request_type" required>
-                            <option value="lesson">Lesson</option>
-                            <option value="clarification">Clarification</option>
-                            <option value="material">Study Material</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" name="message" id="message" rows="4" required></textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="pdf" class="form-label">Attach PDF (optional)</label>
-                        <input type="file" class="form-control" name="pdf" id="pdf" accept=".pdf">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        <i class="fas fa-paper-plane me-2"></i>Send Request
-                    </button>
-                </form>
-            </div>
-
-            <!-- Success Message (Hidden by default) -->
-            <div class="success-container" id="successContainer">
-                <div class="success-icon">
-                    <i class="fas fa-check-circle"></i>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="mentor_id" class="form-label">Select Mentor</label>
+                    <select class="form-select" name="mentor_id" id="mentor_id" required>
+                        <option value="" disabled selected>-- Choose Mentor --</option>
+                        {% for m in mentors %}
+                        <option value="{{ m.mentor_id }}">{{ m.name }} {{ m.surname }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <h2 class="success-message">Request Sent Successfully!</h2>
-                <p class="success-details">
-                    Your request has been sent to the selected mentor. They will review your request 
-                    and get back to you shortly. You will receive a notification when they respond.
-                </p>
-                
-                <div class="countdown-timer">
-                    <span class="countdown-number" id="countdown">15</span>
-                    <span>seconds until redirect</span>
+
+                <div class="mb-4">
+                    <label for="topic" class="form-label">Topic</label>
+                    <input type="text" class="form-control" name="topic" id="topic" required>
                 </div>
-                
-                <p class="redirect-message">
-                    You will be automatically redirected to the dashboard. 
-                    <br>
-                    <a href="/student/dashboard" id="redirectLink">Click here</a> if you don't want to wait.
-                </p>
-            </div>
+
+                <div class="mb-4">
+                    <label for="request_type" class="form-label">Request Type</label>
+                    <select class="form-select" name="request_type" id="request_type" required>
+                        <option value="lesson">Lesson</option>
+                        <option value="clarification">Clarification</option>
+                        <option value="material">Study Material</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" name="message" id="message" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="pdf" class="form-label">Attach PDF (optional)</label>
+                    <input type="file" class="form-control" name="pdf" id="pdf" accept=".pdf">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Send Request
+                </button>
+            </form>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>About Us</h3>
-                    <p>Edu Boost Up is a premier online education platform connecting students with expert mentors for personalized learning experiences.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/about"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                        <li><a href="/services"><i class="fas fa-chevron-right"></i> Services</a></li>
-                        <li><a href="/contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
-                        <li><a href="/privacy"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Info</h3>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> info@eduboostup.com</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Learning City</li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Follow Us</h3>
-                    <div class="social-share">
-                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 Edu Boost Up. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+   
 
     <script>
         // Sidebar functionality
@@ -1109,12 +910,6 @@
             const closeSidebar = document.getElementById('closeSidebar');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const requestForm = document.getElementById('requestForm');
-            const formContent = document.getElementById('formContent');
-            const successContainer = document.getElementById('successContainer');
-            const submitBtn = document.getElementById('submitBtn');
-            const redirectLink = document.getElementById('redirectLink');
             
             // Open sidebar
             menuToggle.addEventListener('click', function() {
@@ -1175,96 +970,6 @@
                 messageTextarea.addEventListener('input', function() {
                     counter.textContent = this.value.length + ' characters';
                 });
-            }
-
-            // Handle form submission
-            if (requestForm) {
-                requestForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Show loading overlay
-                    loadingOverlay.classList.add('show');
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
-                    
-                    // Simulate form submission (replace with actual AJAX call to your backend)
-                    setTimeout(function() {
-                        // Hide loading overlay
-                        loadingOverlay.classList.remove('show');
-                        
-                        // Hide form and show success message
-                        formContent.classList.add('hide');
-                        successContainer.classList.add('show');
-                        
-                        // Start countdown timer
-                        startCountdown();
-                        
-                        // You can also submit the form via AJAX here
-                        // For now, we'll just simulate success
-                        console.log('Form submitted successfully');
-                        
-                    }, 1500); // Simulate 1.5 second loading time
-                    
-                    // If you want to actually submit the form via AJAX:
-                    /*
-                    const formData = new FormData(requestForm);
-                    fetch('/student/request', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        loadingOverlay.classList.remove('show');
-                        if (data.success) {
-                            formContent.classList.add('hide');
-                            successContainer.classList.add('show');
-                            startCountdown();
-                        } else {
-                            // Show error message
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send Request';
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        loadingOverlay.classList.remove('show');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send Request';
-                        console.error('Error:', error);
-                    });
-                    */
-                });
-            }
-            
-            // Countdown timer function
-            function startCountdown() {
-                let seconds = 15;
-                const countdownElement = document.getElementById('countdown');
-                
-                const countdownInterval = setInterval(function() {
-                    seconds--;
-                    countdownElement.textContent = seconds;
-                    
-                    if (seconds <= 0) {
-                        clearInterval(countdownInterval);
-                        window.location.href = '/student/dashboard';
-                    }
-                }, 1000);
-                
-                // Manual redirect link
-                redirectLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    clearInterval(countdownInterval);
-                    window.location.href = '/student/dashboard';
-                });
-            }
-            
-            // If there's already a success message from server (for non-JS fallback)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('success')) {
-                formContent.classList.add('hide');
-                successContainer.classList.add('show');
-                startCountdown();
             }
         });
     </script>
