@@ -543,7 +543,7 @@ def reset_password():
 
 
 # ===========================================================
-#  STUDENT DESHBOARD AND FANTIONALITIES
+#  STUDENT DASHBOARD AND FUNCTIONALITIES
 # ===========================================================
 # ------------------------------
 # STUDENT DASHBOARD
@@ -677,6 +677,7 @@ def student_profile():
 
 @app.route("/student/classes")
 def student_classes():
+    # FIXED: Added missing days_remaining and student object
     if 'user_role' not in session or session['user_role'] != 'student':
         return redirect('/login')
 
@@ -687,6 +688,25 @@ def student_classes():
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
+        # Get student details
+        cur.execute("SELECT * FROM Student WHERE student_id = %s", (student_id,))
+        student = cur.fetchone()
+
+        if not student:
+            session.clear()
+            return redirect('/login')
+
+        # Get enrollment for days_remaining
+        cur.execute("""
+            SELECT days_remaining FROM Enrollment
+            WHERE student_id = %s AND status = 'active'
+            ORDER BY enrollment_id DESC LIMIT 1
+        """, (student_id,))
+        enroll = cur.fetchone()
+
+        days_remaining = enroll['days_remaining'] if enroll else 0
+
+        # Get classes for the student's grade
         cur.execute("""
             SELECT C.class_id, C.title, C.topic, C.type, C.start_time,
                    C.duration, C.upload_date, C.link,
@@ -701,7 +721,12 @@ def student_classes():
         cur.close()
         conn.close()
 
-    return render_template("student_classes.html", classes=classes)
+    # FIXED: Now passing all required variables
+    return render_template("student_classes.html", 
+                         classes=classes, 
+                         student=student,
+                         days_remaining=days_remaining,
+                         grade=grade)
 
 
 @app.route("/student/courses/<string:subject>/contents")
@@ -718,18 +743,32 @@ def student_course_contents(subject):
 
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
-        # Get student's grade
+        # Get student's grade and info
         cur.execute("""
-            SELECT grade
+            SELECT name, surname, grade
             FROM Student
             WHERE student_id = %s AND status='active'
             LIMIT 1
         """, (student_id,))
-        grade_result = cur.fetchone()
-        if not grade_result:
+        student_result = cur.fetchone()
+        if not student_result:
             return "❌ Student not found or inactive", 404
 
-        grade = grade_result['grade']
+        grade = student_result['grade']
+        student = {
+            'name': student_result['name'],
+            'surname': student_result['surname'],
+            'grade': grade
+        }
+
+        # Get enrollment for days_remaining
+        cur.execute("""
+            SELECT days_remaining FROM Enrollment
+            WHERE student_id = %s AND status = 'active'
+            ORDER BY enrollment_id DESC LIMIT 1
+        """, (student_id,))
+        enroll = cur.fetchone()
+        days_remaining = enroll['days_remaining'] if enroll else 0
 
         # Get all content for this subject and grade
         cur.execute("""
@@ -763,7 +802,9 @@ def student_course_contents(subject):
         subject=subject,
         grade=grade,
         contents=contents,
-        content_links=content_links
+        content_links=content_links,
+        student=student,
+        days_remaining=days_remaining
     )
 
 
@@ -801,6 +842,8 @@ def student_courses():
         if not enrollment or enrollment['days_remaining'] <= 0:
             return redirect('/student/payment?expired=1')
 
+        days_remaining = enrollment['days_remaining']
+
         # 3️⃣ Get distinct subjects for the student's grade
         cur.execute("""
             SELECT DISTINCT subject
@@ -814,20 +857,17 @@ def student_courses():
         print(f"Error fetching courses: {e}")
         subjects = []
         student = None
-        enrollment = None
+        days_remaining = 0
     finally:
         cur.close()
         conn.close()
-
-    # Calculate days_remaining
-    days_remaining = enrollment['days_remaining'] if enrollment else 0
 
     return render_template(
         "student_courses.html", 
         subjects=subjects, 
         grade=grade,
-        student=student,  # Add student object
-        days_remaining=days_remaining  # Add days_remaining
+        student=student,
+        days_remaining=days_remaining
     )
 
 @app.route("/student/request", methods=['GET', 'POST'])
@@ -836,12 +876,30 @@ def student_request():
     if 'user_role' not in session or session['user_role'] != 'student' or 'user_id' not in session:
         return redirect('/login')
 
-    student_id = session['user_id']  # use consistent session key
+    student_id = session['user_id']
+    grade = session.get('grade')
 
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
+        # Get student details for sidebar
+        cur.execute("SELECT * FROM Student WHERE student_id = %s", (student_id,))
+        student = cur.fetchone()
+
+        if not student:
+            session.clear()
+            return redirect('/login')
+
+        # Get enrollment for days_remaining
+        cur.execute("""
+            SELECT days_remaining FROM Enrollment
+            WHERE student_id = %s AND status = 'active'
+            ORDER BY enrollment_id DESC LIMIT 1
+        """, (student_id,))
+        enroll = cur.fetchone()
+        days_remaining = enroll['days_remaining'] if enroll else 0
+
         # 2️⃣ Fetch all active mentors for dropdown
         cur.execute("""
             SELECT mentor_id, name, surname 
@@ -874,19 +932,30 @@ def student_request():
             """, (student_id, mentor_id, topic, message, request_type, pdf_file_url))
             conn.commit()
 
-            flash("Request sent successfully!", "success")
-            return render_template("student_dashboard.html", mentors=mentors, success=True)
+            # 5️⃣ Pass success flag to template
+            success = True
+            return render_template("student_request.html", 
+                                 mentors=mentors, 
+                                 student=student,
+                                 days_remaining=days_remaining,
+                                 success=success)
 
     except Exception as e:
         print(f"Error sending request: {e}")
         flash("Failed to send request. Please try again.", "error")
+        success = False
 
     finally:
         cur.close()
         conn.close()
 
     # 5️⃣ Render the form if GET or POST fails
-    return render_template("student_request.html", mentors=mentors)
+    success = request.args.get('success') == 'true'
+    return render_template("student_request.html", 
+                         mentors=mentors, 
+                         student=student,
+                         days_remaining=days_remaining,
+                         success=success)
 
 @app.route("/student/enrollment")
 def student_enrollment():
@@ -894,11 +963,20 @@ def student_enrollment():
         return redirect('/login')
 
     student_id = session['user_id']
+    grade = session.get('grade')
 
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
+        # Get student details
+        cur.execute("SELECT name, surname FROM Student WHERE student_id = %s", (student_id,))
+        student = cur.fetchone()
+
+        if not student:
+            session.clear()
+            return redirect('/login')
+
         # Get enrollment info with student details
         cur.execute("""
             SELECT e.enrollment_id, e.days_remaining, e.status, e.last_updated AS enrollment_date,
@@ -911,34 +989,27 @@ def student_enrollment():
         """, (student_id,))
         enrollment = cur.fetchone()
 
+        if not enrollment:
+            # No enrollment found - redirect to payment
+            return redirect("/student/payment?no_enrollment=1")
+        
+        if enrollment["status"] != "active" or enrollment["days_remaining"] <= 0:
+            # Enrollment expired - redirect to payment
+            return redirect("/student/payment?expired=1")
+
+        days_remaining = enrollment["days_remaining"]
+
     finally:
         cur.close()
         conn.close()
-
-    # ✅ ADD THIS EXPIRATION CHECK
-    if not enrollment:
-        # No enrollment found - redirect to payment
-        return redirect("/student/payment?no_enrollment=1")
-    
-    if enrollment["status"] != "active" or enrollment["days_remaining"] <= 0:
-        # Enrollment expired - redirect to payment
-        return redirect("/student/payment?expired=1")
-
-    # Create student object from enrollment data
-    student = {
-        "name": enrollment["name"],
-        "surname": enrollment["surname"],
-        "grade": enrollment["grade"]
-    }
-    
-    days_remaining = enrollment["days_remaining"]
 
     # ✅ Pass all required variables to template
     return render_template(
         "student_enrollment.html",
         student=student,
-        enrollments=[enrollment],
+        enrollment=enrollment,
         days_remaining=days_remaining,
+        grade=grade,
         payment_info={
             "bank_name": "ABSA\n/ CAPITEC",
             "account_name": "EduBoost / Baloyi",
@@ -955,6 +1026,7 @@ def student_payment():
         return redirect('/login')
     
     student_id = session['user_id']
+    grade = session.get('grade')
     
     # Check why they're redirected here
     expired = request.args.get('expired')
@@ -977,6 +1049,8 @@ def student_payment():
             LIMIT 1
         """, (student_id,))
         enrollment = cur.fetchone()
+        
+        days_remaining = enrollment['days_remaining'] if enrollment else 0
         
     finally:
         cur.close()
@@ -1006,12 +1080,14 @@ def student_payment():
         student=student,
         title=title,
         message=message,
-        payment_info=payment_info
+        payment_info=payment_info,
+        days_remaining=days_remaining,
+        grade=grade
     )
 
 
 # ===========================================================
-#  MENTORS DESHBOARD AND FANTIONALITIES
+#  MENTORS DASHBOARD AND FUNCTIONALITIES
 # ===========================================================
 # ------------------------------
 # MENTORS DASHBOARD
@@ -1618,7 +1694,7 @@ def mentor_delete_class(class_id):
 
 
 # ===========================================================
-#  ADMIN DESHBOARD AND FANTIONALITIES
+#  ADMIN DASHBOARD AND FUNCTIONALITIES
 # ===========================================================
 # ------------------------------
 # ADMIN DASHBOARD

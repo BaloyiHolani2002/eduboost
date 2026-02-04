@@ -803,13 +803,12 @@
 
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="/student/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
                 {% if days_remaining > 0 %}
-                <li><a href="/student/dashboard/courses" class="active"><i class="fas fa-book-open"></i> My Courses</a>
-                </li>
+                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
                 <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
-                {% endif %}
                 <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
+                {% endif %}
                 <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
                 <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
                 <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -863,7 +862,6 @@
                     <!-- Course Progress Indicator -->
                     <div class="course-progress">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ [25, 50, 75, 100] | random }}%"></div>
                         </div>
                         <div class="progress-text">{{ [25, 50, 75, 100] | random }}%</div>
                     </div>
