@@ -4,13 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edu Boost Up - Empowering Your Academic Journey</title>
+    <title>Edu Boost Up – Maths Support Now Open</title>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         * {
             margin: 0;
@@ -42,189 +41,28 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --border-radius: 12px;
             --border-radius-lg: 20px;
-            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
-            --gradient-success: linear-gradient(135deg, var(--success), #2dd4bf);
-            --gradient-warning: linear-gradient(135deg, var(--warning), #ff4da6);
-        }
-
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
+            background-color: #f5f7fb;
             color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.1;
-            animation: float 20s infinite linear;
-        }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: -5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
-        }
-
         .container {
-            width: 100%;
+            width: 90%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background: white;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #f1f3f4;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sidebar-logo img {
-            height: 40px;
-            width: auto;
-            border-radius: 8px;
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.4rem;
-            color: var(--secondary);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-sidebar:hover {
-            color: var(--primary);
-            transform: rotate(90deg);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-nav li {
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-nav a {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: var(--dark);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .sidebar-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: auto;
+            padding: 0 15px;
         }
 
         /* Header Styles */
         header {
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 1.5rem 0;
-            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -240,229 +78,300 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            transition: var(--transition);
-        }
-
-        .logo:hover {
-            transform: translateY(-2px);
+            gap: 10px;
         }
 
         .logo img {
             height: 50px;
             width: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
 
         .logo h1 {
             font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(135deg, white, #e6ecff);
+            background: linear-gradient(to right, #fff, #e0e7ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Menu Toggle Button */
-        .menu-toggle {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: var(--transition);
+        nav ul {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            list-style: none;
+            gap: 1.5rem;
         }
 
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: white;
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::after {
+            width: 80%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
         }
 
         .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 50px;
-            text-decoration: none;
             font-weight: 600;
-            transition: var(--transition);
-            text-align: center;
             cursor: pointer;
+            transition: var(--transition);
             border: none;
-            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .btn:before {
+        .btn::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
         }
 
-        .btn:hover:before {
+        .btn:hover::before {
             left: 100%;
         }
 
         .btn-primary {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
         }
 
         .btn-outline {
-            background: transparent;
+            background-color: transparent;
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            border: 2px solid white;
         }
 
         .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: white;
-            transform: translateY(-3px);
+            background-color: white;
+            color: var(--primary);
         }
 
         .btn-large {
-            padding: 1.2rem 2.5rem;
+            padding: 0.8rem 2rem;
             font-size: 1.1rem;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
         }
 
         /* Hero Section */
         .hero {
-            padding: 6rem 0;
+            padding: 5rem 0;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(58, 12, 163, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
         .hero-content {
             position: relative;
-            z-index: 2;
-        }
-
-        .trial-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--gradient-success);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero h2 {
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-size: 3rem;
             margin-bottom: 1.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             line-height: 1.2;
+            font-weight: 700;
         }
 
         .hero p {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto 3rem;
+            font-size: 1.2rem;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
         }
 
-        /* Section Styles */
-        section {
-            padding: 5rem 0;
+        /* Notice Banner */
+        .notice-banner {
+            background: #f72585;
+            color: white;
+            padding: 1rem;
+            border-radius: 60px;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
+        .notice-banner i {
+            margin-right: 0.5rem;
+        }
+
+        /* Important Alert Section */
+        .important-alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            text-align: left;
+            box-shadow: var(--shadow);
+        }
+
+        .important-alert h3 {
+            color: #856404;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .important-alert ul {
+            list-style: none;
+        }
+
+        .important-alert li {
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ffe69c;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .important-alert li:last-child {
+            border-bottom: none;
+        }
+
+        .important-alert .price-highlight {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2a4bd4;
+        }
+
+        .contact-now {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Features Section */
         .section-title {
             text-align: center;
             margin-bottom: 3rem;
         }
 
         .section-title h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-size: 2.2rem;
             color: var(--secondary);
             margin-bottom: 1rem;
             position: relative;
             display: inline-block;
         }
 
-        .section-title h2:after {
+        .section-title h2::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
+            width: 60%;
             height: 4px;
-            background: var(--gradient-primary);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            bottom: -10px;
+            left: 20%;
             border-radius: 2px;
         }
 
         .section-title p {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--text-light);
             max-width: 700px;
-            margin: 0 auto;
+            margin: 1.5rem auto 0;
         }
 
-        /* Features Section */
+        .features {
+            padding: 5rem 0;
+        }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
 
         .feature-card {
             background: white;
-            border-radius: var(--border-radius-lg);
-            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
             box-shadow: var(--shadow);
             transition: var(--transition);
             text-align: center;
+            border: 1px solid #e9ecef;
             position: relative;
             overflow: hidden;
         }
 
-        .feature-card:before {
+        .feature-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 5px;
-            background: var(--gradient-primary);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
         .feature-card:hover {
@@ -473,7 +382,7 @@
         .feature-icon {
             width: 80px;
             height: 80px;
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -481,7 +390,6 @@
             margin: 0 auto 1.5rem;
             color: white;
             font-size: 2rem;
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
             transition: var(--transition);
         }
 
@@ -491,80 +399,53 @@
 
         .feature-card h3 {
             font-size: 1.5rem;
-            color: var(--secondary);
             margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: var(--text-light);
-            line-height: 1.6;
+            color: var(--secondary);
         }
 
         /* Pricing Section */
+        .pricing {
+            padding: 5rem 0;
+            text-align: center;
+        }
+
         .pricing-card {
             background: white;
             border-radius: var(--border-radius-lg);
-            padding: 3rem;
+            padding: 3rem 2rem;
             box-shadow: var(--shadow);
             max-width: 500px;
             margin: 0 auto;
-            text-align: center;
             position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary);
             transition: var(--transition);
         }
 
         .pricing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--gradient-warning);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 10px rgba(247, 37, 133, 0.3);
-        }
-
-        .pricing-card h3 {
-            font-size: 1.8rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
+            transform: translateY(-10px);
         }
 
         .price {
-            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin: 1rem 0;
         }
 
         .price span {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: var(--text-light);
-            font-weight: 500;
-        }
-
-        .pricing-card>p {
-            color: var(--text-light);
-            margin-bottom: 2rem;
         }
 
         .price-details {
-            list-style: none;
-            margin-bottom: 2.5rem;
+            margin: 2rem 0;
             text-align: left;
         }
 
         .price-details li {
             padding: 0.8rem 0;
-            border-bottom: 1px solid #f1f3f4;
+            border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -579,71 +460,82 @@
             font-size: 1.2rem;
         }
 
+        .pricing .btn {
+            margin: 0.5rem;
+        }
+
         /* Subjects Section */
+        .subjects {
+            padding: 5rem 0;
+            background-color: var(--light);
+        }
+
         .subjects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
         }
 
         .subject-card {
             background: white;
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            position: relative;
+            border: 1px solid #e9ecef;
+            opacity: 0.9;
+        }
+
+        .subject-card.closed {
+            filter: grayscale(0.8);
+            opacity: 0.7;
         }
 
         .subject-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-hover);
         }
 
         .subject-header {
             padding: 2rem;
             color: white;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .subject-header:before {
+        .subject-header::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s;
+            background: rgba(0,0,0,0.1);
         }
 
-        .subject-card:hover .subject-header:before {
-            transform: translateX(100%);
-        }
-
-        .subject-header.math {
+        .math {
             background: linear-gradient(135deg, var(--math), #ff8e8e);
         }
 
-        .subject-header.accounting {
-            background: linear-gradient(135deg, var(--accounting), #6ae0d5);
+        .accounting {
+            background: linear-gradient(135deg, var(--accounting), #7ae0da);
         }
 
-        .subject-header.science {
-            background: linear-gradient(135deg, var(--science), #6bb5f5);
+        .science {
+            background: linear-gradient(135deg, var(--science), #6bb9ff);
         }
 
         .subject-header i {
-            font-size: 2rem;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .subject-header h3 {
-            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .subject-content {
@@ -651,8 +543,7 @@
         }
 
         .subject-content p {
-            color: var(--text-light);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .subject-content ul {
@@ -661,334 +552,223 @@
 
         .subject-content li {
             padding: 0.5rem 0;
-            color: var(--text-light);
-            position: relative;
-            padding-left: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .subject-content li:before {
-            content: "•";
-            color: var(--primary);
+            content: "✓";
+            color: var(--success);
             font-weight: bold;
-            position: absolute;
-            left: 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .status.open {
+            background: #28a745;
+            color: white;
+        }
+
+        .status.closed {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Contact Bar */
+        .contact-bar {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .contact-bar i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: var(--success);
+        }
+
+        .contact-bar a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid var(--success);
         }
 
         /* CTA Section */
         .cta {
-            background: var(--gradient-primary);
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
             color: white;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .cta:before {
+        .cta::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
         }
 
         .cta-content {
-            padding: 4rem 2rem;
             position: relative;
-            z-index: 2;
+            z-index: 1;
         }
 
         .cta h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-size: 2.5rem;
             margin-bottom: 1.5rem;
         }
 
         .cta p {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            margin-bottom: 2.5rem;
-            opacity: 0.9;
+            font-size: 1.2rem;
             max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
         }
 
-        .cta .btn-outline {
-            border-color: white;
-            color: white;
-        }
-
-        .cta .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .cta .btn {
+            margin: 0.5rem;
         }
 
         /* Footer */
         footer {
-            background: var(--dark);
+            background-color: var(--dark);
             color: white;
-            padding: 4rem 0 2rem;
+            padding: 3rem 0 1.5rem;
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .footer-column h3 {
             font-size: 1.3rem;
             margin-bottom: 1.5rem;
-            color: white;
             position: relative;
-            display: inline-block;
+            padding-bottom: 0.5rem;
         }
 
-        .footer-column h3:after {
+        .footer-column h3::after {
             content: '';
             position: absolute;
-            bottom: -8px;
             left: 0;
-            width: 40px;
+            bottom: 0;
+            width: 50px;
             height: 3px;
             background: var(--primary);
-            border-radius: 2px;
-        }
-
-        .footer-column p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
         }
 
         .footer-column ul {
             list-style: none;
         }
 
-        .footer-column li {
+        .footer-column ul li {
             margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .footer-column a {
-            color: rgba(255, 255, 255, 0.7);
+            color: #adb5bd;
             text-decoration: none;
-            transition: var(--transition);
+            transition: color 0.3s ease;
         }
 
         .footer-column a:hover {
             color: white;
-            transform: translateX(5px);
-        }
-
-        .footer-column li i {
-            width: 20px;
-            margin-right: 0.5rem;
-        }
-
-        .social-share {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .social-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-3px);
-            background: var(--primary);
         }
 
         .copyright {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
+            padding-top: 1.5rem;
+            border-top: 1px solid #495057;
+            color: #adb5bd;
             font-size: 0.9rem;
         }
 
-        /* Overlay for sidebar */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
+        .staff-login {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #495057;
         }
 
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .staff-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .staff-link {
+            color: #adb5bd;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .staff-link:hover {
+            color: white;
+            text-decoration: underline;
         }
 
         /* Responsive Design */
-        @media (max-width: 1024px) {
-            .container {
-                padding: 0 1.5rem;
-            }
-        }
-
         @media (max-width: 768px) {
-            .sidebar {
-                width: 300px;
-                right: -300px;
-            }
-
-            .hero {
-                padding: 4rem 0;
-            }
-
-            section {
-                padding: 3rem 0;
-            }
-
-            .feature-card,
-            .subject-card,
-            .pricing-card {
-                padding: 1.5rem;
-            }
-
-            .feature-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-
-            .cta-content {
-                padding: 3rem 1rem;
-            }
-
-            .footer-content {
-                text-align: center;
-            }
-
-            .footer-column h3:after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            .social-share {
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 1rem;
-            }
-
             .header-content {
+                flex-direction: column;
                 gap: 1rem;
             }
 
-            .logo {
-                flex-direction: row;
-                text-align: left;
-            }
-
-            .logo h1 {
-                font-size: 1.5rem;
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .hero h2 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .feature-card,
-            .subject-card,
-            .pricing-card {
-                padding: 1.5rem;
+                font-size: 2.2rem;
             }
 
             .price {
                 font-size: 2.5rem;
             }
 
-            .cta h2 {
-                font-size: 1.8rem;
+            .staff-links {
+                flex-direction: column;
+                gap: 1rem;
             }
 
-            .cta p {
-                font-size: 1rem;
-            }
-        }
-
-        /* iPad specific adjustments */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                padding: 0 2rem;
-            }
-
-            .features-grid,
-            .subjects-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
+            .important-alert h3 {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Floating Background Shapes -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
-                <h2>Edu Boost Up</h2>
-            </div>
-            <button class="close-sidebar" id="closeSidebar">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#subjects">Subjects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-
-        <div class="sidebar-buttons">
-            <a href="/login" class="btn btn-primary">Log In</a>
-            <a href="/signup" style="background: green;" class="btn btn-outline">Sign Up</a>
-        </div>
-    </aside>
-
     <!-- Header -->
     <header>
         <div class="container">
@@ -997,10 +777,11 @@
                     <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
                     <h1>Edu Boost Up</h1>
                 </div>
-
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                
+                <div class="auth-buttons">
+                    <a href="/login" class="btn btn-outline">Log In</a>
+                    <a href="/signup" class="btn btn-primary">Sign Up</a>
+                </div>
             </div>
         </div>
     </header>
@@ -1009,47 +790,55 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <div class="trial-badge">
-                    <i class="fas fa-star"></i> 20 DAYS FREE TRIAL
+                <div class="notice-banner">
+                    <i class="fas fa-exclamation-triangle"></i> NO FREE TRIAL CLASSES – Maths Only
                 </div>
-                <h2>Empowering Grade 10-12 Students to Excel</h2>
-                <p>Access quality learning materials, request extra classes, and get personalized support in
-                    Mathematics,
-                    Accounting, and Physical Science.</p>
-                <a href="/signup" style="background: rgb(240, 247, 182);"  class="btn btn-primary btn-large">Start Your Free Trial</a>
+                <h2>Struggling with Maths? We're here to help.</h2>
+                <p>Focused Mathematics support for Grade 10-12 students. Simple, clear explanations and patient guidance at an affordable price.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
+                </div>
             </div>
         </div>
     </section>
 
+  
+
     <!-- Features Section -->
-    <section class="features" id="features">
+    <section class="features">
         <div class="container">
             <div class="section-title">
                 <h2>Why Choose Edu Boost Up?</h2>
-                <p>We provide comprehensive learning solutions designed specifically for South African high school
-                    students</p>
+                <p>We provide focused Mathematics support to help you improve, grow, and succeed.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-book-open"></i>
+                        <i class="fas fa-calculator"></i>
                     </div>
-                    <h3>Comprehensive Materials</h3>
-                    <p>Access a wide range of study guides, practice problems, and exam preparation resources.</p>
+                    <h3>Focused Maths Support</h3>
+                    <p>Specialised help in Mathematics – no distractions, just what you need.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <h3>Expert Mentors</h3>
-                    <p>Learn from experienced educators who provide personalized guidance and support.</p>
+                    <h3>Simple & Clear Explanations</h3>
+                    <p>Concepts broken down into easy‑to‑understand steps.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-user-clock"></i>
+                        <i class="fas fa-heart"></i>
                     </div>
-                    <h3>Flexible Learning</h3>
-                    <p>Study at your own pace with 24/7 access to all learning materials and resources.</p>
+                    <h3>Patient Guidance</h3>
+                    <p>Learn at your own pace with a mentor who listens.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3>Affordable Quality Education</h3>
+                    <p>Only R60 – premium support without the premium price.</p>
                 </div>
             </div>
         </div>
@@ -1060,23 +849,24 @@
         <div class="container">
             <div class="section-title">
                 <h2>Simple, Affordable Pricing</h2>
-                <p>Start with a 20-day free trial, then continue for only R60 per month</p>
+                <p>Just R60 – no trials, no hidden fees. Maths support only.</p>
             </div>
             <div class="pricing-card">
-                <div class="pricing-badge">POPULAR</div>
-                <h3>Student Premium</h3>
                 <div class="price">R60<span>/month</span></div>
-                <p>After 20-day free trial </p>
+                <p><strong>Mathematics Only</strong> (Physics & Accounting closed)</p>
 
                 <ul class="price-details">
-                    <li><i class="fas fa-check"></i> Full access to all subjects</li>
-                    <li><i class="fas fa-check"></i> Request extra classes</li>
-                    <li><i class="fas fa-check"></i> Download learning materials</li>
-                    <li><i class="fas fa-check"></i> Mentor support</li>
+                    <li><i class="fas fa-check"></i> Full access to Mathematics materials</li>
+                    <li><i class="fas fa-check"></i> Request extra Maths classes</li>
+                    <li><i class="fas fa-check"></i> Download worksheets & notes</li>
+                    <li><i class="fas fa-check"></i> Mentor support for Maths</li>
                     <li><i class="fas fa-check"></i> Progress tracking</li>
                 </ul>
 
-                <a href="/signup" class="btn btn-primary btn-large" style="background: rgb(240, 247, 182);" >Start Free Trial</a>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Already have an account? <a href="/login">Log in</a></p>
             </div>
         </div>
     </section>
@@ -1086,9 +876,10 @@
         <div class="container">
             <div class="section-title">
                 <h2>Our Subjects</h2>
-                <p>Specialized support for Grade 10, 11, and 12 students in key academic subjects.</p>
+                <p>Currently only Mathematics is open for enrolment.</p>
             </div>
             <div class="subjects-grid">
+                <!-- Mathematics – Open -->
                 <div class="subject-card">
                     <div class="subject-header math">
                         <i class="fas fa-calculator"></i>
@@ -1102,88 +893,79 @@
                             <li>Geometry & Statistics</li>
                             <li>Exam Preparation</li>
                         </ul>
+                        <div class="status open"><i class="fas fa-check-circle"></i> OPEN for enrolment</div>
                     </div>
                 </div>
-                <div class="subject-card">
+                <!-- Accounting – Closed -->
+                <div class="subject-card closed">
                     <div class="subject-header accounting">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <h3>Accounting</h3>
                     </div>
                     <div class="subject-content">
-                        <p>Understand financial principles and accounting practices with real-world examples.</p>
+                        <p>Understand financial principles and accounting practices.</p>
                         <ul>
                             <li>Financial Statements</li>
                             <li>Managerial Accounting</li>
                             <li>Tax Principles</li>
                             <li>Budgeting & Forecasting</li>
                         </ul>
+                        <div class="status closed"><i class="fas fa-lock"></i> CLOSED</div>
                     </div>
                 </div>
-                <div class="subject-card">
+                <!-- Physical Science – Closed -->
+                <div class="subject-card closed">
                     <div class="subject-header science">
                         <i class="fas fa-atom"></i>
                         <h3>Physical Science</h3>
                     </div>
                     <div class="subject-content">
-                        <p>Explore physics and chemistry concepts through interactive lessons and experiments.</p>
+                        <p>Explore physics and chemistry concepts.</p>
                         <ul>
                             <li>Mechanics & Motion</li>
                             <li>Electricity & Magnetism</li>
                             <li>Chemical Reactions</li>
                             <li>Laboratory Skills</li>
                         </ul>
+                        <div class="status closed"><i class="fas fa-lock"></i> CLOSED</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+   
 
     <!-- CTA Section -->
     <section class="cta">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready to Boost Your Academic Performance?</h2>
-                <p>Join thousands of students who are improving their grades with Edu Boost Up. Start your 20-day
-                    free trial today!</p>
-                <a href="/signup" style="background: rgb(29, 0, 82);"  class="btn btn-outline btn-large">Start Free Trial</a>
+                <h2>Ready to Boost Your Maths Marks?</h2>
+                <p>No trials, no other subjects – just focused, affordable Maths support. Create an account or call Mr Baloyi today to get started.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact">
+    <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>Edu Boost Up</h3>
-                    <p>Empowering Grade 10-12 students with quality educational resources and personalized support.</p>
-                    <!-- Updated Social Media Links -->
+                    <p>Empowering Grade 10-12 students with quality Mathematics support and personalised guidance.</p>
                     <div class="social-share">
-                        <!-- Facebook -->
-                        <a href="https://www.facebook.com/profile.php?id=61584102000540" class="social-btn facebook"
-                            target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-
-                        <!-- TikTok -->
-                        <a href="https://www.tiktok.com/@edu.boost.sa?_r=1&_t=ZS-92OPqMbOY9B" class="social-btn tiktok"
-                            target="_blank" rel="noopener noreferrer" aria-label="TikTok">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-
-
-                        <!-- WhatsApp Channel (one-way broadcast) -->
-                        <a href="https://whatsapp.com/channel/0029Vb6OldI47XeFwcgVPr3o"
-                            class="social-btn whatsapp-channel" target="_blank" rel="noopener noreferrer"
-                            aria-label="WhatsApp Channel">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
+                        <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-btn linkedin"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#features">Features</a></li>
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#subjects">Subjects</a></li>
                     </ul>
@@ -1199,89 +981,19 @@
                 </div>
                 <div class="footer-column">
                     <h3>Contact</h3>
-                    <ul class="contact-list">
-                        <li>
-                            <i class="fas fa-envelope"></i>
-                            <a href="mailto:eduboostup@hotmail.com">eduboostup@hotmail.com</a>
-                        </li>
-                        <li>
-                            <i class="fas fa-phone"></i>
-                            <a href="tel:+27648685873">+27 64 868 5873</a><br>
-                            <i class="fab fa-whatsapp"></i>
-                            <a href="https://wa.me/27818086742" target="_blank">+27 81 808 6742 (WhatsApp)</a>
-                        </li>
-                        <li>
-                            <i class="fas fa-map-marker-alt"></i>
-                            South Africa
-                        </li>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> eduboostup@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> +27 78 246 9399</li>
+                        <li><i class="fas fa-map-marker-alt"></i> South Africa</li>
                     </ul>
-
                 </div>
             </div>
 
             <div class="copyright">
-                <p>
-                    &copy; <span id="year"></span> Edu Boost Up. All rights reserved. |
-                    Learn, grow, and rise — Edu Boost Up empowers your academic journey.
-                </p>
+                <p>&copy; 2025 Edu Boost Up. All rights reserved. | Learn • Grow • Succeed</p>
             </div>
         </div>
     </footer>
-
-
-    <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
-        // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.getElementById('menuToggle');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-            // Open sidebar
-            menuToggle.addEventListener('click', function () {
-                sidebar.classList.add('active');
-                sidebarOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-
-            // Close sidebar
-            function closeSidebarFunc() {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-
-            closeSidebar.addEventListener('click', closeSidebarFunc);
-            sidebarOverlay.addEventListener('click', closeSidebarFunc);
-
-            // Close sidebar when clicking on a link (for mobile)
-            const sidebarLinks = document.querySelectorAll('.sidebar-nav a, .sidebar-buttons a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function () {
-                    closeSidebarFunc();
-                });
-            });
-
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>

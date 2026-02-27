@@ -287,7 +287,7 @@ def signup():
             # Insert enrollment
             cur.execute("""
                 INSERT INTO Enrollment (student_id, enrollment_days, days_remaining, status)
-                VALUES (%s, 20, 20, 'active')
+                VALUES (%s, 0, 0, 'active')
             """, (student_id,))
 
             conn.commit()
