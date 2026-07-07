@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Edu Boost Up</title>
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
-
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* ====== RESET & ROOT ====== */
     * {
       margin: 0;
       padding: 0;
@@ -58,7 +59,7 @@
       padding: 0 15px;
     }
 
-    /* Header Styles */
+    /* ====== HEADER ====== */
     header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
@@ -139,63 +140,49 @@
       transform: translateY(-2px);
     }
 
-    /* Dashboard Styles */
+    /* ====== DASHBOARD ====== */
     .dashboard {
       padding: 2rem 0;
     }
 
-    .welcome-banner {
-      background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-      color: white;
-      border-radius: var(--border-radius-lg);
-      padding: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
+    /* ====== FLASH MESSAGES ====== */
+    .flash-messages {
+      margin-bottom: 1.5rem;
+    }
+
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 0.8rem;
+      font-weight: 500;
       box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
     }
 
-    .welcome-banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-      opacity: 0.3;
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
     }
 
-    .welcome-text h2 {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+    .alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
     }
 
-    .welcome-text p {
-      opacity: 0.9;
-      max-width: 600px;
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+      border-left: 4px solid #ffc107;
     }
 
-    .date-display {
-      text-align: right;
-      position: relative;
-      z-index: 1;
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border-left: 4px solid #17a2b8;
     }
 
-    .day {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .date {
-      font-size: 1rem;
-      opacity: 0.9;
-    }
-
-    /* Registration Status */
+    /* ====== REGISTRATION STATUS ====== */
     .registration-status {
       background: white;
       border-radius: var(--border-radius);
@@ -249,108 +236,11 @@
       gap: 1rem;
     }
 
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border-top: 4px solid;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .stat-card.students {
-      border-color: var(--math);
-    }
-
-    .stat-card.mentors {
-      border-color: var(--accounting);
-    }
-
-    .stat-card.classes {
-      border-color: var(--science);
-    }
-
-    .stat-card.enrollments {
-      border-color: var(--accent);
-    }
-
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--dark);
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      color: var(--text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .stat-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: white;
-    }
-
-    .stat-card.students .stat-icon {
-      background: linear-gradient(135deg, var(--math), #ff8e8e);
-    }
-
-    .stat-card.mentors .stat-icon {
-      background: linear-gradient(135deg, var(--accounting), #7ae0da);
-    }
-
-    .stat-card.classes .stat-icon {
-      background: linear-gradient(135deg, var(--science), #6bb9ff);
-    }
-
-    .stat-card.enrollments .stat-icon {
-      background: linear-gradient(135deg, var(--accent), var(--accent-light));
-    }
-
-    .stat-actions {
-      display: flex;
-      gap: 0.8rem;
-    }
-
-    /* Content Grid */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-    }
-
+    /* ====== QUICK ACTIONS ====== */
     .panel {
       background: white;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      margin-bottom: 2rem;
       overflow: hidden;
     }
 
@@ -368,26 +258,11 @@
       color: var(--secondary);
     }
 
-    .view-all {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: var(--transition);
-    }
-
-    .view-all:hover {
-      color: var(--accent);
-    }
-
-    /* Quick Actions */
     .quick-actions {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      padding: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
     }
 
     .action-btn {
@@ -402,24 +277,27 @@
       gap: 0.8rem;
       transition: var(--transition);
       text-align: center;
-      position: relative;
+      border: 2px solid transparent;
+      cursor: pointer;
     }
 
     .action-btn:hover {
       background: var(--primary);
       color: white;
-      transform: translateY(-3px);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
     }
 
     .action-icon {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--accent));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       color: white;
     }
 
@@ -429,103 +307,75 @@
     }
 
     .action-text {
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .action-btn .badge {
+      background: var(--warning);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      font-weight: 700;
+    }
+
+    /* ====== BUTTONS & MODALS ====== */
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 0.9rem;
     }
 
-    /* Registration Controls */
-    .registration-controls {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      display: flex;
-      gap: 5px;
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
     }
 
-    .control-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.8rem;
-      color: var(--primary);
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      transform: translateY(-2px);
     }
 
-    .control-btn:hover {
-      background: white;
-      transform: scale(1.1);
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white;
     }
 
-    /* Table Styles */
-    .table-responsive {
-      overflow-x: auto;
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, var(--accent-light), var(--accent));
+      transform: translateY(-2px);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .btn-success {
+      background: linear-gradient(135deg, var(--open), var(--accounting));
+      color: white;
     }
 
-    thead {
-      background: var(--light);
+    .btn-success:hover {
+      background: linear-gradient(135deg, var(--accounting), var(--open));
+      transform: translateY(-2px);
     }
 
-    th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--secondary);
-      border-bottom: 1px solid #e9ecef;
+    .btn-danger {
+      background: linear-gradient(135deg, var(--closed), var(--math));
+      color: white;
     }
 
-    td {
-      padding: 1rem;
-      border-bottom: 1px solid #e9ecef;
+    .btn-danger:hover {
+      background: linear-gradient(135deg, var(--math), var(--closed));
+      transform: translateY(-2px);
     }
 
-    tbody tr {
-      transition: var(--transition);
-    }
-
-    tbody tr:hover {
-      background: #f8f9fa;
-    }
-
-    .status-badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .status-active {
-      background: rgba(76, 201, 240, 0.1);
-      color: var(--success);
-    }
-
-    .status-pending {
-      background: rgba(247, 37, 133, 0.1);
-      color: var(--warning);
-    }
-
-    .status-expired {
-      background: rgba(108, 117, 125, 0.1);
-      color: var(--text-light);
-    }
-
-    .status-completed {
-      background: rgba(78, 205, 196, 0.1);
-      color: var(--accounting);
-    }
-
-    /* Form Styles */
     .form-group {
       margin-bottom: 1rem;
     }
@@ -554,141 +404,13 @@
       box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
     }
 
-    textarea.form-control {
-      resize: vertical;
-      min-height: 100px;
-    }
-
     .btn-group {
       display: flex;
       gap: 0.8rem;
+      flex-wrap: wrap;
     }
 
-    /* Button Styles */
-    .btn {
-      padding: 0.7rem 1.2rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      border: none;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-light));
-      color: white;
-      box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
-    }
-
-    .btn-secondary:hover {
-      background: linear-gradient(135deg, var(--accent-light), var(--accent));
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, var(--open), var(--accounting));
-      color: white;
-      box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-    }
-
-    .btn-success:hover {
-      background: linear-gradient(135deg, var(--accounting), var(--open));
-      transform: translateY(-2px);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, var(--closed), var(--math));
-      color: white;
-      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-    }
-
-    .btn-danger:hover {
-      background: linear-gradient(135deg, var(--math), var(--closed));
-      transform: translateY(-2px);
-    }
-
-    /* Sidebar */
-    .sidebar .panel {
-      padding: 1.5rem;
-    }
-
-    .sidebar .panel-header {
-      padding: 0 0 1rem 0;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--dark);
-      color: white;
-      padding: 1.5rem 0;
-      margin-top: 2rem;
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .copyright {
-      color: var(--text-lighter);
-      font-size: 0.9rem;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .footer-links a {
-      color: var(--text-lighter);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: white;
-    }
-
-    /* Modal Styles */
+    /* ====== MODAL ====== */
     .modal {
       display: none;
       position: fixed;
@@ -723,6 +445,7 @@
         opacity: 0;
         transform: translateY(-20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -754,13 +477,42 @@
       color: var(--dark);
     }
 
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-      }
+    /* ====== FOOTER ====== */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 1.5rem 0;
+      margin-top: 2rem;
     }
 
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copyright {
+      color: var(--text-lighter);
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-lighter);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* ====== RESPONSIVE ====== */
     @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
@@ -770,16 +522,6 @@
       .admin-info {
         width: 100%;
         justify-content: space-between;
-      }
-
-      .welcome-banner {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-      }
-
-      .date-display {
-        text-align: center;
       }
 
       .registration-status {
@@ -793,16 +535,10 @@
         text-align: center;
       }
 
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-actions {
-        flex-direction: column;
-      }
-
       .quick-actions {
         grid-template-columns: repeat(2, 1fr);
+        padding: 1rem;
+        gap: 1rem;
       }
 
       .footer-content {
@@ -821,10 +557,6 @@
         grid-template-columns: 1fr;
       }
 
-      .btn-group {
-        flex-direction: column;
-      }
-
       .status-actions {
         flex-direction: column;
         width: 100%;
@@ -836,6 +568,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="container">
@@ -849,15 +582,13 @@
             <p>Admin Dashboard</p>
           </div>
         </div>
-        
         <div class="admin-info">
           <div class="admin-details">
             <div class="admin-name">{{ admin_name or "Administrator" }}</div>
             <div class="admin-role">System Administrator</div>
           </div>
           <a href="/logout" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
+            <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </div>
       </div>
@@ -865,6 +596,17 @@
   </header>
 
   <div class="dashboard container">
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+
     <!-- Registration Status Banner -->
     <div class="registration-status {% if registration_status == 'closed' %}closed{% endif %}">
       <div class="status-content">
@@ -872,12 +614,13 @@
           <i class="fas {% if registration_status == 'closed' %}fa-lock{% else %}fa-unlock{% endif %}"></i>
         </div>
         <div class="status-text">
-          <h3>Registration is Currently <strong>{% if registration_status == 'closed' %}CLOSED{% else %}OPEN{% endif %}</strong></h3>
+          <h3>Registration is Currently <strong>{% if registration_status == 'closed' %}CLOSED{% else %}OPEN{% endif
+              %}</strong></h3>
           <p>
             {% if registration_status == 'closed' %}
-              Students cannot register for new classes. Registration is closed.
+            Students cannot register for new classes. Registration is closed.
             {% else %}
-              Students can register for classes. Registration is open.
+            Students can register for classes. Registration is open.
             {% endif %}
           </p>
         </div>
@@ -895,266 +638,65 @@
       </div>
     </div>
 
-    <div class="welcome-banner">
-      <div class="welcome-text">
-        <h2>Welcome back, {{ admin_name or "Administrator" }}!</h2>
-        <p>Manage students, mentors, classes, and content from your centralized dashboard.</p>
+    <!-- Quick Actions Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Quick Actions</div>
       </div>
-      <div class="date-display">
-        <div class="day" id="current-day">Monday</div>
-        <div class="date" id="current-date">June 10, 2023</div>
-      </div>
-    </div>
+      <div class="quick-actions">
+        <!-- View Students -->
+        <a href="/admin/students" class="action-btn">
+          <div class="action-icon"><i class="fas fa-user-graduate"></i></div>
+          <div class="action-text">View Students</div>
+        </a>
 
-    <div class="stats-grid">
-      <div class="stat-card students">
-        <div class="stat-header">
-          <div>
-            <div class="stat-value">{{ stats.students }}</div>
-            <div class="stat-label">Total Students</div>
-          </div>
-          <div class="stat-icon">
-            <i class="fas fa-user-graduate"></i>
-          </div>
-        </div>
-        <div class="stat-actions">
-          <a href="/admin/students" class="btn btn-primary">
-            <i class="fas fa-users"></i> View All
-          </a>
-          <a href="/admin/enrollments" class="btn btn-secondary">
-            <i class="fas fa-layer-group"></i> Enrollments
-          </a>
-        </div>
-      </div>
+        <!-- Manage Enrollments -->
+        <a href="/admin/enrollments" class="action-btn">
+          <div class="action-icon"><i class="fas fa-layer-group"></i></div>
+          <div class="action-text">Manage Enrollments</div>
+        </a>
 
-      <div class="stat-card mentors">
-        <div class="stat-header">
-          <div>
-            <div class="stat-value">{{ stats.mentors }}</div>
-            <div class="stat-label">Mentor Accounts</div>
-          </div>
-          <div class="stat-icon">
-            <i class="fas fa-chalkboard-teacher"></i>
-          </div>
-        </div>
-        <div class="stat-actions">
-          <a href="/admin/mentors" class="btn btn-primary">
-            <i class="fas fa-users-gear"></i> Manage
-          </a>
-          <a href="/admin/mentors/add" class="btn btn-secondary">
-            <i class="fas fa-user-plus"></i> Add New
-          </a>
-        </div>
-      </div>
+        <!-- Activate Enrollment -->
+        <button class="action-btn activate-enrollment-btn">
+          <div class="action-icon"><i class="fas fa-play"></i></div>
+          <div class="action-text">Activate Enrollment</div>
+        </button>
 
-      <div class="stat-card classes">
-        <div class="stat-header">
-          <div>
-            <div class="stat-value">{{ stats.classes }}</div>
-            <div class="stat-label">Scheduled Classes</div>
-          </div>
-          <div class="stat-icon">
-            <i class="fas fa-calendar-days"></i>
-          </div>
-        </div>
-        <div class="stat-actions">
-          <a href="/admin/classes" class="btn btn-primary">
-            <i class="fas fa-chalkboard"></i> Manage
-          </a>
-        </div>
-      </div>
+        <a href="/admin/expiring-accounts" class="action-btn">
+          <div class="action-icon"><i class="fas fa-hourglass-half"></i></div>
+          <div class="action-text">View Expiring Accounts</div>
+          <span class="badge">1–10 days</span>
+        </a>
 
-      <div class="stat-card enrollments">
-        <div class="stat-header">
-          <div>
-            <div class="stat-value">{{ stats.active_enrollments }}</div>
-            <div class="stat-label">Active Enrollments</div>
-          </div>
-          <div class="stat-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-        </div>
-        <div class="stat-actions">
-          <a href="/admin/enrollments" class="btn btn-primary">
-            <i class="fas fa-list-check"></i> Details
-          </a>
-        </div>
-      </div>
-    </div>
+        <!-- View All Subjects -->
+        <a href="/admin/subjects" class="action-btn">
+          <div class="action-icon"><i class="fas fa-book-open"></i></div>
+          <div class="action-text">View All Subjects</div>
+        </a>
 
-    <div class="content-grid">
-      <div class="main-content">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Quick Actions</div>
-          </div>
-          <div class="quick-actions">
-            <a href="/admin/students" class="action-btn">
-              <div class="action-icon">
-                <i class="fas fa-user-graduate"></i>
-              </div>
-              <div class="action-text">View Students</div>
-            </a>
-            <a href="/admin/mentors" class="action-btn">
-              <div class="action-icon">
-                <i class="fas fa-users-gear"></i>
-              </div>
-              <div class="action-text">Manage Mentors</div>
-            </a>
-            <a href="#" class="action-btn toggle-registration-btn" data-action="close">
-              <div class="registration-controls">
-                <button class="control-btn" title="Close Registration">
-                  <i class="fas fa-lock"></i>
-                </button>
-              </div>
-              <div class="action-icon">
-                <i class="fas fa-file-lines"></i>
-              </div>
-              <div class="action-text">Close Registration</div>
-            </a>
-            <a href="/admin/classes/upcoming" class="action-btn">
-              <div class="action-icon">
-                <i class="fas fa-chalkboard"></i>
-              </div>
-              <div class="action-text">Class Management</div>
-            </a>
-            <a href="/admin/requests" class="action-btn">
-              <div class="action-icon">
-                <i class="fas fa-question-circle"></i>
-              </div>
-              <div class="action-text">Manage Requests</div>
-            </a>
-            <a href="#" class="action-btn toggle-registration-btn" data-action="open">
-              <div class="registration-controls">
-                <button class="control-btn" title="Open Registration">
-                  <i class="fas fa-unlock"></i>
-                </button>
-              </div>
-              <div class="action-icon">
-                <i class="fas fa-file-shield"></i>
-              </div>
-              <div class="action-text">Open Registration</div>
-            </a>
-          </div>
-        </div>
+        <!-- Add Subject (opens modal) -->
+        <button class="action-btn add-subject-btn">
+          <div class="action-icon"><i class="fas fa-plus-circle"></i></div>
+          <div class="action-text">Add Subject</div>
+        </button>
 
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Recent Student Requests</div>
-            <a href="/admin/requests" class="view-all">
-              View All <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Phone</th>
-                  <th>Message</th>
-                  <th>Mentor</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% if recent_requests %}
-                  {% for request in recent_requests %}
-                  <tr>
-                    <td>{{ request.student_name }} {{ request.student_surname }}</td>
-                    <td>{{ request.student_phone }}</td>
-                    <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                      {{ request.message }}
-                    </td>
-                    <td>
-                      {% if request.mentor_name %}
-                        {{ request.mentor_name }}
-                      {% else %}
-                        <span style="color: var(--text-light);">Not assigned</span>
-                      {% endif %}
-                    </td>
-                    <td>
-                      <span class="status-badge {% if request.status == 'completed' %}status-completed{% elif request.status == 'pending' %}status-pending{% else %}status-active{% endif %}">
-                        {{ request.status|title }}
-                      </span>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                {% else %}
-                  <tr>
-                    <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-light);">
-                      No recent requests to show
-                    </td>
-                  </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        <!-- Add Mentor -->
+        <a href="/admin/mentors/add" class="action-btn">
+          <div class="action-icon"><i class="fas fa-chalkboard-user"></i></div>
+          <div class="action-text">Add Mentor</div>
+        </a>
 
-      <div class="sidebar">
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Send Notification</div>
-          </div>
-          <div style="padding: 1.5rem;">
-            <p style="margin-bottom: 15px; font-size: 14px; color: var(--text-light);">
-              Send quick notifications to students or mentors
-            </p>
-            <form action="/admin/notifications" method="POST">
-              <div class="form-group">
-                <label class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" placeholder="Notification title" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Message</label>
-                <textarea name="message" class="form-control" placeholder="Enter your message here..." required></textarea>
-              </div>
-              <div class="btn-group">
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-paper-plane"></i> Send
-                </button>
-                <a href="/admin/system" class="btn btn-secondary">
-                  <i class="fas fa-gear"></i> Settings
-                </a>
-              </div>
-            </form>
-          </div>
-        </div>
+        <!-- Close Registration -->
+        <button class="action-btn toggle-registration-btn" data-action="close">
+          <div class="action-icon"><i class="fas fa-lock"></i></div>
+          <div class="action-text">Close Registration</div>
+        </button>
 
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">System Status</div>
-          </div>
-          <div style="padding: 1.5rem;">
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px;">Server Load</span>
-                <span style="font-weight: 600; color: var(--success);">Normal</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px;">Database</span>
-                <span style="font-weight: 600; color: var(--success);">Online</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px;">Storage</span>
-                <span style="font-weight: 600; color: var(--warning);">78% Used</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px;">Last Backup</span>
-                <span style="font-weight: 600; color: var(--success);">Today, 02:00</span>
-              </div>
-            </div>
-            <div class="btn-group" style="margin-top: 20px;">
-              <a href="/admin/system" class="btn btn-primary" style="flex: 1;">
-                <i class="fas fa-chart-bar"></i> Analytics
-              </a>
-              <a href="/admin/audit" class="btn btn-secondary" style="flex: 1;">
-                <i class="fas fa-shield-alt"></i> Security
-              </a>
-            </div>
-          </div>
-        </div>
+        <!-- Open Registration -->
+        <button class="action-btn toggle-registration-btn" data-action="open">
+          <div class="action-icon"><i class="fas fa-unlock"></i></div>
+          <div class="action-text">Open Registration</div>
+        </button>
       </div>
     </div>
   </div>
@@ -1176,16 +718,42 @@
         </div>
         <div class="form-group">
           <label class="form-label">Message (Optional)</label>
-          <textarea name="message" class="form-control" placeholder="Add a message to display to users..." rows="3"></textarea>
-          <small style="color: var(--text-light);">This message will be shown to students when they try to register.</small>
+          <textarea name="message" class="form-control" placeholder="Add a message to display to users..."
+            rows="3"></textarea>
+          <small style="color:var(--text-light);">This message will be shown to students when they try to
+            register.</small>
         </div>
         <div class="btn-group">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Save Changes
-          </button>
-          <button type="button" class="btn btn-secondary close-modal">
-            <i class="fas fa-times"></i> Cancel
-          </button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+          <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Subject Modal -->
+  <div class="modal" id="addSubjectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New Subject</h3>
+        <button class="close-modal close-add-subject">&times;</button>
+      </div>
+      <!-- ✅ Form now submits to the backend route -->
+      <form action="/admin/subjects/add" method="POST" id="addSubjectForm">
+        <div class="form-group">
+          <label class="form-label">Subject Name</label>
+          <input type="text" name="subject_name" class="form-control" placeholder="e.g. Mathematics" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select name="status" class="form-control">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Subject</button>
+          <button type="button" class="btn btn-secondary close-add-subject"><i class="fas fa-times"></i> Cancel</button>
         </div>
       </form>
     </div>
@@ -1194,9 +762,7 @@
   <footer>
     <div class="container">
       <div class="footer-content">
-        <div class="copyright">
-          &copy; 2023 Edu Boost Up. All rights reserved.
-        </div>
+        <div class="copyright">&copy; 2025 Edu Boost Up. All rights reserved.</div>
         <div class="footer-links">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Service</a>
@@ -1207,201 +773,146 @@
   </footer>
 
   <script>
-    // Update current date and day
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('current-day').textContent = now.toLocaleDateString('en-US', { weekday: 'long' });
-      document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
-    
-    // Initialize
-    updateDateTime();
+    // ====== Modal handling ======
+    const registrationModal = document.getElementById('registrationModal');
+    const addSubjectModal = document.getElementById('addSubjectModal');
 
-    // Modal functionality
-    const modal = document.getElementById('registrationModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const registrationForm = document.getElementById('registrationForm');
-    const closeModalButtons = document.querySelectorAll('.close-modal');
-    const openRegistrationBtn = document.querySelector('.open-registration-btn');
-    const closeRegistrationBtn = document.querySelector('.close-registration-btn');
-    const toggleRegistrationBtns = document.querySelectorAll('.toggle-registration-btn');
+    function openModal(modal) { modal.classList.add('active'); }
+    function closeModal(modal) { modal.classList.remove('active'); }
 
-    // Open modal for registration status change
-    function openModal(action) {
-      const statusSelect = registrationForm.querySelector('select[name="status"]');
-      
-      if (action === 'open') {
-        statusSelect.value = 'open';
-        modalTitle.textContent = 'Open Registration';
-      } else if (action === 'close') {
-        statusSelect.value = 'closed';
-        modalTitle.textContent = 'Close Registration';
-      }
-      
-      modal.classList.add('active');
-    }
+    // Close buttons
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        const modal = this.closest('.modal');
+        if (modal) closeModal(modal);
+      });
+    });
+    document.querySelectorAll('.close-add-subject').forEach(btn => {
+      btn.addEventListener('click', function () { closeModal(addSubjectModal); });
+    });
 
-    // Close modal
-    function closeModal() {
-      modal.classList.remove('active');
-    }
-
-    // Event listeners for modal
-    if (openRegistrationBtn) {
-      openRegistrationBtn.addEventListener('click', () => openModal('open'));
-    }
-    
-    if (closeRegistrationBtn) {
-      closeRegistrationBtn.addEventListener('click', () => openModal('close'));
-    }
-
-    toggleRegistrationBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = btn.getAttribute('data-action');
-        openModal(action);
+    // Click outside to close
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function (e) {
+        if (e.target === this) closeModal(this);
       });
     });
 
-    closeModalButtons.forEach(btn => {
-      btn.addEventListener('click', closeModal);
+    // Open registration modal
+    document.querySelector('.open-registration-btn')?.addEventListener('click', function () {
+      document.getElementById('modalTitle').textContent = 'Open Registration';
+      document.querySelector('#registrationForm select[name="status"]').value = 'open';
+      openModal(registrationModal);
+    });
+    document.querySelector('.close-registration-btn')?.addEventListener('click', function () {
+      document.getElementById('modalTitle').textContent = 'Close Registration';
+      document.querySelector('#registrationForm select[name="status"]').value = 'closed';
+      openModal(registrationModal);
+    });
+    document.querySelectorAll('.toggle-registration-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        const action = this.getAttribute('data-action');
+        const modalTitle = document.getElementById('modalTitle');
+        const statusSelect = document.querySelector('#registrationForm select[name="status"]');
+        if (action === 'open') {
+          modalTitle.textContent = 'Open Registration';
+          statusSelect.value = 'open';
+        } else {
+          modalTitle.textContent = 'Close Registration';
+          statusSelect.value = 'closed';
+        }
+        openModal(registrationModal);
+      });
     });
 
-    // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
+    // Add Subject button
+    document.querySelectorAll('.add-subject-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openModal(addSubjectModal);
+      });
     });
 
-    // Handle form submission
-    registrationForm.addEventListener('submit', async (e) => {
+    // Enrollment action buttons
+    document.querySelectorAll('.activate-enrollment-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        showNotification('Redirecting to enrollment creation page...', 'info');
+        // window.location.href = '/admin/enrollments/add';
+      });
+    });
+
+    // View Expiring Accounts button
+    document.querySelectorAll('.view-expiring-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        showNotification('Loading accounts with 1–10 days remaining...', 'info');
+        // Uncomment to redirect to a dedicated page:
+        // window.location.href = '/admin/expiring-accounts';
+      });
+    });
+
+    // ====== Registration form submit ======
+    document.getElementById('registrationForm')?.addEventListener('submit', async function (e) {
       e.preventDefault();
-      
-      const formData = new FormData(registrationForm);
+      const formData = new FormData(this);
       const data = Object.fromEntries(formData);
-      
       try {
-        const response = await fetch(registrationForm.action, {
+        const res = await fetch('/admin/toggle-registration', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-        
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-          // Show success message
-          showNotification(result.message || 'Registration status updated successfully!', 'success');
-          
-          // Close modal
-          closeModal();
-          
-          // Reload page to show updated status
-          setTimeout(() => {
-            location.reload();
-          }, 1500);
+        const result = await res.json();
+        if (res.ok && result.success) {
+          showNotification(result.message || 'Registration status updated!', 'success');
+          closeModal(registrationModal);
+          setTimeout(() => location.reload(), 1500);
         } else {
-          throw new Error(result.error || 'Failed to update registration status');
+          throw new Error(result.error || 'Update failed');
         }
-      } catch (error) {
-        showNotification(error.message, 'error');
+      } catch (err) {
+        showNotification(err.message, 'error');
       }
     });
 
-    // Function to show notifications
+    // ====== Notification system ======
     function showNotification(message, type = 'info') {
-      // Remove existing notification
-      const existingNotification = document.querySelector('.notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
-      
-      // Create notification element
-      const notification = document.createElement('div');
-      notification.className = `notification notification-${type}`;
-      notification.textContent = message;
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: var(--border-radius);
-        color: white;
-        font-weight: 600;
-        z-index: 9999;
-        box-shadow: var(--shadow);
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+
+      const el = document.createElement('div');
+      el.className = 'notification';
+      el.textContent = message;
+      el.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem;
+        border-radius: var(--border-radius); color: white; font-weight: 600;
+        z-index: 9999; box-shadow: var(--shadow);
         animation: slideIn 0.3s ease;
       `;
-      
-      if (type === 'success') {
-        notification.style.background = 'linear-gradient(135deg, var(--open), var(--accounting))';
-      } else if (type === 'error') {
-        notification.style.background = 'linear-gradient(135deg, var(--closed), var(--math))';
-      } else if (type === 'warning') {
-        notification.style.background = 'linear-gradient(135deg, var(--warning), var(--accent))';
-      } else {
-        notification.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
-      }
-      
-      document.body.appendChild(notification);
-      
-      // Add CSS animations for notifications
-      const style = document.createElement('style');
-      if (!document.querySelector('#notification-styles')) {
+      if (type === 'success') el.style.background = 'linear-gradient(135deg, var(--open), var(--accounting))';
+      else if (type === 'error') el.style.background = 'linear-gradient(135deg, var(--closed), var(--math))';
+      else if (type === 'warning') el.style.background = 'linear-gradient(135deg, var(--warning), var(--accent))';
+      else el.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+
+      document.body.appendChild(el);
+
+      if (!document.getElementById('notification-styles')) {
+        const style = document.createElement('style');
         style.id = 'notification-styles';
         style.textContent = `
-          @keyframes slideIn {
-            from {
-              transform: translateX(100%);
-              opacity: 0;
-            }
-            to {
-              transform: translateY(0);
-              opacity: 1;
-            }
-          }
-          
-          @keyframes slideOut {
-            from {
-              transform: translateY(0);
-              opacity: 1;
-            }
-            to {
-              transform: translateX(100%);
-              opacity: 0;
-            }
-          }
+          @keyframes slideIn { from { transform: translateX(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
+          @keyframes slideOut { from { transform: translateY(0); opacity:1; } to { transform: translateX(100%); opacity:0; } }
         `;
         document.head.appendChild(style);
       }
-      
-      // Remove notification after 3 seconds
+
       setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-          notification.remove();
-        }, 300);
+        el.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => el.remove(), 300);
       }, 3000);
     }
-
-    // Add some interactive elements
-    document.addEventListener('DOMContentLoaded', function() {
-      // Add hover effects to stat cards
-      const statCards = document.querySelectorAll('.stat-card');
-      statCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-5px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-        });
-      });
-    });
   </script>
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Sign Up - Edu Boost Up | R100/month</title>
+    <title>Student Sign Up - Edu Boost Up</title>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
@@ -340,6 +340,88 @@
             color: var(--success);
         }
 
+        /* ----- NEW: Subject selection ----- */
+        .subject-section {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .subject-section .section-label {
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .subject-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: var(--border-radius);
+            background: white;
+            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .subject-check:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .subject-check input[type="checkbox"] {
+            accent-color: var(--primary);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .subject-check label {
+            font-size: 0.95rem;
+            color: var(--dark);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .subject-check .status-badge {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 30px;
+            background: var(--success);
+            color: white;
+        }
+
+        .subject-limit-warning {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .subject-limit-warning .limit-count {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .subject-limit-warning .limit-error {
+            color: var(--warning);
+            display: none;
+        }
+
+        /* ----- End subject ----- */
+
         .form-actions {
             grid-column: 1 / -1;
             display: flex;
@@ -581,6 +663,10 @@
                 gap: 1.5rem;
             }
 
+            .subject-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
             .signup-header {
                 padding: 2rem 1.5rem;
             }
@@ -614,6 +700,10 @@
         @media (max-width: 480px) {
             body {
                 padding: 1rem 0.5rem;
+            }
+
+            .subject-grid {
+                grid-template-columns: 1fr;
             }
 
             .signup-header {
@@ -700,7 +790,7 @@
                         <label for="grade">Grade</label>
                         <div class="input-container">
                             <select id="grade" name="grade" required>
-                                <option >Select grade</option>
+                                <option value="">Select grade</option>
                                 <option value="10">Grade 10</option>
                                 <option value="11">Grade 11</option>
                                 <option value="12">Grade 12</option>
@@ -723,15 +813,35 @@
                         </div>
                     </div>
 
-                    <div class="pricing-info">
-                        <div class="price">R100<span>/month after trial</span></div>
-                        <p style="color: #64748b; font-size: 0.8rem; margin-bottom: 0.8rem;">0 days free • Cancel anytime</p>
-                        <ul class="features-list">
-                            <li><i class="fas fa-check"></i> All subjects access</li>
-                            <li><i class="fas fa-check"></i> Expert mentor support</li>
-                            <li><i class="fas fa-check"></i> Learning materials</li>
-                        </ul>
+                    <!-- ===== NEW: Subject Selection ===== -->
+                    <div class="subject-section">
+                        <div class="section-label">
+                            <span>Select subjects (at least 1)</span>
+                            <span class="subject-count"><span id="selected-count">0</span> / 4</span>
+                        </div>
+                        <div class="subject-grid" id="subject-grid">
+                            {% if subjects %}
+                                {% for subject in subjects %}
+                                    <div class="subject-check">
+                                        <input type="checkbox" name="subjects" value="{{ subject.subject_id }}" id="subj-{{ subject.subject_id }}">
+                                        <label for="subj-{{ subject.subject_id }}">{{ subject.subject_name }}</label>
+                                        {% if subject.status == 'active' %}
+                                            <span class="status-badge">Open</span>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p style="grid-column: 1 / -1; color: var(--text-light); text-align: center;">
+                                    No subjects available. Please contact support.
+                                </p>
+                            {% endif %}
+                        </div>
+                        <div class="subject-limit-warning">
+                            <span class="limit-count">You may select up to 4 subjects.</span>
+                            <span class="limit-error" id="limit-error">You can only select 4 subjects.</span>
+                        </div>
                     </div>
+                    <!-- ===== End subject ===== -->
                 </div>
 
                 <!-- Full Width Bottom Section -->
@@ -794,7 +904,7 @@
                     <p>Subscription details and payment terms:</p>
                     <ul>
                         <li>Free trial lasts for 0 days with full access</li>
-                        <li>Subscription automatically renews at <strong>R100/month</strong> after trial</li>
+                        <li>Subscription automatically renews at R60/month after trial</li>
                         <li>You can cancel anytime before trial ends with no charge</li>
                         <li>All payments are processed securely</li>
                         <li>No refunds are available after your payment is processed</li>
@@ -886,7 +996,7 @@
     </div>
 
     <script>
-        // Simple password strength indicator
+        // Password strength
         const passwordInput = document.getElementById('password');
         const strengthBar = document.getElementById('strength-bar');
         
@@ -918,7 +1028,44 @@
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
 
-        // Modal functionality
+        // ===== SUBJECT SELECTION - LIMIT TO 4 =====
+        const subjectCheckboxes = document.querySelectorAll('input[name="subjects"]');
+        const selectedCountSpan = document.getElementById('selected-count');
+        const limitError = document.getElementById('limit-error');
+        const MAX_SUBJECTS = 4;
+
+        function updateSubjectCount() {
+            const checked = document.querySelectorAll('input[name="subjects"]:checked');
+            const count = checked.length;
+            selectedCountSpan.textContent = count;
+
+            // Show/hide error
+            if (count > MAX_SUBJECTS) {
+                limitError.style.display = 'inline';
+                // Uncheck the last one
+                const lastChecked = checked[checked.length - 1];
+                if (lastChecked) {
+                    lastChecked.checked = false;
+                }
+                // Recalculate after uncheck
+                const newCount = document.querySelectorAll('input[name="subjects"]:checked').length;
+                selectedCountSpan.textContent = newCount;
+                limitError.style.display = 'none';
+                // Show a brief alert
+                alert('You can only select up to 4 subjects.');
+            } else {
+                limitError.style.display = 'none';
+            }
+        }
+
+        subjectCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateSubjectCount);
+        });
+
+        // Also update on page load
+        updateSubjectCount();
+
+        // ===== Modal functionality =====
         const termsModal = document.getElementById('terms-modal');
         const privacyModal = document.getElementById('privacy-modal');
         const termsLink = document.getElementById('terms-link');

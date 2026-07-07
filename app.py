@@ -37,7 +37,7 @@ LOCAL_DB = {
     'host': 'localhost',
     'database': 'eduboostup',
     'user': 'postgres',
-    'password': 'Admin2023',
+    'password': 'Baloyi',
     'port': '5432'
 }
 
@@ -197,123 +197,168 @@ def luhn_check(id_num):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    # Check if registration is open
+    # ===========================================================
+    # GET request – check registration status & fetch subjects
+    # ===========================================================
     if request.method == 'GET':
         conn = get_db_connection()
-        cur = conn.cursor()
-        
-        try:
-            cur.execute("""
-                SELECT message FROM Notification 
-                WHERE notification_type = 'registration_status' 
-                ORDER BY date_sent DESC LIMIT 1
-            """)
-            notification = cur.fetchone()
-            
-            if notification and 'closed' in notification[0].lower():
-                return redirect('/registration-closed')
-                
-        except Exception as e:
-            print(f"Error checking registration status: {e}")
-        finally:
-            cur.close()
-            conn.close()
-    
-    if request.method == 'POST':
+        subjects = []
+        registration_closed = False
 
-        student_id = request.form.get('student_id')
-        name = request.form.get('name')
-        surname = request.form.get('surname')
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        grade = request.form.get('grade')
-        password = request.form.get('password')
-
-        # --- ID VALIDATION ---
-        score_info = calculate_id_score(student_id)
-        if score_info['score'] < 40:
-            return render_template("singuperror.html",
-                                   error_message=f"ID validation failed: {score_info['messages']}")
-
-        age = score_info['age']
-        if not age:
-            return render_template("singuperror.html",
-                                   error_message="Could not calculate age")
-
-        if age < 13 or age > 25:
-            return render_template("singuperror.html",
-                                   error_message=f"Age {age} not allowed (13–25 only)")
-
-        # --- GRADE CHECK ---
-        try:
-            grade_num = int(grade)
-            if grade_num < 10 or grade_num > 12:
-                return render_template("singuperror.html",
-                                       error_message="Grade must be 10, 11 or 12.")
-        except:
-            return render_template("singuperror.html",
-                                   error_message="Invalid grade format.")
-
-        # --- CONNECT DB ---
-        conn = get_db_connection()
-        if not conn:
-            return render_template("singuperror.html",
-                                   error_message="Database connection failed.")
-
-        try:
+        if conn:
             cur = conn.cursor()
-
-            # Check email
-            cur.execute("SELECT email FROM Student WHERE email=%s", (email,))
-            if cur.fetchone():
-                return render_template("singupIdUsed.html",
-                                       error_message="Email already registered.")
-
-            # Check student ID
-            cur.execute("SELECT student_id FROM Student WHERE student_id=%s", (student_id,))
-            if cur.fetchone():
-                return render_template("singupIdUsed.html",
-                                       error_message="Student ID already registered.")
-
-            # Hash password
-            hashed_password = generate_password_hash(password)
-
-            # Insert student
-            cur.execute("""
-                INSERT INTO Student (student_id, name, surname, email, password, grade, phone)
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
-            """, (student_id, name, surname, email, password, grade, phone))
-
-            # Insert enrollment
-            cur.execute("""
-                INSERT INTO Enrollment (student_id, enrollment_days, days_remaining, status)
-                VALUES (%s, 0, 0, 'active')
-            """, (student_id,))
-
-            conn.commit()
-            cur.close()
-            conn.close()
-
-            # Session
-            session['user_id'] = student_id
-            session['user_name'] = f"{name} {surname}"
-            session['user_role'] = "student"
-            session['grade'] = grade
-            session['age'] = age
-
-            return render_template("successfullsingup.html",
-                                   student_name=f"{name} {surname}",
-                                   student_id=student_id,
-                                   grade=grade,
-                                   age=age)
-
-        except Exception as e:
-            if conn:
+            try:
+                # Check registration status
+                cur.execute("""
+                    SELECT message FROM Notification
+                    WHERE notification_type = 'registration_status'
+                    ORDER BY date_sent DESC LIMIT 1
+                """)
+                notification = cur.fetchone()
+                if notification and 'closed' in notification[0].lower():
+                    registration_closed = True
+            except Exception as e:
+                print(f"Error checking registration status: {e}")
+            finally:
+                cur.close()
                 conn.close()
-            return render_template("singuperror.html", error_message=f"Registration failed: {e}")
+        else:
+            print("Warning: Could not check registration status - DB connection failed")
 
-    return render_template("signup.html")
+        if registration_closed:
+            return redirect('/registration-closed')
 
+        # Fetch active subjects
+        conn = get_db_connection()
+        if conn:
+            cur = conn.cursor(cursor_factory=RealDictCursor)
+            try:
+                cur.execute("""
+                    SELECT subject_id, subject_name, status
+                    FROM Subject
+                    WHERE status = 'active'
+                    ORDER BY subject_name
+                """)
+                subjects = cur.fetchall()
+            except Exception as e:
+                print(f"Error fetching subjects: {e}")
+            finally:
+                cur.close()
+                conn.close()
+
+        return render_template('signup.html', subjects=subjects)
+
+    # ===========================================================
+    # POST request – handle registration
+    # ===========================================================
+    student_id = request.form.get('student_id')
+    name = request.form.get('name')
+    surname = request.form.get('surname')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    grade = request.form.get('grade')
+    password = request.form.get('password')
+    selected_subjects = request.form.getlist('subjects')  # list of subject_id strings
+
+    # --- ID VALIDATION ---
+    score_info = calculate_id_score(student_id)
+    if score_info['score'] < 40:
+        return render_template("singuperror.html",
+                               error_message=f"ID validation failed: {score_info['messages']}")
+
+    age = score_info['age']
+    if not age:
+        return render_template("singuperror.html",
+                               error_message="Could not calculate age")
+
+    if age < 13 or age > 25:
+        return render_template("singuperror.html",
+                               error_message=f"Age {age} not allowed (13–25 only)")
+
+    # --- GRADE CHECK ---
+    try:
+        grade_num = int(grade)
+        if grade_num < 10 or grade_num > 12:
+            return render_template("singuperror.html",
+                                   error_message="Grade must be 10, 11 or 12.")
+    except:
+        return render_template("singuperror.html",
+                               error_message="Invalid grade format.")
+
+    # --- SUBJECT VALIDATION ---
+    if not selected_subjects:
+        return render_template("singuperror.html",
+                               error_message="Please select at least one subject.")
+    if len(selected_subjects) > 4:
+        return render_template("singuperror.html",
+                               error_message="You can select a maximum of 4 subjects.")
+
+    # --- CONNECT DB ---
+    conn = get_db_connection()
+    if not conn:
+        return render_template("singuperror.html",
+                               error_message="Database connection failed.")
+
+    try:
+        cur = conn.cursor()
+
+        # Check email
+        cur.execute("SELECT email FROM Student WHERE email=%s", (email,))
+        if cur.fetchone():
+            return render_template("singupIdUsed.html",
+                                   error_message="Email already registered.")
+
+        # Check student ID
+        cur.execute("SELECT student_id FROM Student WHERE student_id=%s", (student_id,))
+        if cur.fetchone():
+            return render_template("singupIdUsed.html",
+                                   error_message="Student ID already registered.")
+
+        # Hash password
+        hashed_password = generate_password_hash(password)
+
+        # Insert student
+        cur.execute("""
+            INSERT INTO Student (student_id, name, surname, email, password, grade, phone)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (student_id, name, surname, email, password, grade, phone))
+
+        # Insert enrollment
+        cur.execute("""
+            INSERT INTO Enrollment (student_id, enrollment_days, days_remaining, status)
+            VALUES (%s, 0, 0, 'active')
+        """, (student_id,))
+
+        # ---- Insert selected subjects into StudentSubject ----
+        for subject_id in selected_subjects:
+            # Optional: verify that subject_id exists (though it should if from dropdown)
+            cur.execute("""
+                INSERT INTO StudentSubject (student_id, subject_id, status)
+                VALUES (%s, %s, 'active')
+            """, (student_id, subject_id))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        # Session
+        session['user_id'] = student_id
+        session['user_name'] = f"{name} {surname}"
+        session['user_role'] = "student"
+        session['grade'] = grade
+        session['age'] = age
+
+        return render_template("successfullsingup.html",
+                               student_name=f"{name} {surname}",
+                               student_id=student_id,
+                               grade=grade,
+                               age=age)
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+            conn.close()
+        return render_template("singuperror.html", error_message=f"Registration failed: {e}")
 
 # ✅ Schedule job to run daily at midnight (00:00)
 @scheduler.task('cron', id='reduce_days_job', hour=0, minute=0)
@@ -473,6 +518,10 @@ def reset_request():
             return render_template("reset_request.html")
 
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return render_template("reset_request.html")
+
         cur = conn.cursor(cursor_factory=RealDictCursor)
         try:
             # Check if student exists
@@ -518,6 +567,10 @@ def reset_password():
             email = session['reset_email']
 
             conn = get_db_connection()
+            if not conn:
+                flash("Database connection failed.", "danger")
+                return redirect("/reset/password")
+
             cur = conn.cursor()
             try:
                 # Update student password (hashing recommended!)
@@ -550,7 +603,6 @@ def reset_password():
 # ------------------------------
 @app.route("/student/dashboard")
 def student_dashboard():
-    # 1️⃣ Check student login
     if 'user_role' not in session or session['user_role'] != 'student':
         return redirect('/login')
 
@@ -558,56 +610,70 @@ def student_dashboard():
     grade = session.get('grade')
 
     conn = get_db_connection()
+    if not conn:
+        return "❌ Failed to connect to database", 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
-        # 2️⃣ Get student profile
+        # Student profile
         cur.execute("SELECT * FROM Student WHERE student_id = %s", (student_id,))
         student = cur.fetchone()
-
         if not student:
             session.clear()
             return redirect('/login')
 
-        # 3️⃣ Get OR create student enrollment
+        # Enrollment info
         cur.execute("""
-            SELECT days_remaining FROM Enrollment
-            WHERE student_id = %s AND status = 'active'
+            SELECT days_remaining, status 
+            FROM Enrollment
+            WHERE student_id = %s
             ORDER BY enrollment_id DESC LIMIT 1
         """, (student_id,))
-        enroll = cur.fetchone()
+        enrollment = cur.fetchone()
 
-        days_remaining = enroll['days_remaining'] if enroll else 0
+        if enrollment and enrollment['status'] == 'active' and enrollment['days_remaining'] > 0:
+            days_remaining = enrollment['days_remaining']
+            is_expired = False
+        else:
+            days_remaining = 0
+            is_expired = True
 
-        # 4️⃣ Load mentors with images
+        # Subjects the student is already enrolled in
         cur.execute("""
-            SELECT mentor_id, name, surname, subject_speciality, bio, profile_image, phone
-            FROM Mentor
-            WHERE status = 'active'
-            ORDER BY name ASC
-        """)
-        mentors = cur.fetchall()
+            SELECT s.subject_id, s.subject_name, s.status as subject_status
+            FROM Subject s
+            JOIN StudentSubject ss ON s.subject_id = ss.subject_id
+            WHERE ss.student_id = %s AND ss.status = 'active'
+            ORDER BY s.subject_name
+        """, (student_id,))
+        subjects = cur.fetchall()
 
-        # 5️⃣ Load subjects for this student's grade
+        # Available subjects (active, not already enrolled)
         cur.execute("""
-            SELECT DISTINCT subject
-            FROM Content
-            WHERE grade = %s
-            ORDER BY subject
-        """, (grade,))
-        courses = cur.fetchall()
+            SELECT s.subject_id, s.subject_name
+            FROM Subject s
+            WHERE s.status = 'active'
+            AND s.subject_id NOT IN (
+                SELECT ss.subject_id FROM StudentSubject ss
+                WHERE ss.student_id = %s AND ss.status = 'active'
+            )
+            ORDER BY s.subject_name
+        """, (student_id,))
+        available_subjects = cur.fetchall()
 
     finally:
         cur.close()
         conn.close()
 
-    # 6️⃣ Render dashboard
     return render_template(
         "student_dashboard.html",
         student=student,
-        mentors=mentors,
-        courses=courses,
-        days_remaining=days_remaining
+        subjects=subjects,
+        available_subjects=available_subjects,
+        days_remaining=days_remaining,
+        is_expired=is_expired,
+        grade=grade
     )
 
 
@@ -620,6 +686,10 @@ def student_profile():
     student_id = session['user_id']
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect('/student/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     # Fetch student info
@@ -674,6 +744,49 @@ def student_profile():
 
     return render_template("student_profile.html", student=student)
 
+@app.route("/student/enroll-subject", methods=['POST'])
+def student_enroll_subject():
+    if 'user_role' not in session or session['user_role'] != 'student':
+        return redirect('/login')
+
+    student_id = session['user_id']
+    subject_id = request.form.get('subject_id')
+
+    if not subject_id:
+        flash('No subject selected.', 'danger')
+        return redirect('/student/dashboard')
+
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/student/dashboard')
+
+    cur = conn.cursor()
+    try:
+        # Check if already enrolled
+        cur.execute("""
+            SELECT 1 FROM StudentSubject
+            WHERE student_id = %s AND subject_id = %s AND status = 'active'
+        """, (student_id, subject_id))
+        if cur.fetchone():
+            flash('You are already enrolled in this subject.', 'warning')
+            return redirect('/student/dashboard')
+
+        # Insert enrollment
+        cur.execute("""
+            INSERT INTO StudentSubject (student_id, subject_id, status)
+            VALUES (%s, %s, 'active')
+        """, (student_id, subject_id))
+        conn.commit()
+        flash('Subject added successfully!', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect('/student/dashboard')
 
 @app.route("/student/classes")
 def student_classes():
@@ -685,6 +798,9 @@ def student_classes():
     grade = session.get('grade')
 
     conn = get_db_connection()
+    if not conn:
+        return "❌ Failed to connect to database", 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -818,6 +934,9 @@ def student_courses():
     grade = session.get('grade')
 
     conn = get_db_connection()
+    if not conn:
+        return "❌ Failed to connect to database", 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -880,6 +999,10 @@ def student_request():
     grade = session.get('grade')
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect('/student/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -966,6 +1089,9 @@ def student_enrollment():
     grade = session.get('grade')
 
     conn = get_db_connection()
+    if not conn:
+        return "❌ Failed to connect to database", 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -999,6 +1125,16 @@ def student_enrollment():
 
         days_remaining = enrollment["days_remaining"]
 
+        # ---- NEW: Get enrolled subjects ----
+        cur.execute("""
+            SELECT s.subject_id, s.subject_name
+            FROM Subject s
+            JOIN StudentSubject ss ON s.subject_id = ss.subject_id
+            WHERE ss.student_id = %s AND ss.status = 'active'
+            ORDER BY s.subject_name
+        """, (student_id,))
+        subjects = cur.fetchall()
+
     finally:
         cur.close()
         conn.close()
@@ -1008,12 +1144,13 @@ def student_enrollment():
         "student_enrollment.html",
         student=student,
         enrollment=enrollment,
+        subjects=subjects,
         days_remaining=days_remaining,
         grade=grade,
         payment_info={
-            "bank_name": "ABSA\n/ CAPITEC",
+            "bank_name": "ABSA / CAPITEC",
             "account_name": "EduBoost / Baloyi",
-            "account_number": "4103751120\n/ 1843987021",
+            "account_number": "4103751120 / 1843987021",
             "reference": f"STU-{student_id}"
         }
     )
@@ -1034,6 +1171,9 @@ def student_payment():
     
     # Get student info
     conn = get_db_connection()
+    if not conn:
+        return "❌ Failed to connect to database", 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
@@ -1051,6 +1191,16 @@ def student_payment():
         enrollment = cur.fetchone()
         
         days_remaining = enrollment['days_remaining'] if enrollment else 0
+
+        # ---- NEW: Get enrolled subjects ----
+        cur.execute("""
+            SELECT s.subject_id, s.subject_name
+            FROM Subject s
+            JOIN StudentSubject ss ON s.subject_id = ss.subject_id
+            WHERE ss.student_id = %s AND ss.status = 'active'
+            ORDER BY s.subject_name
+        """, (student_id,))
+        subjects = cur.fetchall()
         
     finally:
         cur.close()
@@ -1078,6 +1228,7 @@ def student_payment():
     return render_template(
         "student_payment.html",
         student=student,
+        subjects=subjects,   # <-- NEW
         title=title,
         message=message,
         payment_info=payment_info,
@@ -1143,6 +1294,9 @@ def mentor_login():
         password_input = request.form.get('password')
 
         conn = get_db_connection()
+        if not conn:
+            return render_template('employee_login.html', error_message="Database connection failed.")
+
         cur = conn.cursor()
 
         cur.execute("""
@@ -1200,6 +1354,10 @@ def upload_pdf():
             return redirect(request.url)
 
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return redirect('/employee/dashboard')
+
         cur = conn.cursor()
 
         # Save file
@@ -1251,6 +1409,10 @@ def employee_content_upload():
             return redirect(request.url)
 
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return redirect("/employee/dashboard")
+
         cur = conn.cursor()
 
         try:
@@ -1298,6 +1460,10 @@ def employee_manage_contents():
     mentor_id = session['user_id']  # Unified session key
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect("/employee/dashboard")
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     # Get all content uploaded by this mentor
@@ -1336,6 +1502,10 @@ def delete_content(content_id):
         return redirect("/login")
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect("/employee/manage-contents")
+
     cur = conn.cursor()
 
     # Delete associated extra links first
@@ -1359,6 +1529,10 @@ def employee_requests():
         return redirect("/login")  # unified login page
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect("/employee/dashboard")
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -1402,6 +1576,9 @@ def update_request_status(request_id):
             return jsonify({'error': 'Invalid status', 'success': False}), 400
         
         conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed', 'success': False}), 500
+
         cur = conn.cursor()
         
         try:
@@ -1452,6 +1629,9 @@ def debug_requests():
         return "Unauthorized", 401
     
     conn = get_db_connection()
+    if not conn:
+        return jsonify({'error': 'Database connection failed'}), 500
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
@@ -1490,6 +1670,10 @@ def employee_profile_edit():
     mentor_id = session['mentor_id']
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect('/employee/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     if request.method == "POST":
@@ -1536,6 +1720,10 @@ def employee_change_password():
             return render_template("employee_change_password.html", error=error)
 
         conn = get_db_connection()
+        if not conn:
+            error = "Database connection failed."
+            return render_template("employee_change_password.html", error=error)
+
         cur = conn.cursor()
 
         # Fetch current password from DB
@@ -1599,6 +1787,10 @@ def create_new_class():
             return redirect(request.url)
 
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return redirect("/employee/dashboard")
+
         cur = conn.cursor()
 
         try:
@@ -1633,6 +1825,10 @@ def view_classes():
     mentor_id = session['user_id']  # ✅ use unified session key
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect("/employee/dashboard")
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
@@ -1666,6 +1862,10 @@ def mentor_delete_class(class_id):
     mentor_id = session['user_id']
 
     conn = get_db_connection()
+    if not conn:
+        flash("Database connection failed.", "danger")
+        return redirect("/employee/classes")
+
     cur = conn.cursor()
 
     try:
@@ -1707,6 +1907,9 @@ def admin_login():
         password_input = request.form.get('password')
 
         conn = get_db_connection()
+        if not conn:
+            return render_template('admin_login.html', error_message="Database connection failed.")
+
         cur = conn.cursor()
 
         # Match your table structure
@@ -1805,6 +2008,9 @@ def admin_dashboard():
             print(f"Admin dashboard stats error: {e}")
         finally:
             conn.close()
+    else:
+        # If connection fails, still render dashboard with empty stats
+        flash("Warning: Could not connect to database. Some data may be unavailable.", "warning")
     
     return render_template(
         'admin_dashboard.html', 
@@ -1824,6 +2030,127 @@ def admin_logout():
     return redirect('/admin-login')
 
 
+
+# ----------------- add subject ----------------------
+
+@app.route('/admin/subjects')
+@admin_required
+def admin_view_subjects():
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed. Please try again later.', 'danger')
+        return redirect('/admin/dashboard')
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT subject_id, subject_name, status FROM Subject ORDER BY subject_name")
+    subjects = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template('admin_subjects.html', subjects=subjects, admin_name=session.get('admin_name'))
+
+
+@app.route('/admin/subjects/add', methods=['POST'])
+@admin_required
+def admin_add_subject():
+    subject_name = request.form.get('subject_name', '').strip()
+    status = request.form.get('status', 'active')
+
+    if not subject_name:
+        flash('Subject name is required.', 'danger')
+        return redirect('/admin/subjects')
+
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed. Please try again later.', 'danger')
+        return redirect('/admin/subjects')
+
+    cur = conn.cursor()
+    try:
+        # Check for duplicate
+        cur.execute("SELECT 1 FROM Subject WHERE subject_name = %s", (subject_name,))
+        if cur.fetchone():
+            flash(f'Subject "{subject_name}" already exists.', 'warning')
+            return redirect('/admin/subjects')
+
+        cur.execute("""
+            INSERT INTO Subject (subject_name, status)
+            VALUES (%s, %s)
+        """, (subject_name, status))
+        conn.commit()
+        flash(f'Subject "{subject_name}" added successfully!', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error adding subject: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect('/admin/subjects')
+
+@app.route('/admin/subjects/edit', methods=['POST'])
+@admin_required
+def admin_edit_subject():
+    subject_id = request.form.get('subject_id')
+    subject_name = request.form.get('subject_name', '').strip()
+    status = request.form.get('status', 'active')
+    if not subject_id or not subject_name:
+        flash('Missing required fields.', 'danger')
+        return redirect('/admin/subjects')
+
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/subjects')
+
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            UPDATE Subject SET subject_name = %s, status = %s
+            WHERE subject_id = %s
+        """, (subject_name, status, subject_id))
+        conn.commit()
+        flash('Subject updated successfully.', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+    return redirect('/admin/subjects')
+
+@app.route('/admin/subjects/delete', methods=['POST'])
+@admin_required
+def admin_delete_subject():
+    subject_id = request.form.get('subject_id')
+    if not subject_id:
+        flash('No subject selected.', 'danger')
+        return redirect('/admin/subjects')
+
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/subjects')
+
+    cur = conn.cursor()
+    try:
+        # Check if subject is referenced (e.g., in Mentor table)
+        cur.execute("SELECT 1 FROM Mentor WHERE subject_id = %s LIMIT 1", (subject_id,))
+        if cur.fetchone():
+            flash('Cannot delete: subject is assigned to a mentor.', 'warning')
+            return redirect('/admin/subjects')
+
+        cur.execute("DELETE FROM Subject WHERE subject_id = %s", (subject_id,))
+        conn.commit()
+        flash('Subject deleted successfully.', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+    return redirect('/admin/subjects')
+
+
 # Example skeleton route for notifications
 @app.route('/admin/notifications', methods=['GET', 'POST'])
 @admin_required
@@ -1833,6 +2160,10 @@ def admin_notifications():
         message = request.form.get('message')
         # Save to DB and/or queue for sending
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return redirect('/admin/notifications')
+
         cur = conn.cursor()
         cur.execute("INSERT INTO Notifications (title, message, created_at) VALUES (%s, %s, CURRENT_TIMESTAMP)", (title, message))
         conn.commit()
@@ -1860,6 +2191,10 @@ def admin_add_mentor():
         profile_image = request.form.get('profile_image')  # ← image URL here
 
         conn = get_db_connection()
+        if not conn:
+            flash("Database connection failed.", "danger")
+            return redirect('/admin/mentors')
+
         cur = conn.cursor()
         try:
             cur.execute("""
@@ -1885,6 +2220,10 @@ def admin_add_mentor():
 @admin_required
 def admin_view_mentors():
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("SELECT mentor_id, name, surname, email, subject_speciality, status, join_date FROM Mentor ORDER BY join_date DESC")
     mentors = cur.fetchall()
@@ -1903,6 +2242,9 @@ def toggle_registration():
     message = data.get('message', '')
     
     conn = get_db_connection()
+    if not conn:
+        return jsonify({'error': 'Database connection failed', 'success': False}), 500
+
     cur = conn.cursor()
     
     try:
@@ -1937,6 +2279,10 @@ def toggle_registration():
 @admin_required
 def admin_edit_mentor(mentor_id):
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/mentors')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     # Get current mentor
@@ -1944,6 +2290,8 @@ def admin_edit_mentor(mentor_id):
     mentor = cur.fetchone()
     if not mentor:
         flash("Mentor not found.", "danger")
+        cur.close()
+        conn.close()
         return redirect('/admin/mentors')
 
     if request.method == 'POST':
@@ -1994,6 +2342,10 @@ def admin_edit_mentor(mentor_id):
 @admin_required
 def admin_delete_mentor(mentor_id):
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/mentors')
+
     cur = conn.cursor()
     cur.execute("DELETE FROM Mentor WHERE mentor_id=%s", (mentor_id,))
     conn.commit()
@@ -2010,72 +2362,274 @@ def add_enrollment_days():
     additional_days = request.form.get('additional_days')
 
     if not enrollment_id or not additional_days:
-        flash("Missing enrollment ID or days.", "error")
-        return redirect('/admin/enrollments')
+        return jsonify({'success': False, 'error': 'Missing enrollment ID or days.'}), 400
 
     try:
         additional_days = int(additional_days)
         if additional_days <= 0:
-            flash("Days must be positive.", "error")
-            return redirect('/admin/enrollments')
+            return jsonify({'success': False, 'error': 'Days must be positive.'}), 400
     except ValueError:
-        flash("Invalid number of days.", "error")
-        return redirect('/admin/enrollments')
+        return jsonify({'success': False, 'error': 'Invalid number of days.'}), 400
 
     conn = get_db_connection()
-    if conn:
-        try:
-            cur = conn.cursor()
-            # Update enrollment days and remaining days
-            cur.execute("""
-                UPDATE Enrollment
-                SET enrollment_days = enrollment_days + %s,
-                    days_remaining = days_remaining + %s,
-                    last_updated = CURRENT_TIMESTAMP,
-                    status = 'active'
-                WHERE enrollment_id = %s
-            """, (additional_days, additional_days, enrollment_id))
-            conn.commit()
-            cur.close()
-            flash(f"Successfully added {additional_days} days to enrollment.", "success")
-        except Exception as e:
-            flash(f"Error updating enrollment: {e}", "error")
-            print(f"Add enrollment days error: {e}")
-        finally:
-            conn.close()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed.'}), 500
 
-    return redirect('/admin/enrollments')
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # Update enrollment
+        cur.execute("""
+            UPDATE Enrollment
+            SET enrollment_days = enrollment_days + %s,
+                days_remaining = days_remaining + %s,
+                last_updated = CURRENT_TIMESTAMP,
+                status = 'active'
+            WHERE enrollment_id = %s
+            RETURNING days_remaining, student_id
+        """, (additional_days, additional_days, enrollment_id))
+        updated = cur.fetchone()
 
+        if not updated:
+            return jsonify({'success': False, 'error': 'Enrollment not found.'}), 404
+
+        # Get student name for the WhatsApp message
+        cur.execute("""
+            SELECT name, surname FROM Student WHERE student_id = %s
+        """, (updated['student_id'],))
+        student = cur.fetchone()
+
+        conn.commit()
+
+        # Calculate next payment date: today + days_remaining
+        from datetime import datetime, timedelta
+        next_payment_date = (datetime.now() + timedelta(days=updated['days_remaining'])).strftime('%d %B %Y')
+
+        return jsonify({
+            'success': True,
+            'days_remaining': updated['days_remaining'],
+            'student_name': f"{student['name']} {student['surname']}" if student else 'Student',
+            'next_payment_date': next_payment_date,
+            'message': f"Thank you for your support. Your access period has been successfully extended, and you now have {updated['days_remaining']} days remaining. Please note that your next payment is due before {next_payment_date}. Kind regards, Eduboost"
+        })
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 # --- View student enrollments (example) ---
 @app.route('/admin/enrollments')
 @admin_required
 def admin_view_enrollments():
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-        SELECT e.enrollment_id, e.student_id, s.name, s.surname, e.enrollment_days, e.days_remaining, e.status, e.enrollment_date, e.last_updated
+        SELECT 
+            e.enrollment_id, 
+            e.student_id, 
+            s.name, 
+            s.surname, 
+            s.grade,
+            e.enrollment_days, 
+            e.days_remaining, 
+            e.status
         FROM Enrollment e
         LEFT JOIN Student s ON s.student_id = e.student_id
         ORDER BY e.last_updated DESC
     """)
     enrollments = cur.fetchall()
+
+    # For each enrollment, fetch subjects and calculate price
+    for enrollment in enrollments:
+        cur.execute("""
+            SELECT subject_name
+            FROM Subject sub
+            JOIN StudentSubject ss ON sub.subject_id = ss.subject_id
+            WHERE ss.student_id = %s AND ss.status = 'active'
+        """, (enrollment['student_id'],))
+        subjects = cur.fetchall()
+        subject_names = [sub['subject_name'] for sub in subjects]
+        enrollment['subjects'] = ', '.join(subject_names) if subject_names else 'None'
+        enrollment['price'] = len(subject_names) * 100  # R100 per subject
+
     cur.close()
     conn.close()
     return render_template('admin_view_enrollments.html', enrollments=enrollments)
-
 
 @app.route('/admin/students')
 @admin_required
 def admin_view_students():
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT student_id, name, surname, phone, email, grade, status FROM Student ORDER BY name")
+    try:
+        # Get all students
+        cur.execute("""
+            SELECT student_id, name, surname, phone, email, grade, status
+            FROM Student
+            ORDER BY name
+        """)
+        students = cur.fetchall()
+
+        # For each student, get their enrolled subjects
+        for student in students:
+            cur.execute("""
+                SELECT s.subject_id, s.subject_name
+                FROM Subject s
+                JOIN StudentSubject ss ON s.subject_id = ss.subject_id
+                WHERE ss.student_id = %s AND ss.status = 'active'
+                ORDER BY s.subject_name
+            """, (student['student_id'],))
+            student['subjects'] = cur.fetchall()
+
+            # Get available subjects (not enrolled)
+            cur.execute("""
+                SELECT subject_id, subject_name
+                FROM Subject
+                WHERE status = 'active'
+                AND subject_id NOT IN (
+                    SELECT subject_id FROM StudentSubject
+                    WHERE student_id = %s AND status = 'active'
+                )
+                ORDER BY subject_name
+            """, (student['student_id'],))
+            student['available_subjects'] = cur.fetchall()
+
+    except Exception as e:
+        flash(f'Error fetching data: {e}', 'danger')
+        students = []
+    finally:
+        cur.close()
+        conn.close()
+
+    return render_template('admin_view_students.html', students=students)
+
+
+@app.route('/admin/students/register-subject', methods=['POST'])
+@admin_required
+def admin_register_subject():
+    student_id = request.form.get('student_id')
+    subject_id = request.form.get('subject_id')
+    
+    if not student_id or not subject_id:
+        flash('Missing student or subject.', 'danger')
+        return redirect('/admin/students')
+    
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/students')
+    
+    cur = conn.cursor()
+    try:
+        # Check if already enrolled
+        cur.execute("""
+            SELECT 1 FROM StudentSubject
+            WHERE student_id = %s AND subject_id = %s AND status = 'active'
+        """, (student_id, subject_id))
+        if cur.fetchone():
+            flash('Student is already enrolled in this subject.', 'warning')
+            return redirect('/admin/students')
+        
+        # Insert enrollment
+        cur.execute("""
+            INSERT INTO StudentSubject (student_id, subject_id, status)
+            VALUES (%s, %s, 'active')
+        """, (student_id, subject_id))
+        conn.commit()
+        flash('Subject registered successfully!', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+    
+    return redirect('/admin/students')
+
+
+@app.route('/admin/students/deregister-subject', methods=['POST'])
+@admin_required
+def admin_deregister_subject():
+    student_id = request.form.get('student_id')
+    subject_id = request.form.get('subject_id')
+    
+    if not student_id or not subject_id:
+        flash('Missing student or subject.', 'danger')
+        return redirect('/admin/students')
+    
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/students')
+    
+    cur = conn.cursor()
+    try:
+        # Check if the record exists first
+        cur.execute("""
+            SELECT 1 FROM StudentSubject
+            WHERE student_id = %s AND subject_id = %s AND status = 'active'
+        """, (student_id, subject_id))
+        if not cur.fetchone():
+            flash('Student was not enrolled in this subject.', 'warning')
+            return redirect('/admin/students')
+        
+        # Permanently delete the record (hard delete)
+        cur.execute("""
+            DELETE FROM StudentSubject
+            WHERE student_id = %s AND subject_id = %s AND status = 'active'
+        """, (student_id, subject_id))
+        conn.commit()
+        flash('Subject deregistered (deleted) successfully!', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        conn.close()
+    
+    return redirect('/admin/students')
+
+
+@app.route('/admin/expiring-accounts')
+@admin_required
+def admin_expiring_accounts():
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("""
+        SELECT 
+            e.enrollment_id,
+            e.student_id,
+            s.name,
+            s.surname,
+            s.phone,
+            s.email,
+            e.days_remaining,
+            e.status
+        FROM Enrollment e
+        JOIN Student s ON e.student_id = s.student_id
+        WHERE e.days_remaining BETWEEN 1 AND 10
+        AND e.status = 'active'
+        ORDER BY e.days_remaining ASC
+    """)
     students = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('admin_view_students.html', students=students)
 
+    return render_template('admin_expiring_accounts.html', students=students)
 
 # ===========================================================
 # NEW ADMIN ROUTES FOR MISSING PAGES
@@ -2089,6 +2643,10 @@ def admin_requests():
         return redirect("/login")
     
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
@@ -2148,6 +2706,10 @@ def admin_upcoming_classes():
         return redirect("/login")
     
     conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
@@ -2214,6 +2776,9 @@ def admin_upcoming_classes():
 @app.route("/check-registration-status")
 def check_registration_status():
     conn = get_db_connection()
+    if not conn:
+        return jsonify({'status': 'open', 'message': 'Registration is open.'})
+
     cur = conn.cursor()
     
     try:
@@ -2247,27 +2812,27 @@ def check_registration_status():
 @app.route("/registration-closed")
 def registration_closed():
     conn = get_db_connection()
-    cur = conn.cursor()
+    message = "Registration is currently closed. We will open registrations at the beginning of the next term."
     
-    try:
-        # Get the registration closed message - Using notification_type column
-        cur.execute("""
-            SELECT message FROM Notification 
-            WHERE notification_type = 'registration_status' 
-            ORDER BY date_sent DESC LIMIT 1
-        """)
-        notification = cur.fetchone()
-        
-        message = "Registration is currently closed. We will open registrations at the beginning of the next term."
-        if notification and ('closed' in notification[0].lower() or 'not open' in notification[0].lower()):
-            message = notification[0]
+    if conn:
+        cur = conn.cursor()
+        try:
+            # Get the registration closed message - Using notification_type column
+            cur.execute("""
+                SELECT message FROM Notification 
+                WHERE notification_type = 'registration_status' 
+                ORDER BY date_sent DESC LIMIT 1
+            """)
+            notification = cur.fetchone()
             
-    except Exception as e:
-        print(f"Error fetching registration message: {e}")
-        message = "Registration is currently closed. We will open registrations at the beginning of the next term."
-    finally:
-        cur.close()
-        conn.close()
+            if notification and ('closed' in notification[0].lower() or 'not open' in notification[0].lower()):
+                message = notification[0]
+                
+        except Exception as e:
+            print(f"Error fetching registration message: {e}")
+        finally:
+            cur.close()
+            conn.close()
     
     return render_template("registration_closed.html", message=message)
 

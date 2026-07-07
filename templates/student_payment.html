@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - Edu Boost Up</title>
+    <title>My Enrollment - Edu Boost Up</title>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         * {
             margin: 0;
@@ -23,1252 +23,429 @@
             --primary-light: #6a7ef0;
             --primary-dark: #2a4bd4;
             --secondary: #3a0ca3;
-            --secondary-light: #e6e1f1;
             --accent: #7209b7;
-            --accent-light: #8b2bd0;
             --light: #f8f9fa;
             --dark: #212529;
-            --dark-light: #343a40;
             --success: #4cc9f0;
             --warning: #f72585;
-            --math: #ff6b6b;
-            --accounting: #4ecdc4;
-            --science: #45aaf2;
             --text-light: #6c757d;
-            --text-lighter: #adb5bd;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --border-radius: 8px;
-            --border-radius-lg: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --transition: all 0.3s ease;
         }
 
         body {
-            background: white;
+            background: #f5f7fc;
             color: var(--dark);
-            line-height: 1.5;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 2rem 1rem;
         }
 
-        /* Floating Shapes */
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
-            opacity: 0.05;
-            animation: float 20s infinite linear;
-        }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: -5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
-        }
-
-        /* Container */
         .container {
-            width: 100%;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 0 1.5rem;
         }
 
-        /* Header Styles */
-        header {
-            background: white;
-            color: var(--dark);
-            padding: 1.5rem 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
+        /* Header */
+        .page-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            transition: var(--transition);
-        }
-
-        .logo:hover {
-            transform: translateY(-2px);
-        }
-
-        .logo img {
-            height: 50px;
-            width: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--secondary);
-        }
-
-        /* Menu Toggle Button */
-        .menu-toggle {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(67, 97, 238, 0.1);
-            transform: scale(1.1);
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background: white;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #f1f3f4;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sidebar-logo img {
-            height: 40px;
-            width: auto;
-            border-radius: 8px;
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.4rem;
-            color: var(--secondary);
-        }
-
-        .close-sidebar {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-sidebar:hover {
-            color: var(--primary);
-            transform: rotate(90deg);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
             margin-bottom: 2rem;
         }
 
-        .sidebar-nav li {
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-nav a {
-            display: block;
-            padding: 1rem 1.5rem;
-            color: var(--dark);
+        .page-header a {
+            color: var(--primary);
             text-decoration: none;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .sidebar-nav a.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        /* Welcome Banner */
-        .welcome-banner {
-            background: white;
-            border-radius: var(--border-radius-lg);
-            padding: 2rem;
-            margin: 2rem auto;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-            max-width: 1200px;
-            border-left: 4px solid var(--warning);
-        }
-
-        .welcome-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .welcome-text h2 {
-            font-size: clamp(1.5rem, 3vw, 2rem);
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .welcome-text p {
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .welcome-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--warning), #ff8fab);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            padding: 2rem 1.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Payment Container */
-        .payment-container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-
-        .content-header {
-            background: linear-gradient(135deg, var(--warning), #ff8fab);
-            color: white;
-            padding: 1.5rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .content-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .content-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .content-header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .content-header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .content-body {
-            padding: 2rem;
-        }
-
-        /* Alert Message */
-        .alert {
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            border-left: 4px solid;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .alert-warning {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
-            border-left-color: #ffc107;
-            color: #856404;
-        }
-
-        .alert-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Info Sections */
-        .info-section {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e9ecef;
-            transition: var(--transition);
-        }
-
-        .info-section:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .info-section h3 {
-            color: var(--secondary);
-            margin-bottom: 1rem;
             font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .info-section h3 i {
-            color: var(--primary);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .info-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            font-size: 1rem;
-            color: var(--dark);
-            font-weight: 600;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .amount-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Instructions */
-        .instructions {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--success);
-        }
-
-        .instructions h4 {
-            color: var(--success);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .instructions ol {
-            padding-left: 1.5rem;
-        }
-
-        .instructions li {
-            margin-bottom: 0.75rem;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        .instructions li strong {
-            color: var(--primary);
-        }
-
-        /* Bank Accounts */
-        .bank-accounts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .bank-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            border: 2px solid #e9ecef;
             transition: var(--transition);
         }
 
-        .bank-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
+        .page-header a:hover {
+            transform: translateX(-4px);
+        }
+
+        .page-header h1 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            padding: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
             box-shadow: var(--shadow-hover);
         }
 
-        .bank-card-header {
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 0.8rem;
+            border-bottom: 2px solid #e9ecef;
             padding-bottom: 1rem;
-            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 1.5rem;
         }
 
-        .bank-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
+        .card-header i {
+            font-size: 1.6rem;
+            color: var(--primary);
         }
 
-        .bank-name {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .card-header h2 {
+            font-size: 1.3rem;
             color: var(--secondary);
         }
 
-        .bank-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .bank-detail-item {
+        .status-badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Days remaining */
+        .days-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .days-number.expired {
+            color: var(--warning);
+        }
+
+        /* Subject list */
+        .subject-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .subject-tag {
+            background: var(--light);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Payment details */
+        .payment-details {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .payment-details p {
+            margin-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f1f3f4;
+            flex-wrap: wrap;
+            gap: 0.3rem;
         }
 
-        .bank-detail-label {
-            font-size: 0.9rem;
+        .payment-details .label {
+            font-weight: 600;
             color: var(--text-light);
         }
 
-        .bank-detail-value {
-            font-size: 0.95rem;
+        .payment-details .value {
+            font-weight: 600;
             color: var(--dark);
-            font-weight: 600;
+            text-align: right;
         }
 
-        .reference-number {
-            background: var(--light);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            font-family: monospace;
-            font-size: 1.1rem;
+        .payment-details .total {
+            font-size: 1.2rem;
+            border-top: 2px dashed #dee2e6;
+            padding-top: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .payment-details .total .value {
             color: var(--primary);
-            text-align: center;
-            letter-spacing: 1px;
+            font-size: 1.4rem;
+        }
+
+        .payment-details .note {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
             margin-top: 0.5rem;
-            border: 1px solid #e9ecef;
-        }
-
-        /* Important Note */
-        .important-note {
-            background: linear-gradient(135deg, rgba(247, 37, 133, 0.1), rgba(247, 37, 133, 0.05));
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--warning);
-        }
-
-        .important-note h4 {
-            color: var(--warning);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Actions */
-        .actions {
-            display: flex;
-            gap: 1rem;
             justify-content: center;
-            padding-top: 2rem;
-            border-top: 1px solid #e9ecef;
-            flex-wrap: wrap;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
+        /* WhatsApp button */
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
             transition: var(--transition);
             border: none;
             cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--light);
-            color: var(--text-light);
-            border: 1px solid #e9ecef;
-        }
-
-        .btn-secondary:hover {
-            background: white;
-            color: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--warning), #ff8fab);
-            color: white;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.3);
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(247, 37, 133, 0.4);
-        }
-
-        /* User info in sidebar */
-        .user-info {
-            margin-top: auto;
-            padding: 1.5rem;
-            background: var(--light);
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--accent), var(--warning));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .user-details h4 {
             font-size: 1.1rem;
-            color: var(--secondary);
-            margin-bottom: 0.25rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
-        .user-details p {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
         }
 
-        .days-remaining-text {
-            color: var(--success) !important;
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
             font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        /* Overlay for sidebar */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
             transition: var(--transition);
-        }
-
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 4rem 0 2rem;
-            margin-top: 4rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            position: relative;
             display: inline-block;
         }
 
-        .footer-column h3:after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 3px;
+        .btn-outline:hover {
             background: var(--primary);
-            border-radius: 2px;
-        }
-
-        .footer-column p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-column a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-column a:hover {
             color: white;
-            transform: translateX(5px);
         }
 
-        .footer-column li i {
-            width: 20px;
-            margin-right: 0.5rem;
-        }
-
-        .social-share {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .social-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-3px);
-            background: var(--primary);
-        }
-
-        .copyright {
+        .text-center {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
         }
 
-        /* Responsive Design */
+        .mt-2 {
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .content-body {
-                padding: 1.5rem;
+            .container {
+                padding: 0 0.5rem;
             }
-
-            .content-header {
-                padding: 1.25rem 1.5rem;
-                flex-direction: column;
-                text-align: center;
-                gap: 0.75rem;
+            .page-header h1 {
+                font-size: 1.5rem;
             }
-
-            .content-header h1 {
-                font-size: 1.3rem;
+            .days-number {
+                font-size: 2rem;
             }
-
-            .bank-accounts {
-                grid-template-columns: 1fr;
+            .payment-details {
+                padding: 1rem;
             }
-
-            .actions {
-                flex-direction: column;
+            .payment-details .total {
+                font-size: 1rem;
             }
-
-            .btn {
+            .payment-details .total .value {
+                font-size: 1.2rem;
+            }
+            .whatsapp-btn {
                 width: 100%;
                 justify-content: center;
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
             }
-
-            .sidebar {
-                width: 300px;
-                right: -300px;
-            }
-
-            .welcome-banner {
-                padding: 1.5rem;
-            }
-
-            .welcome-content {
-                flex-direction: column;
+            .btn-outline {
+                width: 100%;
                 text-align: center;
-                gap: 1rem;
             }
-
-            .info-grid {
-                grid-template-columns: 1fr;
+            .card {
+                padding: 1.2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .container {
-                padding: 0 1rem;
+            .payment-details p {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.1rem;
             }
-
-            .header-content {
-                gap: 1rem;
+            .payment-details .value {
+                text-align: left;
+                width: 100%;
             }
-
-            .logo {
-                flex-direction: row;
+            .payment-details .total .value {
                 text-align: left;
             }
-
-            .logo h1 {
-                font-size: 1.5rem;
+            .subject-tag {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.8rem;
             }
-
-            .content-body {
-                padding: 1rem;
+            .status-badge {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.8rem;
             }
-
-            .welcome-banner {
-                padding: 1rem;
+            .days-number {
+                font-size: 1.8rem;
             }
-
-            .info-section {
-                padding: 1rem;
+            .page-header h1 {
+                font-size: 1.3rem;
             }
-
-            .bank-card {
-                padding: 1rem;
+            .card-header i {
+                font-size: 1.3rem;
+            }
+            .card-header h2 {
+                font-size: 1.1rem;
             }
         }
 
-        /* iPad specific adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
             .container {
-                padding: 0 2rem;
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .bank-accounts {
-                grid-template-columns: repeat(2, 1fr);
+                max-width: 700px;
             }
         }
     </style>
 </head>
+
 <body>
-    <!-- Floating Background Shapes -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
+    <div class="container">
 
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
-                <h2>Edu Boost Up</h2>
-            </div>
-            <button class="close-sidebar" id="closeSidebar">
-                <i class="fas fa-times"></i>
-            </button>
+        <!-- Back link & header -->
+        <div class="page-header">
+            <a href="/student/dashboard"><i class="fas fa-arrow-left"></i></a>
+            <h1>My Enrollment</h1>
         </div>
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                {% if days_remaining > 0 %}
-                <li><a href="/student/dashboard/courses"><i class="fas fa-book-open"></i> My Courses</a></li>
-                <li><a href="/student/classes"><i class="fas fa-chalkboard-teacher"></i> View Classes</a></li>
-                <li><a href="/student/request"><i class="fas fa-paper-plane"></i> Send Request</a></li>
-                {% endif %}
-                <li><a href="/student/enrollment"><i class="fas fa-calendar-alt"></i> My Enrollment</a></li>
-                <li><a href="/student/profile"><i class="fas fa-user-edit"></i> Update Profile</a></li>
-                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </nav>
-
-        <div class="user-info">
-            <div class="user-avatar">
-                {% if student and student.name and student.surname %}
-                    {{ student.name[0] }}{{ student.surname[0] }}
-                {% else %}
-                    Student
-                {% endif %}
+        <!-- Enrollment Status Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-calendar-check"></i>
+                <h2>Enrollment Status</h2>
             </div>
-            <div class="user-details">
-                <h4>
-                    {% if student and student.name and student.surname %}
-                        {{ student.name }} {{ student.surname }}
-                    {% else %}
-                        Student
-                    {% endif %}
-                </h4>
-                <p>Grade {{ student.grade if student.grade else 'N/A' }}</p>
-                {% if days_remaining and days_remaining > 0 %}
-                <p class="days-remaining-text">
-                    <i class="fas fa-clock"></i> {{ days_remaining }} days remaining
+
+            {% if enrollment and enrollment.status == 'active' and enrollment.days_remaining > 0 %}
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <span class="status-badge active"><i class="fas fa-check-circle"></i> Active</span>
+                    <span class="days-number">{{ enrollment.days_remaining }}</span>
+                    <span style="font-size: 1.1rem; color: var(--text-light);">days remaining</span>
+                </div>
+                <p style="margin-top: 0.5rem; color: var(--text-light);">
+                    <i class="fas fa-clock"></i> Your enrollment is valid. Enjoy full access to your subjects.
                 </p>
-                {% endif %}
-            </div>
+
+                <!-- Enrolled subjects -->
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: var(--text-light); margin-bottom: 0.5rem;">Your Subjects</h3>
+                    <div class="subject-list">
+                        {% for subject in subjects %}
+                            <span class="subject-tag">{{ subject.subject_name }}</span>
+                        {% else %}
+                            <span style="color: var(--text-light);">No subjects enrolled yet.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% else %}
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <span class="status-badge expired"><i class="fas fa-exclamation-triangle"></i> Expired</span>
+                    <span class="days-number expired">0</span>
+                    <span style="font-size: 1.1rem; color: var(--text-light);">days remaining</span>
+                </div>
+                <p style="margin-top: 0.5rem; color: var(--warning); font-weight: 600;">
+                    <i class="fas fa-exclamation-circle"></i> Your enrollment has expired. Please renew to continue.
+                </p>
+            {% endif %}
         </div>
-    </aside>
 
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
-                    <h1>Edu Boost Up</h1>
-                </div>
-                
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <!-- Payment Information Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-credit-card"></i>
+                <h2>Payment Details</h2>
             </div>
+
+            <div class="payment-details">
+                <p>
+                    <span class="label">Bank</span>
+                    <span class="value">{{ payment_info.bank_name }}</span>
+                </p>
+                <p>
+                    <span class="label">Account Name</span>
+                    <span class="value">{{ payment_info.account_name }}</span>
+                </p>
+                <p>
+                    <span class="label">Account Number</span>
+                    <span class="value">{{ payment_info.account_number }}</span>
+                </p>
+                <p>
+                    <span class="label">Reference</span>
+                    <span class="value" style="font-family: monospace; background: white; padding: 0.2rem 0.8rem; border-radius: 4px; border: 1px solid #ddd;">{{ payment_info.reference }}</span>
+                </p>
+
+                <!-- Pricing summary with per-month clarity -->
+                <p>
+                    <span class="label">Subjects Enrolled</span>
+                    <span class="value">{{ subjects|length }}</span>
+                </p>
+                <p>
+                    <span class="label">Price per Subject</span>
+                    <span class="value">R100 <span style="font-weight:400; font-size:0.8rem; color:var(--text-light);">/ month</span></span>
+                </p>
+                <p class="total">
+                    <span class="label">Total Monthly Cost</span>
+                    <span class="value">R{{ subjects|length * 100 }}</span>
+                </p>
+                <p class="note">
+                    <i class="fas fa-info-circle"></i> This is a monthly subscription. You will be billed each month.
+                </p>
+            </div>
+
+            <p style="color: var(--text-light); margin-bottom: 1rem;">
+                <i class="fas fa-info-circle"></i> Please use the reference above when making payment. 
+                Send proof of payment via WhatsApp after completing the transfer.
+            </p>
+
+            <!-- WhatsApp button with pre-filled amount (monthly) -->
+            <div class="text-center">
+                <a href="https://wa.me/27782469399?text=Hello%20Edu%20Boost%20Up%2C%20I%20have%20made%20a%20payment%20of%20R{{ subjects|length * 100 }}%20for%20my%20monthly%20subscription%20(student%20{{ student.student_id }}).%20Please%20find%20attached%20proof%20of%20payment." 
+                   target="_blank"
+                   class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> Send Proof of Payment
+                </a>
+            </div>
+
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light); text-align: center;">
+                <i class="fas fa-phone"></i> Or contact admin directly: <strong>+27 78 246 9399</strong>
+            </p>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        
-
-        <!-- Payment Container -->
-        <div class="payment-container">
-            <!-- Header -->
-            <div class="content-header">
-                <div class="content-logo">
-                    <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
-                </div>
-                <div>
-                    <h1>Payment Information</h1>
-                    <p>Follow the instructions below to complete your enrollment</p>
-                </div>
-            </div>
-
-            <div class="content-body">
-                <!-- Alert Message -->
-                <div class="alert alert-warning">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div>
-                        <strong>Important:</strong> {{ message if message else "Your account access is pending payment. Follow the instructions below to complete your enrollment." }}
-                    </div>
-                </div>
-
-                <!-- Student Information -->
-                <div class="info-section">
-                    <h3><i class="fas fa-user-graduate"></i> Student Information</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Full Name</span>
-                            <span class="info-value">{{ student.name }} {{ student.surname }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Grade Level</span>
-                            <span class="info-value">Grade {{ student.grade }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Student ID</span>
-                            <span class="info-value">{{ session.user_id }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Payment Amount (updated to R100) -->
-                <div class="info-section">
-                    <h3><i class="fas fa-money-bill-wave"></i> Payment Amount</h3>
-                    <p>Complete payment for <strong>31 days of full access</strong> to all courses and materials:</p>
-                    <div class="amount-badge">
-                        <i class="fas fa-rand-sign"></i>
-                        R100.00
-                    </div>
-                </div>
-
-                <!-- Bank Accounts -->
-                <div class="bank-accounts">
-                    {% if payment_info %}
-                    <!-- Bank Account 1 -->
-                    <div class="bank-card">
-                        <div class="bank-card-header">
-                            <div class="bank-icon">
-                                <i class="fas fa-university"></i>
-                            </div>
-                            <div class="bank-name">{{ payment_info.bank_name }}</div>
-                        </div>
-                        <div class="bank-details">
-                            <div class="bank-detail-item">
-                                <span class="bank-detail-label">Account Name</span>
-                                <span class="bank-detail-value">{{ payment_info.account_name }}</span>
-                            </div>
-                            <div class="bank-detail-item">
-                                <span class="bank-detail-label">Account Number</span>
-                                <span class="bank-detail-value">{{ payment_info.account_number }}</span>
-                            </div>
-                            <div class="bank-detail-item">
-                                <span class="bank-detail-label">Account Type</span>
-                                <span class="bank-detail-value">Current Account</span>
-                            </div>
-                            <div class="reference-number">
-                               {reference}==  {{ payment_info.reference }}
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                    
-                    
-                </div>
-
-                <!-- Important Note -->
-                <div class="important-note">
-                    <h4><i class="fas fa-exclamation-circle"></i> Important Note</h4>
-                    <p><strong>Use the exact reference number provided above when making payment.</strong> This reference helps us identify your payment and activate your account quickly.</p>
-                </div>
-
-                <!-- Instructions -->
-                <div class="instructions">
-                    <h4><i class="fas fa-list-ol"></i> Step-by-Step Instructions</h4>
-                    <ol>
-                        <li><strong>Make payment</strong> to one of the bank accounts above</li>
-                        <li><strong>Use the reference number</strong> exactly as shown</li>
-                        <li><strong>Take a clear screenshot/pdf</strong> of your proof of payment</li>
-                        <li><strong>Send the screenshot/pdf</strong> to <a href="mailto:eduboostup@hotmail.com">eduboostup@hotmail.com</a></li>
-                        <li><strong>Your account will be activated</strong> within 24 hours of payment verification</li>
-                    </ol>
-                </div>
-
-                <!-- Contact Info -->
-                <div class="info-section">
-                    <h3><i class="fas fa-headset"></i> Need Help?</h3>
-                    <p>If you have any questions or need assistance with the payment process, contact our support team:</p>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Email</span>
-                            <span class="info-value">eduboostup@hotmail.com</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Phone</span>
-                            <span class="info-value">+27 64 868 5873</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Response Time</span>
-                            <span class="info-value">Within 24 hours</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="actions">
-                    
-                    
-                    <a href="mailto:eduboostup@hotmail.com" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Send Proof of Payment
-                    </a>
-                   
-                </div>
-            </div>
+        <!-- Quick action to dashboard (optional, but helpful) -->
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="/student/dashboard" class="btn-outline">
+                <i class="fas fa-home"></i> Back to Dashboard
+            </a>
         </div>
-    </main>
 
-    
-
-    <script>
-        // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            // Open sidebar
-            menuToggle.addEventListener('click', function() {
-                sidebar.classList.add('active');
-                sidebarOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            
-            // Close sidebar
-            function closeSidebarFunc() {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-            
-            closeSidebar.addEventListener('click', closeSidebarFunc);
-            sidebarOverlay.addEventListener('click', closeSidebarFunc);
-            
-            // Close sidebar when clicking on a link
-            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    closeSidebarFunc();
-                });
-            });
-            
-            // Set active nav item
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.sidebar-nav a');
-            
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Add hover effects for buttons and cards
-            const interactiveElements = document.querySelectorAll('.btn, .bank-card, .info-section');
-            interactiveElements.forEach(element => {
-                element.addEventListener('mouseenter', function() {
-                    if (!this.classList.contains('btn-disabled')) {
-                        this.style.transform = 'translateY(-2px)';
-                    }
-                });
-                
-                element.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('btn-disabled')) {
-                        this.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-
-            // Copy reference number functionality
-            const referenceNumbers = document.querySelectorAll('.reference-number');
-            referenceNumbers.forEach(ref => {
-                ref.style.cursor = 'pointer';
-                ref.title = 'Click to copy';
-                
-                ref.addEventListener('click', function() {
-                    const text = this.textContent.trim();
-                    navigator.clipboard.writeText(text).then(() => {
-                        const original = this.textContent;
-                        this.textContent = 'Copied!';
-                        this.style.background = 'var(--success)';
-                        this.style.color = 'white';
-                        
-                        setTimeout(() => {
-                            this.textContent = original;
-                            this.style.background = 'var(--light)';
-                            this.style.color = 'var(--primary)';
-                        }, 2000);
-                    });
-                });
-            });
-
-            // Print functionality
-            const printBtn = document.querySelector('button[onclick*="print"]');
-            if (printBtn) {
-                printBtn.addEventListener('click', function() {
-                    window.print();
-                });
-            }
-
-            // Email button functionality
-            const emailBtn = document.querySelector('a[href^="mailto"]');
-            if (emailBtn) {
-                emailBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const subject = `Proof of Payment - ${document.querySelector('.info-value').textContent}`;
-                    const body = `Dear Edu Boost Up Support,\n\nPlease find attached my proof of payment for account activation.\n\nStudent: ${document.querySelectorAll('.info-value')[0].textContent}\nReference: ${document.querySelector('.reference-number').textContent}\n\nThank you.`;
-                    window.location.href = `mailto:eduboostup@hotmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                });
-            }
-
-            // Add animation to alert
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                setTimeout(() => {
-                    alert.style.animation = 'none';
-                }, 500);
-            }
-        });
-    </script>
+    </div>
 </body>
+
 </html>

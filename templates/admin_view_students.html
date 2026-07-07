@@ -10,12 +10,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         :root {
             --primary: #4361ee;
@@ -35,8 +30,8 @@
             --science: #45aaf2;
             --text-light: #6c757d;
             --text-lighter: #adb5bd;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --border-radius: 12px;
             --border-radius-lg: 20px;
@@ -45,11 +40,9 @@
         body {
             background: linear-gradient(135deg, #f5f7fb 0%, #e6ecff 100%);
             color: var(--dark);
-            line-height: 1.6;
             min-height: 100vh;
             padding: 2rem 1rem;
             position: relative;
-            overflow-x: hidden;
         }
 
         .floating-shapes {
@@ -69,49 +62,17 @@
             opacity: 0.1;
             animation: float 20s infinite linear;
         }
-
-        .shape:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: -5s;
-        }
-
-        .shape:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -10s;
-        }
+        .shape:nth-child(1) { width: 200px; height: 200px; top: 10%; left: 5%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 60%; right: 10%; animation-delay: -5s; }
+        .shape:nth-child(3) { width: 100px; height: 100px; bottom: 20%; left: 20%; animation-delay: -10s; }
 
         @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
+        .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
 
         .header {
             display: flex;
@@ -122,6 +83,8 @@
             padding: 1.5rem 2rem;
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo-section {
@@ -129,13 +92,7 @@
             align-items: center;
             gap: 15px;
         }
-
-        .logo-section img {
-            height: 60px;
-            width: auto;
-            border-radius: 10px;
-        }
-
+        .logo-section img { height: 60px; width: auto; border-radius: 10px; }
         .logo-text h1 {
             font-size: 2rem;
             font-weight: 700;
@@ -143,31 +100,15 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .logo-text p { color: var(--text-light); font-size: 1rem; }
 
-        .logo-text p {
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .page-title {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-title h1 {
-            font-size: 2.2rem;
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-title p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
+        .page-title { text-align: center; margin-bottom: 2rem; }
+        .page-title h1 { font-size: 2.2rem; color: var(--secondary); margin-bottom: 0.5rem; }
+        .page-title p { color: var(--text-light); font-size: 1.1rem; }
 
         .stats-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -181,25 +122,9 @@
             border-top: 4px solid var(--primary);
             transition: var(--transition);
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .stat-label { color: var(--text-light); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .table-container {
             background: white;
@@ -215,23 +140,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .table-header h2 {
-            color: var(--secondary);
-            font-size: 1.5rem;
-        }
+        .table-header h2 { color: var(--secondary); font-size: 1.5rem; }
 
         .table-controls {
             display: flex;
             gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        .search-box {
-            position: relative;
-        }
-
+        .search-box { position: relative; }
         .search-box input {
             padding: 0.7rem 1rem 0.7rem 2.5rem;
             border: 2px solid #e2e8f0;
@@ -240,12 +162,7 @@
             width: 250px;
             transition: var(--transition);
         }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
+        .search-box input:focus { outline: none; border-color: var(--primary); }
         .search-box i {
             position: absolute;
             left: 0.8rem;
@@ -281,48 +198,45 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: 0.5s;
         }
-
-        .btn:hover::before {
-            left: 100%;
-        }
+        .btn:hover::before { left: 100%; }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 15px rgba(67,97,238,0.3);
         }
-
         .btn-primary:hover {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
         }
 
         .btn-secondary {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             color: white;
-            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+            box-shadow: 0 4px 15px rgba(114,9,183,0.3);
         }
-
         .btn-secondary:hover {
             background: linear-gradient(135deg, var(--accent-light), var(--accent));
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);
         }
 
-        .table-responsive {
-            overflow-x: auto;
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
         }
+        .btn-success:hover { transform: translateY(-2px); }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .btn-danger {
+            background: linear-gradient(135deg, var(--warning), #dc3545);
+            color: white;
         }
+        .btn-danger:hover { transform: translateY(-2px); }
 
-        thead {
-            background: var(--light);
-        }
+        .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
 
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: var(--light); }
         th {
             padding: 1.2rem 1rem;
             text-align: left;
@@ -333,19 +247,9 @@
             font-size: 0.85rem;
             letter-spacing: 0.5px;
         }
-
-        td {
-            padding: 1.2rem 1rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        tbody tr {
-            transition: var(--transition);
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
+        td { padding: 1.2rem 1rem; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+        tbody tr { transition: var(--transition); }
+        tbody tr:hover { background: #f8f9fa; }
 
         .status-badge {
             padding: 0.4rem 0.8rem;
@@ -357,21 +261,8 @@
             text-align: center;
             min-width: 80px;
         }
-
-        .status-active {
-            background: rgba(76, 201, 240, 0.1);
-            color: var(--success);
-        }
-
-        .status-inactive {
-            background: rgba(108, 117, 125, 0.1);
-            color: var(--text-light);
-        }
-
-        .status-pending {
-            background: rgba(247, 37, 133, 0.1);
-            color: var(--warning);
-        }
+        .status-active { background: rgba(76,201,240,0.1); color: var(--success); }
+        .status-inactive { background: rgba(108,117,125,0.1); color: var(--text-light); }
 
         .grade-badge {
             padding: 0.4rem 0.8rem;
@@ -382,103 +273,103 @@
             display: inline-block;
             min-width: 60px;
         }
+        .grade-10 { background: rgba(67,97,238,0.1); color: var(--primary); }
+        .grade-11 { background: rgba(114,9,183,0.1); color: var(--accent); }
+        .grade-12 { background: rgba(247,37,133,0.1); color: var(--warning); }
 
-        .grade-10 {
-            background: rgba(67, 97, 238, 0.1);
+        .student-name { font-weight: 600; color: var(--dark); }
+        .student-email { color: var(--text-light); font-size: 0.9rem; }
+
+        .expand-btn {
+            background: none;
+            border: none;
             color: var(--primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
         }
+        .expand-btn:hover { transform: scale(1.2); }
 
-        .grade-11 {
-            background: rgba(114, 9, 183, 0.1);
-            color: var(--accent);
+        .detail-row { display: none; background: #f8fafc; }
+        .detail-row.open { display: table-row; }
+
+        .detail-cell { padding: 1rem 2rem; }
+        .subjects-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
         }
-
-        .grade-12 {
-            background: rgba(247, 37, 133, 0.1);
+        .subject-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .subject-tag {
+            background: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .subject-tag .remove-btn {
+            background: none;
+            border: none;
             color: var(--warning);
+            cursor: pointer;
+            padding: 0 0.2rem;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        .subject-tag .remove-btn:hover { transform: scale(1.3); color: #dc3545; }
+
+        .register-form {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .register-form select {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            background: white;
         }
 
-        .student-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; color: var(--text-lighter); }
 
-        .student-email {
-            color: var(--text-light);
-            font-size: 0.9rem;
+        .flash-messages { margin-bottom: 1.5rem; }
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
+        .alert-success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+        .alert-danger { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+        .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
-        }
+        .footer { text-align: center; margin-top: 2rem; padding: 1.5rem; color: var(--text-light); font-size: 0.9rem; }
 
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--text-lighter);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .table-responsive {
-                font-size: 0.9rem;
-            }
-            
-            th, td {
-                padding: 1rem 0.8rem;
-            }
-        }
-
+        /* Responsive */
+        @media (max-width: 1024px) { th, td { padding: 1rem 0.8rem; } }
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .table-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .table-controls {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .search-box input {
-                width: 200px;
-            }
+            .header { flex-direction: column; text-align: center; }
+            .table-header { flex-direction: column; align-items: flex-start; }
+            .table-controls { width: 100%; justify-content: space-between; }
+            .search-box input { width: 200px; }
+            .subjects-wrapper { flex-direction: column; align-items: flex-start; }
         }
-
         @media (max-width: 480px) {
-            body {
-                padding: 1rem 0.5rem;
-            }
-
-            .stats-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .table-controls {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
+            body { padding: 1rem 0.5rem; }
+            .stats-cards { grid-template-columns: 1fr; }
+            .table-controls { flex-direction: column; align-items: stretch; }
+            .search-box input { width: 100%; }
+            .register-form { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -498,7 +389,7 @@
                     <p>Admin Dashboard</p>
                 </div>
             </div>
-            <div class="admin-actions">
+            <div>
                 <a href="/admin/dashboard" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
@@ -507,7 +398,18 @@
 
         <div class="page-title">
             <h1><i class="fas fa-user-graduate"></i> Students Management</h1>
-            <p>View and manage all student accounts and information</p>
+            <p>View and manage student accounts, including subject enrollments</p>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </div>
 
         <div class="stats-cards">
@@ -516,16 +418,16 @@
                 <div class="stat-label">Total Students</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ students|selectattr('grade', 'equalto', '10')|list|length }}</div>
-                <div class="stat-label">Grade 10 Students</div>
+                <div class="stat-value">{{ students|selectattr('grade', 'equalto', 10)|list|length }}</div>
+                <div class="stat-label">Grade 10</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ students|selectattr('grade', 'equalto', '11')|list|length }}</div>
-                <div class="stat-label">Grade 11 Students</div>
+                <div class="stat-value">{{ students|selectattr('grade', 'equalto', 11)|list|length }}</div>
+                <div class="stat-label">Grade 11</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ students|selectattr('grade', 'equalto', '12')|list|length }}</div>
-                <div class="stat-label">Grade 12 Students</div>
+                <div class="stat-value">{{ students|selectattr('grade', 'equalto', 12)|list|length }}</div>
+                <div class="stat-label">Grade 12</div>
             </div>
         </div>
 
@@ -537,9 +439,6 @@
                         <i class="fas fa-search"></i>
                         <input type="text" id="searchInput" placeholder="Search students...">
                     </div>
-                    <button class="btn btn-primary" onclick="exportStudents()">
-                        <i class="fas fa-download"></i> Export
-                    </button>
                 </div>
             </div>
 
@@ -547,31 +446,30 @@
                 <table id="studentsTable">
                     <thead>
                         <tr>
+                            <th style="width: 40px;"></th>
                             <th>ID</th>
-                            <th>Student Name</th>
-                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Email / Phone</th>
                             <th>Grade</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for s in students %}
-                        <tr>
+                        <tr class="main-row">
+                            <td>
+                                <button class="expand-btn" data-id="{{ s.student_id }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </td>
                             <td>{{ s.student_id }}</td>
+                            <td><span class="student-name">{{ s.name }} {{ s.surname }}</span></td>
                             <td>
-                                <div class="student-name">{{ s.name }} {{ s.surname }}</div>
-                            </td>
-                            <td class="student-email">
-                               <ul>
-                                <li>{{ s.email }} </li>
-                                <li>{{ s.phone }}</li>
-                               </ul> 
-                               
+                                <div class="student-email">{{ s.email }}</div>
+                                <div class="student-email" style="font-size:0.8rem;">{{ s.phone }}</div>
                             </td>
                             <td>
-                                <span class="grade-badge grade-{{ s.grade }}">
-                                    Grade {{ s.grade }}
-                                </span>
+                                <span class="grade-badge grade-{{ s.grade }}">Grade {{ s.grade }}</span>
                             </td>
                             <td>
                                 <span class="status-badge {% if s.status == 'active' %}status-active{% else %}status-inactive{% endif %}">
@@ -579,9 +477,52 @@
                                 </span>
                             </td>
                         </tr>
+                        <tr class="detail-row" id="detail-{{ s.student_id }}">
+                            <td colspan="6">
+                                <div class="detail-cell">
+                                    <div class="subjects-wrapper">
+                                        <div>
+                                            <strong>Enrolled Subjects:</strong>
+                                            <div class="subject-list">
+                                                {% if s.subjects %}
+                                                    {% for subj in s.subjects %}
+                                                        <span class="subject-tag">
+                                                            {{ subj.subject_name }}
+                                                            <form method="POST" action="/admin/students/deregister-subject" style="display:inline;">
+                                                                <input type="hidden" name="student_id" value="{{ s.student_id }}">
+                                                                <input type="hidden" name="subject_id" value="{{ subj.subject_id }}">
+                                                                <button type="submit" class="remove-btn" title="Deregister subject">
+                                                                    <i class="fas fa-times-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        </span>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <span style="color: var(--text-light); font-style: italic;">No subjects enrolled</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <form method="POST" action="/admin/students/register-subject" class="register-form">
+                                                <input type="hidden" name="student_id" value="{{ s.student_id }}">
+                                                <select name="subject_id" required>
+                                                    <option value="">Add subject...</option>
+                                                    {% for subj in s.available_subjects %}
+                                                        <option value="{{ subj.subject_id }}">{{ subj.subject_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-plus"></i> Register
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <div class="empty-state">
                                     <i class="fas fa-user-graduate"></i>
                                     <h3>No Students Found</h3>
@@ -596,41 +537,49 @@
         </div>
 
         <div class="footer">
-            <p>&copy; 2023 Edu Boost Up. All rights reserved. | Students Management System</p>
+            <p>&copy; 2025 Edu Boost Up. All rights reserved. | Students Management System</p>
         </div>
     </div>
 
     <script>
-        // Search functionality
+        // Expand / collapse detail rows
+        document.querySelectorAll('.expand-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const studentId = this.dataset.id;
+                const detailRow = document.getElementById('detail-' + studentId);
+                const icon = this.querySelector('i');
+
+                if (detailRow.classList.contains('open')) {
+                    detailRow.classList.remove('open');
+                    icon.className = 'fas fa-chevron-right';
+                } else {
+                    detailRow.classList.add('open');
+                    icon.className = 'fas fa-chevron-down';
+                }
+            });
+        });
+
+        // Search filter
         document.getElementById('searchInput').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#studentsTable tbody tr');
-            
+            const term = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#studentsTable tbody tr.main-row');
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        // Export functionality
-        function exportStudents() {
-            alert('Export functionality would be implemented here. This would generate a CSV file of all student data.');
-        }
-
-        // Sort table functionality
-        document.querySelectorAll('th').forEach((th, index) => {
-            th.style.cursor = 'pointer';
-            th.addEventListener('click', () => {
-                alert(`Table would be sorted by column ${index + 1}`);
-            });
-        });
-
-        // Add row click functionality for potential detail views
-        document.querySelectorAll('#studentsTable tbody tr').forEach(row => {
-            row.style.cursor = 'pointer';
-            row.addEventListener('click', function() {
-                const studentId = this.cells[0].textContent;
-                alert(`Would navigate to student details for ID: ${studentId}`);
+                const show = text.includes(term);
+                row.style.display = show ? '' : 'none';
+                // Also hide detail row if main row hidden
+                const detailId = row.querySelector('.expand-btn')?.dataset.id;
+                if (detailId) {
+                    const detailRow = document.getElementById('detail-' + detailId);
+                    if (detailRow) {
+                        if (!show) {
+                            detailRow.classList.remove('open');
+                            const icon = row.querySelector('.expand-btn i');
+                            if (icon) icon.className = 'fas fa-chevron-right';
+                        }
+                        // We don't hide detail row because it's already hidden unless open
+                    }
+                }
             });
         });
     </script>

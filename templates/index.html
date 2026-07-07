@@ -1,17 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edu Boost Up – Maths Support Now Open | R100/month</title>
+    <title>Edu Boost Up – Maths & Physics Open, All Subjects Coming</title>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ===== RESET & ROOT ===== */
         * {
             margin: 0;
             padding: 0;
@@ -35,6 +35,7 @@
             --math: #ff6b6b;
             --accounting: #4ecdc4;
             --science: #45aaf2;
+            --physics: #f77f00;
             --text-light: #6c757d;
             --text-lighter: #adb5bd;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -58,7 +59,7 @@
             padding: 0 15px;
         }
 
-        /* Header Styles */
+        /* ===== HEADER ===== */
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
@@ -96,38 +97,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            padding: 0.5rem 0.8rem;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: white;
-            transition: var(--transition);
-            transform: translateX(-50%);
-        }
-
-        nav a:hover::after {
-            width: 80%;
-        }
-
         .auth-buttons {
             display: flex;
             gap: 1rem;
@@ -154,7 +123,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: 0.5s;
         }
 
@@ -198,10 +167,21 @@
             background: #218838;
         }
 
-        /* Hero Section */
+        .btn-warning {
+            background: #f77f00;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e06e00;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(247, 127, 0, 0.4);
+        }
+
+        /* ===== HERO ===== */
         .hero {
             padding: 5rem 0;
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(58, 12, 163, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.92), rgba(58, 12, 163, 0.92)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
             background-size: cover;
             background-position: center;
             color: white;
@@ -224,7 +204,7 @@
         .hero-content {
             position: relative;
             z-index: 1;
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
@@ -235,29 +215,156 @@
             font-weight: 700;
         }
 
+        .hero h2 .highlight {
+            background: rgba(247, 127, 0, 0.3);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            border: 2px solid #f77f00;
+            font-weight: 700;
+        }
+
         .hero p {
             font-size: 1.2rem;
             margin: 0 auto 2rem;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
-        /* Notice Banner */
+        .hero .expand-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
         .notice-banner {
-            background: #f72585;
+            background: #f77f00;
             color: white;
-            padding: 1rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 60px;
             font-weight: 700;
             margin-bottom: 2rem;
             display: inline-block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(247, 127, 0, 0.4);
+            animation: pulse-banner 2s infinite;
+        }
+
+        @keyframes pulse-banner {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
         }
 
         .notice-banner i {
             margin-right: 0.5rem;
         }
 
-        /* Features Section */
+        .notice-banner .new-badge {
+            background: #f72585;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        /* ===== IMPORTANT ALERT ===== */
+        .important-alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: var(--border-radius);
+            padding: 1.5rem 2rem;
+            margin: 2rem auto;
+            max-width: 950px;
+            text-align: left;
+            box-shadow: var(--shadow);
+        }
+
+        .important-alert h3 {
+            color: #856404;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .important-alert ul {
+            list-style: none;
+        }
+
+        .important-alert li {
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ffe69c;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .important-alert li:last-child {
+            border-bottom: none;
+        }
+
+        .important-alert .price-highlight {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2a4bd4;
+        }
+
+        .important-alert .subject-tag {
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .subject-tag.math-tag {
+            background: #ff6b6b;
+            color: white;
+        }
+        .subject-tag.physics-tag {
+            background: #f77f00;
+            color: white;
+        }
+        .subject-tag.accounting-tag {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .important-alert .alert-footer {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 2px dashed #ffe69c;
+            font-size: 1.1rem;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-now {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== FEATURES ===== */
         .section-title {
             text-align: center;
             margin-bottom: 3rem;
@@ -294,7 +401,7 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 2rem;
         }
 
@@ -349,48 +456,72 @@
             color: var(--secondary);
         }
 
-        /* Pricing Section */
+        /* ===== PRICING ===== */
         .pricing {
             padding: 5rem 0;
             text-align: center;
+            background: var(--light);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .pricing-card {
             background: white;
             border-radius: var(--border-radius-lg);
-            padding: 3rem 2rem;
+            padding: 2.5rem 2rem;
             box-shadow: var(--shadow);
-            max-width: 500px;
-            margin: 0 auto;
             position: relative;
             overflow: hidden;
-            border: 3px solid var(--primary);
+            border: 2px solid #e9ecef;
             transition: var(--transition);
         }
 
         .pricing-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .price {
-            font-size: 3.5rem;
+        .pricing-card.featured {
+            border-color: var(--primary);
+            border-width: 3px;
+        }
+
+        .pricing-card .price {
+            font-size: 3rem;
             font-weight: 700;
             color: var(--primary);
-            margin: 1rem 0;
+            margin: 0.5rem 0 0.2rem;
         }
 
-        .price span {
-            font-size: 1.5rem;
+        .pricing-card .price span {
+            font-size: 1.2rem;
             color: var(--text-light);
         }
 
+        .pricing-card .subject-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .pricing-card .subject-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
         .price-details {
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             text-align: left;
         }
 
         .price-details li {
-            padding: 0.8rem 0;
+            padding: 0.6rem 0;
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
@@ -403,17 +534,37 @@
 
         .price-details i {
             color: var(--success);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .pricing .btn {
-            margin: 0.5rem;
+            margin: 0.3rem;
         }
 
-        /* Subjects Section */
+        .pricing-note {
+            margin-top: 2rem;
+            font-size: 1.05rem;
+            color: var(--text-light);
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            box-shadow: var(--shadow);
+        }
+
+        .pricing-note i {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        .pricing-note strong {
+            color: var(--dark);
+        }
+
+        /* ===== SUBJECTS ===== */
         .subjects {
             padding: 5rem 0;
-            background-color: var(--light);
+            background-color: white;
         }
 
         .subjects-grid {
@@ -429,17 +580,20 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             border: 1px solid #e9ecef;
-            opacity: 0.9;
         }
 
         .subject-card.closed {
-            filter: grayscale(0.8);
-            opacity: 0.7;
+            filter: grayscale(0.6);
+            opacity: 0.8;
         }
 
         .subject-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-hover);
+        }
+
+        .subject-card.closed:hover {
+            transform: translateY(-4px);
         }
 
         .subject-header {
@@ -457,7 +611,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.08);
         }
 
         .math {
@@ -468,8 +622,8 @@
             background: linear-gradient(135deg, var(--accounting), #7ae0da);
         }
 
-        .science {
-            background: linear-gradient(135deg, var(--science), #6bb9ff);
+        .physics {
+            background: linear-gradient(135deg, var(--physics), #faa51a);
         }
 
         .subject-header i {
@@ -512,7 +666,7 @@
 
         .status {
             display: inline-block;
-            padding: 0.3rem 1rem;
+            padding: 0.3rem 1.2rem;
             border-radius: 30px;
             font-size: 0.9rem;
             font-weight: 600;
@@ -529,7 +683,42 @@
             color: white;
         }
 
-        /* CTA Section */
+        .status.coming {
+            background: #f77f00;
+            color: white;
+        }
+
+        .subject-card .price-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .subjects-footer-note {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .subjects-footer-note i {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        .subjects-footer-note strong {
+            color: var(--secondary);
+        }
+
+        /* ===== CTA ===== */
         .cta {
             padding: 5rem 0;
             background: linear-gradient(135deg, var(--accent), var(--secondary));
@@ -571,7 +760,7 @@
             margin: 0.5rem;
         }
 
-        /* Footer */
+        /* ===== FOOTER ===== */
         footer {
             background-color: var(--dark);
             color: white;
@@ -623,6 +812,30 @@
             color: white;
         }
 
+        .social-share {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-share a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #495057;
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-share a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
         .copyright {
             text-align: center;
             padding-top: 1.5rem;
@@ -631,39 +844,11 @@
             font-size: 0.9rem;
         }
 
-        .social-share {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .social-btn:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 gap: 1rem;
-            }
-
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
             }
 
             .hero h2 {
@@ -673,12 +858,38 @@
             .price {
                 font-size: 2.5rem;
             }
+
+            .important-alert h3 {
+                font-size: 1.3rem;
+            }
+
+            .important-alert li {
+                font-size: 1rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notice-banner {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+
+            .subjects-footer-note {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            .important-alert .alert-footer {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
+    <!-- ===== HEADER ===== -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -686,7 +897,6 @@
                     <img src="/static/images/edo_logo.png.jpeg" alt="Edu Boost Up Logo">
                     <h1>Edu Boost Up</h1>
                 </div>
-                
                 <div class="auth-buttons">
                     <a href="/login" class="btn btn-outline">Log In</a>
                     <a href="/signup" class="btn btn-primary">Sign Up</a>
@@ -695,172 +905,196 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- ===== HERO ===== -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
                 <div class="notice-banner">
-                    <i class="fas fa-exclamation-triangle"></i> NO FREE TRIAL CLASSES – Maths Only
+                    <i class="fas fa-bolt"></i> PHYSICS NOW OPEN!
+                    <span class="new-badge"><i class="fas fa-star"></i> NEW</span>
                 </div>
-                <h2>Struggling with Maths? We're here to help.</h2>
-                <p>Focused Mathematics support for Grade 10-12 students. Simple, clear explanations and patient guidance at an affordable price of just R100/month.</p>
+
+                <div class="expand-badge">
+                    <i class="fas fa-rocket"></i> Expanding to ALL subjects – starting with Maths, Physics &amp; Accounting
+                </div>
+
+                <h2>Struggling with <span class="highlight">Maths</span> or <span class="highlight">Physics</span>? We're here to help.</h2>
+                <p>
+                    <strong>All subjects</strong> are on the way! Our <strong>main focus</strong> is
+                    <strong>Mathematics, Physics, and Accounting</strong> – with Maths and Physics open for enrolment right now.
+                </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
+                    <a href="#subjects" class="btn btn-outline btn-large"><i class="fas fa-book-open"></i> View Subjects</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
+    <!-- ===== IMPORTANT ALERT ===== -->
+    <section class="important-alert">
+        <h3><i class="fas fa-bullhorn"></i> 📢 Subject Update – All Subjects Coming!</h3>
+        <ul>
+            <li>
+                <span class="subject-tag math-tag"><i class="fas fa-calculator"></i> Maths</span>
+                <span><strong>OPEN</strong> – R100 per subject</span>
+            </li>
+            <li>
+                <span class="subject-tag physics-tag"><i class="fas fa-atom"></i> Physics</span>
+                <span><strong>NOW OPEN!</strong> – R100 per subject <span style="background:#f77f00;color:white;padding:0.1rem 0.8rem;border-radius:30px;font-size:0.8rem;font-weight:700;"><i class="fas fa-star"></i> NEW</span></span>
+            </li>
+            <li>
+                <span class="subject-tag accounting-tag"><i class="fas fa-file-invoice-dollar"></i> Accounting</span>
+                <span><strong>COMING SOON</strong> – one of our main subjects!</span>
+            </li>
+        </ul>
+        <div class="alert-footer">
+            <i class="fas fa-globe-africa"></i>
+            <span><strong>All other subjects</strong> (Biology, Chemistry, History, Geography, and more) will be added soon – we're expanding!</span>
+        </div>
+        <div style="margin-top:1rem;font-size:1.1rem;">
+            <strong>Price:</strong> <span class="price-highlight">R100</span> per subject per month
+        </div>
+        <div style="margin-top:1rem;">
+            <a href="/signup" class="contact-now"><i class="fas fa-user-plus"></i> Enrol Now – R100/subject</a>
+            <span style="margin-left:1rem;font-size:0.95rem;color:#856404;">
+            </span>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="features" id="features">
         <div class="container">
             <div class="section-title">
                 <h2>Why Choose Edu Boost Up?</h2>
-                <p>We provide focused Mathematics support to help you improve, grow, and succeed.</p>
+                <p>We're building a full subject library. Right now we offer <strong>Maths &amp; Physics</strong>, with <strong>Accounting</strong> and <strong>many more</strong> on the way.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <h3>Focused Maths Support</h3>
-                    <p>Specialised help in Mathematics – no distractions, just what you need.</p>
+                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                    <h3>Maths &amp; Physics Support</h3>
+                    <p>Specialised help in our two open subjects – clear, focused, and effective.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <h3>Simple & Clear Explanations</h3>
-                    <p>Concepts broken down into easy‑to‑understand steps.</p>
+                    <div class="feature-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3>Simple &amp; Clear Explanations</h3>
+                    <p>Concepts broken down into easy‑to‑understand steps with real‑world examples.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
+                    <div class="feature-icon"><i class="fas fa-heart"></i></div>
                     <h3>Patient Guidance</h3>
-                    <p>Learn at your own pace with a mentor who listens.</p>
+                    <p>Learn at your own pace with a mentor who listens and encourages you.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h3>Affordable Quality Education</h3>
-                    <p>Only R100 – premium support without the premium price.</p>
+                    <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                    <h3>Affordable &amp; Expanding</h3>
+                    <p>Only <strong>R100 per subject</strong> – all subjects will be available at the same price.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section (updated to R100) -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <div class="section-title">
-                <h2>Simple, Affordable Pricing</h2>
-                <p>Just R100 – no trials, no hidden fees. Maths support only.</p>
-            </div>
-            <div class="pricing-card">
-                <div class="price">R100<span>/month</span></div>
-                <p><strong>Mathematics Only</strong> (Physics & Accounting closed)</p>
-
-                <ul class="price-details">
-                    <li><i class="fas fa-check"></i> Full access to Mathematics materials</li>
-                    <li><i class="fas fa-check"></i> Request extra Maths classes</li>
-                    <li><i class="fas fa-check"></i> Download worksheets & notes</li>
-                    <li><i class="fas fa-check"></i> Mentor support for Maths</li>
-                    <li><i class="fas fa-check"></i> Progress tracking</li>
-                </ul>
-
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
-                </div>
-                <p style="margin-top: 1rem; font-size: 0.9rem;">Already have an account? <a href="/login">Log in</a></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Subjects Section -->
+    
+    <!-- ===== SUBJECTS ===== -->
     <section class="subjects" id="subjects">
         <div class="container">
             <div class="section-title">
-                <h2>Our Subjects</h2>
-                <p>Currently only Mathematics is open for enrolment at R100/month.</p>
+                <h2>Our Main Subjects</h2>
+                <p><strong>Maths</strong> and <strong>Physics</strong> are open. <strong>Accounting</strong> is coming soon – and we're adding <strong>all other subjects</strong> in the near future!</p>
             </div>
             <div class="subjects-grid">
-                <!-- Mathematics – Open -->
+                <!-- Maths – Open -->
                 <div class="subject-card">
                     <div class="subject-header math">
                         <i class="fas fa-calculator"></i>
                         <h3>Mathematics</h3>
                     </div>
                     <div class="subject-content">
-                        <p>Master complex concepts with step-by-step explanations and practice problems.</p>
+                        <p>Master complex concepts with step‑by‑step explanations and practice problems.</p>
                         <ul>
-                            <li>Algebra & Functions</li>
-                            <li>Calculus & Trigonometry</li>
-                            <li>Geometry & Statistics</li>
+                            <li>Algebra &amp; Functions</li>
+                            <li>Calculus &amp; Trigonometry</li>
+                            <li>Geometry &amp; Statistics</li>
                             <li>Exam Preparation</li>
                         </ul>
-                        <div class="status open"><i class="fas fa-check-circle"></i> OPEN for enrolment</div>
+                        <div class="status open"><i class="fas fa-check-circle"></i> OPEN</div>
+                        <div class="price-tag"><i class="fas fa-tag"></i> R100 / month</div>
                     </div>
                 </div>
-                <!-- Accounting – Closed -->
+
+                <!-- Physics – Open -->
+                <div class="subject-card" style="border-color:#f77f00;border-width:2px;">
+                    <div class="subject-header physics">
+                        <i class="fas fa-atom"></i>
+                        <h3>Physics <span style="background:#f72585;color:white;padding:0.1rem 0.8rem;border-radius:30px;font-size:0.7rem;font-weight:700;margin-left:0.5rem;">NEW</span></h3>
+                    </div>
+                    <div class="subject-content">
+                        <p>Explore the laws of nature with clear explanations and practical applications.</p>
+                        <ul>
+                            <li>Mechanics &amp; Motion</li>
+                            <li>Electricity &amp; Magnetism</li>
+                            <li>Waves, Sound &amp; Light</li>
+                            <li>Thermodynamics &amp; Energy</li>
+                        </ul>
+                        <div class="status open"><i class="fas fa-check-circle"></i> OPEN</div>
+                        <div class="price-tag" style="background:#f77f00;"><i class="fas fa-tag"></i> R100 / month</div>
+                    </div>
+                </div>
+
+                <!-- Accounting – Coming Soon (Main subject) -->
                 <div class="subject-card closed">
                     <div class="subject-header accounting">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <h3>Accounting</h3>
                     </div>
                     <div class="subject-content">
-                        <p>Understand financial principles and accounting practices.</p>
+                        <p>Understand financial principles and accounting practices – one of our core subjects.</p>
                         <ul>
                             <li>Financial Statements</li>
                             <li>Managerial Accounting</li>
                             <li>Tax Principles</li>
-                            <li>Budgeting & Forecasting</li>
+                            <li>Budgeting &amp; Forecasting</li>
                         </ul>
-                        <div class="status closed"><i class="fas fa-lock"></i> CLOSED</div>
+                        <div class="status coming"><i class="fas fa-clock"></i> COMING SOON</div>
                     </div>
                 </div>
-                <!-- Physical Science – Closed -->
-                <div class="subject-card closed">
-                    <div class="subject-header science">
-                        <i class="fas fa-atom"></i>
-                        <h3>Physical Science</h3>
-                    </div>
-                    <div class="subject-content">
-                        <p>Explore physics and chemistry concepts.</p>
-                        <ul>
-                            <li>Mechanics & Motion</li>
-                            <li>Electricity & Magnetism</li>
-                            <li>Chemical Reactions</li>
-                            <li>Laboratory Skills</li>
-                        </ul>
-                        <div class="status closed"><i class="fas fa-lock"></i> CLOSED</div>
-                    </div>
-                </div>
+            </div>
+
+            <!-- Footer note: all subjects coming -->
+            <div class="subjects-footer-note">
+                <i class="fas fa-plus-circle"></i>
+                <strong>All subjects</strong> are on the roadmap! We're adding <strong>Biology, Chemistry, History, Geography, Business Studies, Economics, and more</strong>.
+                Our main focus subjects are <strong>Mathematics, Physics, and Accounting</strong>.
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
+    <!-- ===== CTA ===== -->
     <section class="cta">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready to Boost Your Maths Marks?</h2>
-                <p>No trials, no other subjects – just focused, affordable Maths support for only R100/month. Create an account or call Mr Baloyi today to get started.</p>
+                <h2>Ready to Boost Your Marks?</h2>
+                <p>
+                    Enrol now in <strong>Maths</strong> or <strong>Physics</strong> for just <strong>R100 per subject</strong>.
+                    <strong>Accounting</strong> and <strong>all other subjects</strong> are coming soon – be among the first to join!
+                </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <a href="/signup" class="btn btn-success btn-large"><i class="fas fa-user-plus"></i> Create Account</a>
                 </div>
+                <p style="margin-top:1.5rem;font-size:1rem;opacity:0.8;">
+                 
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ===== FOOTER ===== -->
     <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>Edu Boost Up</h3>
-                    <p>Empowering Grade 10-12 students with quality Mathematics support and personalised guidance for just R100/month.</p>
+                    <p>Empowering Grade 10-12 students with quality <strong>Maths</strong> and <strong>Physics</strong> support. Expanding to <strong>all subjects</strong> soon!</p>
                     <div class="social-share">
                         <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-btn twitter"><i class="fab fa-twitter"></i></a>
@@ -873,6 +1107,7 @@
                     <ul>
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#subjects">Subjects</a></li>
+                        <li><a href="#features">Features</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -895,11 +1130,10 @@
             </div>
 
             <div class="copyright">
-                <p>&copy; 2025 Edu Boost Up. All rights reserved. | Learn • Grow • Succeed | Monthly fee: R100</p>
+                <p>&copy; 2025 Edu Boost Up. All rights reserved. | Learn • Grow • Succeed</p>
             </div>
         </div>
     </footer>
 </body>
 
 </html>
-```
