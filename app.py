@@ -51,23 +51,47 @@ scheduler.start()  # Start scheduler immediately
 
 
 # ===========================================================
-# DATABASE CONNECTION HANDLER - FORCED LOCAL
+# DATABASE CONNECTION HANDLER - PRIORITIZE RAILWAY
 # ===========================================================
 def get_db_connection():
     """
-    ALWAYS connect to the local PostgreSQL database.
-    The Railway DATABASE_URL environment variable is ignored.
+    Connect to Railway PostgreSQL if DATABASE_URL exists,
+    otherwise connect to the local PostgreSQL database.
     """
     try:
-        conn = psycopg2.connect(
-            host=LOCAL_DB['host'],
-            database=LOCAL_DB['database'],
-            user=LOCAL_DB['user'],
-            password=LOCAL_DB['password'],
-            port=LOCAL_DB['port']
-        )
-        print("🖥 Connected to LOCAL PostgreSQL")
-        return conn
+        DATABASE_URL = os.getenv("DATABASE_URL")
+
+        if DATABASE_URL:
+            # -----------------------------------------------------------
+            # RAILWAY DATABASE CONNECTION
+            # -----------------------------------------------------------
+            result = urlparse(DATABASE_URL)
+
+            conn = psycopg2.connect(
+                database=result.path[1:],  # remove "/" at the start
+                user=result.username,
+                password=result.password,
+                host=result.hostname,
+                port=result.port
+            )
+
+            print("🌍 Connected to RAILWAY PostgreSQL")
+            return conn
+
+        else:
+            # -----------------------------------------------------------
+            # LOCAL DATABASE CONNECTION
+            # -----------------------------------------------------------
+            conn = psycopg2.connect(
+                host=LOCAL_DB['host'],
+                database=LOCAL_DB['database'],
+                user=LOCAL_DB['user'],
+                password=LOCAL_DB['password'],
+                port=LOCAL_DB['port']
+            )
+
+            print("🖥 Connected to LOCAL PostgreSQL")
+            return conn
 
     except Exception as e:
         print(f"❌ DATABASE CONNECTION ERROR: {e}")
@@ -3022,7 +3046,7 @@ def admin_expired_accounts():
 
 
 # ===========================================================
-# ADMIN - RESET ENROLLMENT (set enrollment_days = 0, days_remaining = 0, status = 'inactive')
+# ADMIN - RESET ENROLLMENT (set enrollment_days = 0, days_remaining = 0, status = 'expired')
 # ===========================================================
 @app.route('/admin/enrollments/reset', methods=['POST'])
 @admin_required
@@ -3048,7 +3072,7 @@ def reset_enrollment():
         if not enrollment:
             return jsonify({'success': False, 'error': 'No enrollment found for this student.'}), 404
 
-        # Reset to 0 days and set status to 'expired' (not 'inactive')
+        # Reset to 0 days and set status to 'expired'
         cur.execute("""
             UPDATE Enrollment
             SET enrollment_days = 0,
@@ -3068,7 +3092,7 @@ def reset_enrollment():
 
     except Exception as e:
         conn.rollback()
-        print(f"Error resetting enrollment: {e}")  # Log the error for debugging
+        print(f"Error resetting enrollment: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         cur.close()
