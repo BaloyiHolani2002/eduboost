@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Active Accounts (< 20 Days) - Edu Boost Up</title>
+  <title>Active Accounts (1–20 Days) - Edu Boost Up</title>
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
   <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
@@ -465,7 +465,7 @@
   <!-- ====== PAGE TITLE ====== -->
   <div class="page-title">
     <div>
-      <h2><i class="fas fa-hourglass-half"></i> Students with &lt; 20 days remaining</h2>
+      <h2><i class="fas fa-hourglass-half"></i> Students with 1–20 days remaining</h2>
       <p style="color:var(--text-light); font-size:0.9rem; margin-top:0.2rem;">
         <span class="count-badge">{{ students|length }}</span> students need attention
       </p>
@@ -574,7 +574,7 @@
           <tr>
             <td colspan="9" style="text-align:center; color:var(--text-light); padding:2.5rem;">
               <i class="fas fa-check-circle" style="color:var(--success); font-size:2rem; display:block; margin-bottom:0.5rem;"></i>
-              No students with less than 20 days remaining.
+              No students with 1 to 20 days remaining.
             </td>
           </tr>
         {% endfor %}

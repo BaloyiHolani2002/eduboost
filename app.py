@@ -2862,6 +2862,7 @@ def admin_active_accounts():
 
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
+        # Fetch students with days_remaining BETWEEN 1 AND 20 and status = 'active'
         cur.execute("""
             SELECT 
                 s.student_id,
@@ -2873,7 +2874,8 @@ def admin_active_accounts():
                 e.status
             FROM Student s
             JOIN Enrollment e ON s.student_id = e.student_id
-            WHERE e.days_remaining < 20
+            WHERE e.days_remaining BETWEEN 1 AND 20
+            AND e.status = 'active'
             ORDER BY e.days_remaining ASC
         """)
         students = cur.fetchall()
@@ -2900,8 +2902,6 @@ def admin_active_accounts():
         conn.close()
 
     return render_template('admin_active_accounts.html', students=students, admin_name=session.get('admin_name'))
-
-
 # ===========================================================
 # ADMIN - UPDATE ENROLLMENT DAYS (Add or Reduce)
 # ===========================================================
