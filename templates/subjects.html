@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subjects – Edu Boost Up</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ===== Reset & Root ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #2a4bd4;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --text-light: #6c757d;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --success: #28a745;
+            --warning: #f77f00;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.7rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-logo img {
+            height: 44px;
+            width: auto;
+            border-radius: 6px;
+        }
+        .nav-logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            padding: 0.3rem 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links a:hover {
+            color: white;
+            border-bottom-color: white;
+        }
+        .nav-links .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .nav-links .btn-outline-nav {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.6);
+        }
+        .nav-links .btn-outline-nav:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+        .nav-links .btn-primary-nav {
+            background: linear-gradient(135deg, var(--accent), #8b2bd0);
+            color: white;
+        }
+        .nav-links .btn-primary-nav:hover {
+            background: linear-gradient(135deg, #8b2bd0, var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(114,9,183,0.4);
+        }
+        .nav-toggle {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+        }
+
+        /* ===== PAGE HERO ===== */
+        .page-hero {
+            padding: 3rem 0 2.5rem;
+            background: linear-gradient(135deg, rgba(67,97,238,0.08), rgba(114,9,183,0.08));
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .page-hero h1 {
+            font-size: 2.8rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .page-hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* ===== SUBJECTS GRID ===== */
+        .subjects-page {
+            padding: 3rem 0 4rem;
+        }
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .subject-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+        .subject-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .subject-card.coming {
+            background: #f8f9fa;
+            border-style: dashed;
+            opacity: 0.8;
+        }
+        .subject-card.coming:hover {
+            transform: translateY(-4px);
+        }
+        .subject-header {
+            padding: 1.8rem;
+            color: white;
+            text-align: center;
+        }
+        .subject-header.math { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
+        .subject-header.physics { background: linear-gradient(135deg, #f77f00, #faa51a); }
+        .subject-header.lifescience { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .subject-header.geography { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .subject-header.coming-soon { background: linear-gradient(135deg, #adb5bd, #6c757d); }
+        .subject-header i {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .subject-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .subject-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .subject-body .topics {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .subject-body .topics strong {
+            color: var(--dark);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            align-self: flex-start;
+        }
+        .status-open { background: var(--success); color: white; }
+        .status-coming { background: var(--warning); color: white; }
+
+        /* Coming Soon section */
+        .coming-section {
+            margin-top: 3.5rem;
+            text-align: center;
+            border-top: 2px solid #e9ecef;
+            padding-top: 2.5rem;
+        }
+        .coming-section h2 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .coming-section p {
+            color: var(--text-light);
+            max-width: 550px;
+            margin: 0 auto 1.5rem;
+        }
+        .coming-subjects {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .coming-tag {
+            background: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid #e9ecef;
+            font-weight: 600;
+            color: var(--dark);
+            box-shadow: var(--shadow);
+        }
+        .coming-tag i {
+            color: var(--warning);
+            margin-right: 0.4rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer-column h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            padding-bottom: 0.4rem;
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 30px;
+            height: 3px;
+            background: var(--primary);
+        }
+        .footer-column ul {
+            list-style: none;
+        }
+        .footer-column ul li {
+            margin-bottom: 0.6rem;
+        }
+        .footer-column ul li a,
+        .footer-column ul li {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .footer-column ul li a:hover { color: white; }
+        .social-share {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .social-share a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #495057;
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .social-share a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        .social-share a.whatsapp:hover { background: #25d366; }
+        .social-share a.tiktok:hover { background: #000000; }
+        .social-share a.facebook:hover { background: #1877f2; }
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #495057;
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                gap: 0.8rem;
+                border-top: 1px solid rgba(255,255,255,0.15);
+                margin-top: 0.5rem;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links a { font-size: 1rem; }
+            .page-hero h1 { font-size: 2rem; }
+            .page-hero p { font-size: 1rem; }
+            .subjects-grid { grid-template-columns: 1fr 1fr; }
+            .coming-subjects { gap: 0.6rem; }
+            .coming-tag { padding: 0.4rem 1rem; font-size: 0.9rem; }
+        }
+        @media (max-width: 480px) {
+            .subjects-grid { grid-template-columns: 1fr; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .subject-header i { font-size: 2rem; }
+            .subject-header h3 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <a href="{{ url_for('index') }}">
+                        <img src="{{ url_for('static', filename='images/edo_logo.png.jpeg') }}" alt="Edu Boost Up" />
+                        <span>Edu Boost Up</span>
+                    </a>
+                </div>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="/subjects">Subjects</a>
+                    <a href="/timetable">Timetable</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-nav">Log In</a>
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary-nav">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HERO ===== -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>📚 Available Subjects</h1>
+            <p>Explore our core subjects for Grade 10–12, taught by expert mentors. More subjects are on the way!</p>
+        </div>
+    </section>
+
+    <!-- ===== SUBJECTS LIST ===== -->
+    <section class="subjects-page">
+        <div class="container">
+            <div class="subjects-grid">
+                <!-- MATHEMATICS -->
+                <div class="subject-card">
+                    <div class="subject-header math">
+                        <i class="fas fa-calculator"></i>
+                        <h3>Mathematics</h3>
+                    </div>
+                    <div class="subject-body">
+                        <div class="topics">
+                            <strong>Topics:</strong>
+                            Algebra, Calculus, Geometry, Statistics
+                        </div>
+                        <span class="status-badge status-open"><i class="fas fa-check-circle"></i> Operating</span>
+                    </div>
+                </div>
+
+                <!-- PHYSICS -->
+                <div class="subject-card">
+                    <div class="subject-header physics">
+                        <i class="fas fa-atom"></i>
+                        <h3>Physics</h3>
+                    </div>
+                    <div class="subject-body">
+                        <div class="topics">
+                            <strong>Topics:</strong>
+                            Mechanics, Electricity, Waves, Thermodynamics
+                        </div>
+                        <span class="status-badge status-open"><i class="fas fa-check-circle"></i> Operating</span>
+                    </div>
+                </div>
+
+                <!-- LIFE SCIENCE -->
+                <div class="subject-card">
+                    <div class="subject-header lifescience">
+                        <i class="fas fa-dna"></i>
+                        <h3>Life Science</h3>
+                    </div>
+                    <div class="subject-body">
+                        <div class="topics">
+                            <strong>Topics:</strong>
+                            Cells, Genetics, Human Body, Ecology
+                        </div>
+                        <span class="status-badge status-open"><i class="fas fa-check-circle"></i> Operating</span>
+                    </div>
+                </div>
+
+                <!-- GEOGRAPHY -->
+                <div class="subject-card">
+                    <div class="subject-header geography">
+                        <i class="fas fa-globe-africa"></i>
+                        <h3>Geography</h3>
+                    </div>
+                    <div class="subject-body">
+                        <div class="topics">
+                            <strong>Topics:</strong>
+                            Climatology, Geomorphology, Population, Mapwork
+                        </div>
+                        <span class="status-badge status-open"><i class="fas fa-check-circle"></i> Operating</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== MORE SUBJECTS COMING SOON ===== -->
+            <div class="coming-section">
+                <h2>🚀 More Subjects Coming Soon</h2>
+                <p>We're expanding our offering to include even more subjects for Grade 10–12. Stay tuned!</p>
+                <div class="coming-subjects">
+                    <span class="coming-tag"><i class="fas fa-clock"></i> Accounting</span>
+                    <span class="coming-tag"><i class="fas fa-clock"></i> Business Studies</span>
+                    <span class="coming-tag"><i class="fas fa-clock"></i> History</span>
+                    <span class="coming-tag"><i class="fas fa-clock"></i> Economics</span>
+                    <span class="coming-tag"><i class="fas fa-clock"></i> More Subjects</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Edu Boost Up</h3>
+                    <p style="color:#adb5bd; font-size:0.9rem;">Empowering Grade 10–12 students with expert tuition in Mathematics, Physics, Life Science, and Geography. More subjects coming soon!</p>
+                    <div class="social-share">
+                        <a href="https://www.facebook.com/61584102000540/?http_ref=eyJ0cyI6MTc4NDcyNTU4NTAwMCwiciI6IiJ9" target="_blank" aria-label="Facebook" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.tiktok.com/@edu.boost.sa?_r=1&_t=ZS-97m569rE3Ps" target="_blank" aria-label="TikTok" class="tiktok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://whatsapp.com/channel/0029Vb6OldI47XeFwcgVPr3o" target="_blank" aria-label="WhatsApp Channel" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/subjects">Subjects</a></li>
+                        <li><a href="/pricing">Pricing</a></li>
+                        <li><a href="/timetable">Timetable</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> eduboostup@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> +27 78 246 9399</li>
+                        <li><i class="fas fa-map-marker-alt"></i> South Africa</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Edu Boost Up. All rights reserved. &nbsp;|&nbsp; Learn • Grow • Succeed</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JS ===== -->
+    <script>
+        const toggleBtn = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggleBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            toggleBtn.innerHTML = navLinks.classList.contains('open') ?
+                '<i class="fas fa-times"></i>' :
+                '<i class="fas fa-bars"></i>';
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    </script>
+
+</body>
+</html>

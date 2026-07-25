@@ -51,47 +51,23 @@ scheduler.start()  # Start scheduler immediately
 
 
 # ===========================================================
-# DATABASE CONNECTION HANDLER (LOCAL OR RAILWAY)
+# DATABASE CONNECTION HANDLER - FORCED LOCAL
 # ===========================================================
 def get_db_connection():
     """
-    Connect to Railway PostgreSQL if DATABASE_URL exists,
-    otherwise connect to the local PostgreSQL database.
+    ALWAYS connect to the local PostgreSQL database.
+    The Railway DATABASE_URL environment variable is ignored.
     """
     try:
-        DATABASE_URL = os.getenv("DATABASE_URL")
-
-        if DATABASE_URL:
-            # -----------------------------------------------------------
-            # RAILWAY DATABASE CONNECTION
-            # -----------------------------------------------------------
-            result = urlparse(DATABASE_URL)
-
-            conn = psycopg2.connect(
-                database=result.path[1:],  # remove "/" at the start
-                user=result.username,
-                password=result.password,
-                host=result.hostname,
-                port=result.port
-            )
-
-            print("🌍 Connected to RAILWAY PostgreSQL")
-            return conn
-
-        else:
-            # -----------------------------------------------------------
-            # LOCAL DATABASE CONNECTION
-            # -----------------------------------------------------------
-            conn = psycopg2.connect(
-                host=LOCAL_DB['host'],
-                database=LOCAL_DB['database'],
-                user=LOCAL_DB['user'],
-                password=LOCAL_DB['password'],
-                port=LOCAL_DB['port']
-            )
-
-            print("🖥 Connected to LOCAL PostgreSQL")
-            return conn
+        conn = psycopg2.connect(
+            host=LOCAL_DB['host'],
+            database=LOCAL_DB['database'],
+            user=LOCAL_DB['user'],
+            password=LOCAL_DB['password'],
+            port=LOCAL_DB['port']
+        )
+        print("🖥 Connected to LOCAL PostgreSQL")
+        return conn
 
     except Exception as e:
         print(f"❌ DATABASE CONNECTION ERROR: {e}")
@@ -103,7 +79,49 @@ def get_db_connection():
 # ===========================================================
 @app.route('/')
 def index():
-    return render_template('index.html')
+    conn = get_db_connection()
+    subjects = []
+    if conn:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        try:
+            # Get up to 3 active subjects
+            cur.execute("""
+                SELECT subject_id, subject_name, status 
+                FROM Subject 
+                WHERE status = 'active' 
+                ORDER BY subject_name 
+                LIMIT 3
+            """)
+            subjects = cur.fetchall()
+        except Exception as e:
+            print(f"Error fetching subjects for homepage: {e}")
+        finally:
+            cur.close()
+            conn.close()
+    # If fewer than 3, we can pad with placeholder 'coming soon' cards in the template
+    return render_template('index.html', subjects=subjects)
+
+
+@app.route('/subjects')
+def subjects():
+    # Fetch active subjects (public view)
+    conn = get_db_connection()
+    subjects = []
+    if conn:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT subject_id, subject_name, status FROM Subject WHERE status = 'active' ORDER BY subject_name")
+        subjects = cur.fetchall()
+        cur.close()
+        conn.close()
+    return render_template('subjects.html', subjects=subjects)
+
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+@app.route('/timetable')
+def timetable():
+    return render_template('timetable.html')
 
 
 # ===========================================================
@@ -124,6 +142,40 @@ def check_db():
     conn.close()
 
     return f"✅ Database connected successfully! TIME = {result[0]}"
+
+@app.route('/check-email', methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email = data.get('email', '').strip()
+    if not email:
+        return jsonify({'exists': False})
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'exists': False, 'error': 'Database unavailable'}), 500
+    cur = conn.cursor()
+    cur.execute("SELECT email FROM Student WHERE email = %s", (email,))
+    exists = cur.fetchone() is not None
+    cur.close()
+    conn.close()
+    return jsonify({'exists': exists})
+
+
+@app.route('/check-student-id', methods=['POST'])
+def check_student_id():
+    data = request.get_json()
+    student_id = data.get('student_id', '').strip()
+    if not student_id:
+        return jsonify({'exists': False})
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'exists': False, 'error': 'Database unavailable'}), 500
+    cur = conn.cursor()
+    cur.execute("SELECT student_id FROM Student WHERE student_id = %s", (student_id,))
+    exists = cur.fetchone() is not None
+    cur.close()
+    conn.close()
+    return jsonify({'exists': exists})
+
 
 
 # ===========================================================
@@ -2355,70 +2407,6 @@ def admin_delete_mentor(mentor_id):
     return redirect('/admin/mentors')
 
 
-@app.route('/admin/enrollments/add-days', methods=['POST'])
-@admin_required
-def add_enrollment_days():
-    enrollment_id = request.form.get('enrollment_id')
-    additional_days = request.form.get('additional_days')
-
-    if not enrollment_id or not additional_days:
-        return jsonify({'success': False, 'error': 'Missing enrollment ID or days.'}), 400
-
-    try:
-        additional_days = int(additional_days)
-        if additional_days <= 0:
-            return jsonify({'success': False, 'error': 'Days must be positive.'}), 400
-    except ValueError:
-        return jsonify({'success': False, 'error': 'Invalid number of days.'}), 400
-
-    conn = get_db_connection()
-    if not conn:
-        return jsonify({'success': False, 'error': 'Database connection failed.'}), 500
-
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    try:
-        # Update enrollment
-        cur.execute("""
-            UPDATE Enrollment
-            SET enrollment_days = enrollment_days + %s,
-                days_remaining = days_remaining + %s,
-                last_updated = CURRENT_TIMESTAMP,
-                status = 'active'
-            WHERE enrollment_id = %s
-            RETURNING days_remaining, student_id
-        """, (additional_days, additional_days, enrollment_id))
-        updated = cur.fetchone()
-
-        if not updated:
-            return jsonify({'success': False, 'error': 'Enrollment not found.'}), 404
-
-        # Get student name for the WhatsApp message
-        cur.execute("""
-            SELECT name, surname FROM Student WHERE student_id = %s
-        """, (updated['student_id'],))
-        student = cur.fetchone()
-
-        conn.commit()
-
-        # Calculate next payment date: today + days_remaining
-        from datetime import datetime, timedelta
-        next_payment_date = (datetime.now() + timedelta(days=updated['days_remaining'])).strftime('%d %B %Y')
-
-        return jsonify({
-            'success': True,
-            'days_remaining': updated['days_remaining'],
-            'student_name': f"{student['name']} {student['surname']}" if student else 'Student',
-            'next_payment_date': next_payment_date,
-            'message': f"Thank you for your support. Your access period has been successfully extended, and you now have {updated['days_remaining']} days remaining. Please note that your next payment is due before {next_payment_date}. Kind regards, Eduboost"
-        })
-
-    except Exception as e:
-        conn.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
-    finally:
-        cur.close()
-        conn.close()
-
 # --- View student enrollments (example) ---
 @app.route('/admin/enrollments')
 @admin_required
@@ -2836,6 +2824,255 @@ def registration_closed():
     
     return render_template("registration_closed.html", message=message)
 
+
+# ===========================================================
+# ADMIN - VIEW ACTIVE ACCOUNTS (< 20 days remaining)
+# ===========================================================
+@app.route('/admin/active-accounts')
+@admin_required
+def admin_active_accounts():
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute("""
+            SELECT 
+                s.student_id,
+                s.name,
+                s.surname,
+                s.grade,
+                s.phone,
+                e.days_remaining,
+                e.status
+            FROM Student s
+            JOIN Enrollment e ON s.student_id = e.student_id
+            WHERE e.days_remaining < 20
+            ORDER BY e.days_remaining ASC
+        """)
+        students = cur.fetchall()
+
+        # For each student, get subjects and calculate price
+        for student in students:
+            cur.execute("""
+                SELECT subject_name
+                FROM Subject sub
+                JOIN StudentSubject ss ON sub.subject_id = ss.subject_id
+                WHERE ss.student_id = %s AND ss.status = 'active'
+            """, (student['student_id'],))
+            subjects = cur.fetchall()
+            subject_names = [sub['subject_name'] for sub in subjects]
+            student['subjects'] = ', '.join(subject_names) if subject_names else 'None'
+            student['price'] = len(subject_names) * 100  # R100 per subject
+
+    except Exception as e:
+        print(f"Error fetching active accounts: {e}")
+        flash("Error loading data.", "danger")
+        students = []
+    finally:
+        cur.close()
+        conn.close()
+
+    return render_template('admin_active_accounts.html', students=students, admin_name=session.get('admin_name'))
+
+
+# ===========================================================
+# ADMIN - UPDATE ENROLLMENT DAYS (Add or Reduce)
+# ===========================================================
+@app.route('/admin/enrollments/add-days', methods=['POST'])
+@admin_required
+def add_enrollment_days():
+    # Accept either student_id or enrollment_id
+    student_id = request.form.get('student_id')
+    enrollment_id = request.form.get('enrollment_id')
+    additional_days = request.form.get('additional_days')
+
+    if not additional_days:
+        return jsonify({'success': False, 'error': 'Missing additional days.'}), 400
+
+    try:
+        additional_days = int(additional_days)
+        if additional_days <= 0:
+            return jsonify({'success': False, 'error': 'Days must be positive.'}), 400
+    except ValueError:
+        return jsonify({'success': False, 'error': 'Invalid number of days.'}), 400
+
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed.'}), 500
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # If student_id is provided, find the latest active enrollment
+        if student_id:
+            cur.execute("""
+                SELECT enrollment_id 
+                FROM Enrollment 
+                WHERE student_id = %s AND status = 'active'
+                ORDER BY enrollment_id DESC LIMIT 1
+            """, (student_id,))
+            enrollment = cur.fetchone()
+            if not enrollment:
+                return jsonify({'success': False, 'error': 'No active enrollment found for this student.'}), 404
+            enrollment_id = enrollment['enrollment_id']
+
+        # Now use enrollment_id to update
+        if not enrollment_id:
+            return jsonify({'success': False, 'error': 'No enrollment identifier provided.'}), 400
+
+        cur.execute("""
+            UPDATE Enrollment
+            SET enrollment_days = enrollment_days + %s,
+                days_remaining = days_remaining + %s,
+                last_updated = CURRENT_TIMESTAMP,
+                status = 'active'
+            WHERE enrollment_id = %s
+            RETURNING days_remaining, student_id
+        """, (additional_days, additional_days, enrollment_id))
+        updated = cur.fetchone()
+
+        if not updated:
+            return jsonify({'success': False, 'error': 'Enrollment not found.'}), 404
+
+        # Get student name and phone for the WhatsApp message
+        cur.execute("""
+            SELECT name, surname, phone FROM Student WHERE student_id = %s
+        """, (updated['student_id'],))
+        student = cur.fetchone()
+
+        conn.commit()
+
+        # Calculate next payment date
+        from datetime import datetime, timedelta
+        next_payment_date = (datetime.now() + timedelta(days=updated['days_remaining'])).strftime('%d %B %Y')
+
+        return jsonify({
+            'success': True,
+            'days_remaining': updated['days_remaining'],
+            'student_name': f"{student['name']} {student['surname']}" if student else 'Student',
+            'phone': student['phone'] if student else None,  # <-- Include phone number
+            'next_payment_date': next_payment_date,
+            'message': f"Thank you for your support. Your access period has been successfully extended, and you now have {updated['days_remaining']} days remaining. Please note that your next payment is due before {next_payment_date}. Kind regards, Eduboost"
+        })
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error in add_enrollment_days: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+# ===========================================================
+# ADMIN - VIEW EXPIRED ACCOUNTS (enrollment_days > 0, days_remaining = 0)
+# ===========================================================
+@app.route('/admin/expired-accounts')
+@admin_required
+def admin_expired_accounts():
+    conn = get_db_connection()
+    if not conn:
+        flash('Database connection failed.', 'danger')
+        return redirect('/admin/dashboard')
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute("""
+            SELECT 
+                s.student_id,
+                s.name,
+                s.surname,
+                s.grade,
+                s.phone,
+                e.enrollment_days,
+                e.days_remaining,
+                e.status
+            FROM Student s
+            JOIN Enrollment e ON s.student_id = e.student_id
+            WHERE e.days_remaining = 0
+              AND e.enrollment_days > 0
+              AND e.status = 'expired'
+            ORDER BY e.enrollment_days DESC
+        """)
+        students = cur.fetchall()
+
+        # For each student, get subjects and calculate price
+        for student in students:
+            cur.execute("""
+                SELECT subject_name
+                FROM Subject sub
+                JOIN StudentSubject ss ON sub.subject_id = ss.subject_id
+                WHERE ss.student_id = %s AND ss.status = 'active'
+            """, (student['student_id'],))
+            subjects = cur.fetchall()
+            subject_names = [sub['subject_name'] for sub in subjects]
+            student['subjects'] = ', '.join(subject_names) if subject_names else 'None'
+            student['price'] = len(subject_names) * 100  # R100 per subject
+
+    except Exception as e:
+        print(f"Error fetching expired accounts: {e}")
+        flash("Error loading data.", "danger")
+        students = []
+    finally:
+        cur.close()
+        conn.close()
+
+    return render_template('admin_expired_accounts.html', students=students, admin_name=session.get('admin_name'))
+
+
+# ===========================================================
+# ADMIN - RESET ENROLLMENT (set enrollment_days = 0, days_remaining = 0, status = 'inactive')
+# ===========================================================
+@app.route('/admin/enrollments/reset', methods=['POST'])
+@admin_required
+def reset_enrollment():
+    student_id = request.form.get('student_id')
+    if not student_id:
+        return jsonify({'success': False, 'error': 'Missing student ID.'}), 400
+
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed.'}), 500
+
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # Find the latest enrollment for this student (any status)
+        cur.execute("""
+            SELECT enrollment_id
+            FROM Enrollment
+            WHERE student_id = %s
+            ORDER BY enrollment_id DESC LIMIT 1
+        """, (student_id,))
+        enrollment = cur.fetchone()
+        if not enrollment:
+            return jsonify({'success': False, 'error': 'No enrollment found for this student.'}), 404
+
+        # Reset to 0 days and set status to 'expired' (not 'inactive')
+        cur.execute("""
+            UPDATE Enrollment
+            SET enrollment_days = 0,
+                days_remaining = 0,
+                status = 'expired'
+            WHERE enrollment_id = %s
+            RETURNING student_id
+        """, (enrollment['enrollment_id'],))
+        updated = cur.fetchone()
+        conn.commit()
+
+        return jsonify({
+            'success': True,
+            'message': 'Enrollment has been reset to 0 days and marked as expired.',
+            'student_id': updated['student_id']
+        })
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error resetting enrollment: {e}")  # Log the error for debugging
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 # ===========================================================
 # MAIN EXECUTION

@@ -412,6 +412,9 @@
                 <option value="expired">Expired</option>
                 <option value="pending">Pending</option>
             </select>
+            <!-- NEW: Subject filter -->
+            <label for="filterSubject">Subject:</label>
+            <input type="text" id="filterSubject" placeholder="e.g. Mathematics">
             <button class="btn btn-primary" onclick="clearFilters()">
                 <i class="fas fa-undo"></i> Clear
             </button>
@@ -462,7 +465,7 @@
                                     {{ e.status }}
                                 </span>
                             </td>
-                            <td>{{ e.subjects }}</td>
+                            <td class="subjects-cell">{{ e.subjects }}</td>
                             <td>{{ e.price }}</td>
                             <td>
                                 <div class="action-form">
@@ -509,34 +512,42 @@
         const filterId = document.getElementById('filterId');
         const filterGrade = document.getElementById('filterGrade');
         const filterStatus = document.getElementById('filterStatus');
+        const filterSubject = document.getElementById('filterSubject'); // NEW
         const rows = document.querySelectorAll('#enrollmentsTable tbody tr');
 
         function applyFilters() {
             const idFilter = filterId.value.toLowerCase();
             const gradeFilter = filterGrade.value;
             const statusFilter = filterStatus.value;
+            const subjectFilter = filterSubject.value.toLowerCase();
 
             rows.forEach(row => {
                 const studentId = row.dataset.studentId.toLowerCase();
                 const grade = row.dataset.grade;
                 const status = row.dataset.status;
+                // Get subjects text from the 8th column (index 7)
+                const subjectsCell = row.querySelector('.subjects-cell');
+                const subjectsText = subjectsCell ? subjectsCell.textContent.toLowerCase() : '';
 
                 const matchId = studentId.includes(idFilter);
                 const matchGrade = gradeFilter === '' || grade === gradeFilter;
                 const matchStatus = statusFilter === '' || status === statusFilter;
+                const matchSubject = subjectFilter === '' || subjectsText.includes(subjectFilter);
 
-                row.style.display = (matchId && matchGrade && matchStatus) ? '' : 'none';
+                row.style.display = (matchId && matchGrade && matchStatus && matchSubject) ? '' : 'none';
             });
         }
 
         filterId.addEventListener('input', applyFilters);
         filterGrade.addEventListener('change', applyFilters);
         filterStatus.addEventListener('change', applyFilters);
+        filterSubject.addEventListener('input', applyFilters); // NEW
 
         function clearFilters() {
             filterId.value = '';
             filterGrade.value = '';
             filterStatus.value = '';
+            filterSubject.value = '';
             applyFilters();
         }
 
@@ -558,6 +569,22 @@
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.remove('active');
         });
+
+        // Helper to format phone number with +27
+        function formatPhoneNumber(phone) {
+            // Remove any non-digit characters
+            let cleaned = phone.replace(/\D/g, '');
+            // If it starts with '0', replace with '+27'
+            if (cleaned.startsWith('0')) {
+                cleaned = '27' + cleaned.substring(1);
+            }
+            // If it doesn't start with '27', assume it's a local number and add '27'
+            if (!cleaned.startsWith('27')) {
+                cleaned = '27' + cleaned;
+            }
+            // Ensure it starts with '+'
+            return '+' + cleaned;
+        }
 
         document.querySelectorAll('.add-days-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -591,8 +618,11 @@
                     if (data.success) {
                         // Build WhatsApp message
                         const message = data.message;
-                        const phoneNumber = '27782469399'; // Admin WhatsApp
-                        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                        // Use the phone number returned from backend, or fallback to a default admin number
+                        let phoneNumber = data.phone || '27782469399'; // fallback
+                        // Format with +27
+                        const formattedPhone = formatPhoneNumber(phoneNumber);
+                        const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
                         openModal(message, url);
                     } else {
                         alert('Error: ' + data.error);
