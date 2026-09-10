@@ -31,7 +31,7 @@ from reportlab.platypus import (
 # FLASK APP CONFIG
 # ===========================================================
 app = Flask(__name__)
-app.secret_key = 'edu-boost-up-secret-key-2024'  # CHANGE WHEN GOING LIVE
+app.secret_key = os.environ.get('SECRET_KEY', 'edu-boost-up-secret-key-2024')  # CHANGE WHEN GOING LIVE
 app.config['UPLOAD_FOLDER'] = os.path.join("static", "uploads")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
 
@@ -40,7 +40,7 @@ def allowed_file(filename):
 
 
 # ===========================================================
-# LOCAL DATABASE CONFIG (fallback)
+# LOCAL DATABASE CONFIG (fallback only)
 # ===========================================================
 LOCAL_DB = {
     'host': 'localhost',
@@ -60,25 +60,62 @@ scheduler.start()
 
 
 # ===========================================================
-# DATABASE CONNECTION HANDLER - FORCED LOCAL
+# DATABASE CONNECTION HANDLER
+# Priority:
+#   1. DATABASE_URL  (Railway / Render / Heroku)
+#   2. PG* env vars  (PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT)
+#   3. LOCAL_DB      (local development fallback)
 # ===========================================================
 def get_db_connection():
     """
-    ALWAYS connect to the local PostgreSQL database.
-    The Railway DATABASE_URL environment variable is ignored.
+    Connect to PostgreSQL. Automatically picks up the cloud DATABASE_URL
+    when deployed, otherwise falls back to local PostgreSQL.
     """
+    database_url = os.environ.get('DATABASE_URL')
+
+    # Some hosts give 'postgres://' which psycopg2 doesn't recognise
+    if database_url and database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+    # --- 1. Try DATABASE_URL (cloud) ---
+    if database_url:
+        try:
+            conn = psycopg2.connect(database_url)
+            print("☁️  Connected via DATABASE_URL")
+            return conn
+        except Exception as e:
+            print(f"❌ DATABASE_URL connection failed: {e}")
+            # fall through to other methods
+
+    # --- 2. Try individual PG* env vars ---
+    pg_host = os.environ.get('PGHOST')
+    if pg_host:
+        try:
+            conn = psycopg2.connect(
+                host=pg_host,
+                database=os.environ.get('PGDATABASE'),
+                user=os.environ.get('PGUSER'),
+                password=os.environ.get('PGPASSWORD'),
+                port=os.environ.get('PGPORT', '5432'),
+            )
+            print("☁️  Connected via PG* env vars")
+            return conn
+        except Exception as e:
+            print(f"❌ PG* env connection failed: {e}")
+
+    # --- 3. Fall back to local ---
     try:
         conn = psycopg2.connect(
             host=LOCAL_DB['host'],
             database=LOCAL_DB['database'],
             user=LOCAL_DB['user'],
             password=LOCAL_DB['password'],
-            port=LOCAL_DB['port']
+            port=LOCAL_DB['port'],
         )
-        print("🖥 Connected to LOCAL PostgreSQL")
+        print("🖥  Connected to LOCAL PostgreSQL")
         return conn
     except Exception as e:
-        print(f"❌ DATABASE CONNECTION ERROR: {e}")
+        print(f"❌ LOCAL DB connection failed: {e}")
         return None
 
 
@@ -1113,7 +1150,8 @@ def student_enrollment():
             return redirect('/login')
 
         cur.execute("""
-            SELECT e.enrollment_id, e.days_remaining, e.status, e.last_updated AS enrollment_date,
+            SELECT e.enrollment_id, e.enrollment_days, e.days_remaining, e.status,
+                   e.last_updated AS enrollment_date,
                    s.name, s.surname, s.grade
             FROM Enrollment e
             JOIN Student s ON e.student_id = s.student_id
@@ -1182,7 +1220,7 @@ def student_payment():
         student = cur.fetchone()
 
         cur.execute("""
-            SELECT status, days_remaining 
+            SELECT enrollment_days, status, days_remaining 
             FROM Enrollment 
             WHERE student_id = %s 
             ORDER BY enrollment_id DESC 
@@ -1226,6 +1264,7 @@ def student_payment():
         "student_payment.html",
         student=student,
         subjects=subjects,
+        enrollment=enrollment,
         title=title,
         message=message,
         payment_info=payment_info,
@@ -3023,7 +3062,6 @@ def admin_attendance_register():
     # ---------- LOGO ----------
     logo_path = os.path.join("static", "images", "edo_logo.png.jpeg")
 
-    # Fallback extensions if file not found
     if not os.path.exists(logo_path):
         for alt in ["edo_logo.png", "edo_logo.jpg", "edo_logo.jpeg", "logo.png"]:
             candidate = os.path.join("static", "images", alt)
@@ -3053,7 +3091,6 @@ def admin_attendance_register():
                            fontSize=14, textColor=colors.HexColor('#1e3a8a')),
         )
 
-    # ---------- Header text block ----------
     header_text = [
         Paragraph(
             "EDUBOOSTUP ACADEMY",
@@ -3095,7 +3132,6 @@ def admin_attendance_register():
     story.append(header_table)
     story.append(Spacer(1, 5 * mm))
 
-    # ---------- Main table ----------
     header = ["", "NAME AND SURNAME", "EMAIL"] + [str(i) for i in range(1, 13)]
     table_data = [header]
 
@@ -3105,7 +3141,6 @@ def admin_attendance_register():
             [str(idx), full_name, student.get('email') or ''] + [""] * 12
         )
 
-    # Pad with blank rows so we always have at least 15
     MIN_ROWS = 15
     while len(table_data) - 1 < MIN_ROWS:
         next_num = len(table_data)
@@ -3119,7 +3154,6 @@ def admin_attendance_register():
     col_widths = [num_width, name_width, email_width] + [session_width] * 12
     row_heights = [9 * mm] * len(table_data)
 
-    # 👇 repeatRows=1 ensures the header row repeats on every page (for 30+ students)
     table = Table(
         table_data,
         colWidths=col_widths,
