@@ -8,444 +8,331 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         :root {
             --primary: #4361ee;
-            --primary-light: #6a7ef0;
-            --primary-dark: #2a4bd4;
             --secondary: #3a0ca3;
             --accent: #7209b7;
             --light: #f8f9fa;
             --dark: #212529;
-            --success: #4cc9f0;
             --warning: #f72585;
             --text-light: #6c757d;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
-            --transition: all 0.3s ease;
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
         }
 
         body {
             background: #f5f7fc;
             color: var(--dark);
+            padding: 1.5rem 1rem;
             min-height: 100vh;
-            padding: 2rem 1rem;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 520px; margin: 0 auto; }
 
-        /* Header */
-        .page-header {
+        .top-bar {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
         }
 
-        .page-header a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
+        .top-bar a { color: var(--primary); font-size: 1.2rem; text-decoration: none; }
+        .top-bar h1 { font-size: 1.4rem; color: var(--secondary); }
 
-        .page-header a:hover {
-            transform: translateX(-4px);
-        }
-
-        .page-header h1 {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            color: var(--secondary);
-        }
-
-        /* Cards */
         .card {
             background: white;
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: clamp(1.2rem, 3vw, 2rem);
-            margin-bottom: 2rem;
-            transition: var(--transition);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
         }
 
-        .card:hover {
-            box-shadow: var(--shadow-hover);
-        }
-
-        .card-header {
+        .status-row {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            margin-bottom: 1rem;
         }
 
-        .card-header i {
-            font-size: 1.6rem;
-            color: var(--primary);
-        }
-
-        .card-header h2 {
-            font-size: 1.3rem;
-            color: var(--secondary);
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            padding: 0.3rem 1.2rem;
+        .status-pill {
+            padding: 0.35rem 1rem;
             border-radius: 30px;
             font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-pill.active { background: #d1fae5; color: #065f46; }
+        .status-pill.expired { background: #fee2e2; color: #991b1b; }
+
+        .days-left { font-size: 0.9rem; color: var(--text-light); font-weight: 500; }
+        .days-left strong { color: var(--primary); font-size: 1.2rem; }
+        .days-left.expired strong { color: var(--warning); }
+
+        /* TOTAL BOX */
+        .total-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        .total-box .total-label {
             font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.4rem;
         }
 
-        .status-badge.active {
-            background: #d4edda;
-            color: #155724;
+        .total-box .total-amount { font-size: 2.8rem; font-weight: 800; line-height: 1; }
+        .total-box .total-sub { font-size: 0.85rem; opacity: 0.85; margin-top: 0.5rem; }
+
+        /* Line items */
+        .line-items {
+            list-style: none;
+            border-top: 1px solid #e9ecef;
+            padding-top: 1rem;
         }
 
-        .status-badge.expired {
-            background: #f8d7da;
-            color: #721c24;
+        .line-items li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed #f1f3f5;
         }
 
-        /* Days remaining */
-        .days-number {
-            font-size: 2.5rem;
+        .line-items li:last-child { border-bottom: none; }
+        .line-items .label { color: var(--text-light); }
+        .line-items .value { font-weight: 600; }
+
+        .line-items li.fee { color: #92400e; font-weight: 600; }
+
+        /* Bank info */
+        .bank-info {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .bank-info .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+        }
+
+        .bank-info .row:last-child {
+            padding-top: 0.6rem;
+            border-top: 1px solid #e9ecef;
+            margin-top: 0.3rem;
+        }
+
+        .bank-info .ref {
+            font-family: monospace;
+            background: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
             font-weight: 700;
             color: var(--primary);
         }
 
-        .days-number.expired {
-            color: var(--warning);
-        }
-
-        /* Subject list */
-        .subject-list {
+        .wa-btn {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 0.5rem;
-        }
-
-        .subject-tag {
-            background: var(--light);
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            border: 1px solid #e2e8f0;
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
-        /* Payment details */
-        .payment-details {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--primary);
-        }
-
-        .payment-details p {
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-        }
-
-        .payment-details .label {
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .payment-details .value {
-            font-weight: 600;
-            color: var(--dark);
-            text-align: right;
-        }
-
-        .payment-details .total {
-            font-size: 1.2rem;
-            border-top: 2px dashed #dee2e6;
-            padding-top: 0.8rem;
-            margin-top: 0.3rem;
-        }
-
-        .payment-details .total .value {
-            color: var(--primary);
-            font-size: 1.4rem;
-        }
-
-        .payment-details .note {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            font-style: italic;
-            margin-top: 0.5rem;
+            align-items: center;
             justify-content: center;
-        }
-
-        /* WhatsApp button */
-        .whatsapp-btn {
+            gap: 0.6rem;
             background: #25d366;
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
             text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-        }
-
-        .whatsapp-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-            padding: 0.8rem 1.8rem;
+            padding: 1rem;
             border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-block;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+            transition: all 0.2s;
+            width: 100%;
         }
 
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
+        .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.45); }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
         }
 
-        .text-center {
-            text-align: center;
+        .expired-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-bottom: 1rem;
         }
 
-        .mt-2 {
-            margin-top: 1.5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 0.5rem;
-            }
-            .page-header h1 {
-                font-size: 1.5rem;
-            }
-            .days-number {
-                font-size: 2rem;
-            }
-            .payment-details {
-                padding: 1rem;
-            }
-            .payment-details .total {
-                font-size: 1rem;
-            }
-            .payment-details .total .value {
-                font-size: 1.2rem;
-            }
-            .whatsapp-btn {
-                width: 100%;
-                justify-content: center;
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-            .btn-outline {
-                width: 100%;
-                text-align: center;
-            }
-            .card {
-                padding: 1.2rem;
-            }
+        .first-time-note {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            color: #075985;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 480px) {
-            .payment-details p {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.1rem;
-            }
-            .payment-details .value {
-                text-align: left;
-                width: 100%;
-            }
-            .payment-details .total .value {
-                text-align: left;
-            }
-            .subject-tag {
-                font-size: 0.85rem;
-                padding: 0.3rem 0.8rem;
-            }
-            .status-badge {
-                font-size: 0.75rem;
-                padding: 0.2rem 0.8rem;
-            }
-            .days-number {
-                font-size: 1.8rem;
-            }
-            .page-header h1 {
-                font-size: 1.3rem;
-            }
-            .card-header i {
-                font-size: 1.3rem;
-            }
-            .card-header h2 {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                max-width: 700px;
-            }
+            .total-box .total-amount { font-size: 2.3rem; }
+            .card { padding: 1.2rem; }
         }
     </style>
 </head>
 
 <body>
+
+    {# ==================== CONFIG ==================== #}
+    {% set JOINING_FEE = 150 %}
+    {% set FEE_SUBJECTS = ['Mathematics', 'Physical Science'] %}
+
+    {# --- Enrollment state --- #}
+    {% set enrollment_days = enrollment.enrollment_days if enrollment else 0 %}
+    {% set is_expired = not (enrollment and enrollment.status == 'active' and enrollment.days_remaining > 0) %}
+
+    {# 🎯 Joining fee ONLY when enrollment_days == 0 #}
+    {% set is_first_time = (enrollment_days == 0) %}
+
+    {# --- Subjects with joining fee --- #}
+    {% set subjects_with_fee = [] %}
+    {% for subject in subjects %}
+        {% if subject.subject_name in FEE_SUBJECTS %}
+            {% set _ = subjects_with_fee.append(subject.subject_name) %}
+        {% endif %}
+    {% endfor %}
+
+    {# --- Calculations --- #}
+    {% set monthly = subjects | length * 100 %}
+    {% set joining = (subjects_with_fee | length * JOINING_FEE) if is_first_time else 0 %}
+    {% set total = monthly + joining %}
+
     <div class="container">
 
-        <!-- Back link & header -->
-        <div class="page-header">
+        <!-- Top bar -->
+        <div class="top-bar">
             <a href="/student/dashboard"><i class="fas fa-arrow-left"></i></a>
             <h1>My Enrollment</h1>
         </div>
 
-        <!-- Enrollment Status Card -->
+        <!-- ================= STATUS ================= -->
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-calendar-check"></i>
-                <h2>Enrollment Status</h2>
+            <div class="status-row">
+                {% if is_expired %}
+                    <span class="status-pill expired"><i class="fas fa-exclamation-triangle"></i> Expired</span>
+                    <span class="days-left expired"><strong>0</strong> days left</span>
+                {% else %}
+                    <span class="status-pill active"><i class="fas fa-check-circle"></i> Active</span>
+                    <span class="days-left"><strong>{{ enrollment.days_remaining }}</strong> days left</span>
+                {% endif %}
             </div>
 
-            {% if enrollment and enrollment.status == 'active' and enrollment.days_remaining > 0 %}
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <span class="status-badge active"><i class="fas fa-check-circle"></i> Active</span>
-                    <span class="days-number">{{ enrollment.days_remaining }}</span>
-                    <span style="font-size: 1.1rem; color: var(--text-light);">days remaining</span>
+            {# Only show first-time banner. Nothing shown for returning students #}
+            {% if is_first_time %}
+                <div class="first-time-note">
+                    <i class="fas fa-star"></i> First-time registration — a one-time joining fee applies to selected subjects.
                 </div>
-                <p style="margin-top: 0.5rem; color: var(--text-light);">
-                    <i class="fas fa-clock"></i> Your enrollment is valid. Enjoy full access to your subjects.
-                </p>
-
-                <!-- Enrolled subjects -->
-                <div style="margin-top: 1.5rem;">
-                    <h3 style="font-size: 1rem; color: var(--text-light); margin-bottom: 0.5rem;">Your Subjects</h3>
-                    <div class="subject-list">
-                        {% for subject in subjects %}
-                            <span class="subject-tag">{{ subject.subject_name }}</span>
-                        {% else %}
-                            <span style="color: var(--text-light);">No subjects enrolled yet.</span>
-                        {% endfor %}
-                    </div>
+            {% elif is_expired %}
+                <div class="expired-note">
+                    <i class="fas fa-info-circle"></i> Renew your monthly subscription to continue.
                 </div>
-
-            {% else %}
-                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <span class="status-badge expired"><i class="fas fa-exclamation-triangle"></i> Expired</span>
-                    <span class="days-number expired">0</span>
-                    <span style="font-size: 1.1rem; color: var(--text-light);">days remaining</span>
-                </div>
-                <p style="margin-top: 0.5rem; color: var(--warning); font-weight: 600;">
-                    <i class="fas fa-exclamation-circle"></i> Your enrollment has expired. Please renew to continue.
-                </p>
             {% endif %}
+
+            <div class="section-title">Your Subjects</div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                {% for subject in subjects %}
+                    <span style="padding: 0.35rem 0.9rem; border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+                        {% if is_first_time and subject.subject_name in FEE_SUBJECTS %}
+                            background: #fef3c7; color: #92400e; border: 1px solid #fcd34d;
+                        {% else %}
+                            background: #eef2ff; color: var(--primary); border: 1px solid #c7d2fe;
+                        {% endif %}">
+                        {{ subject.subject_name }}
+                    </span>
+                {% else %}
+                    <span style="color: var(--text-light); font-size:0.9rem;">No subjects enrolled.</span>
+                {% endfor %}
+            </div>
         </div>
 
-        <!-- Payment Information Card -->
+        <!-- ================= BREAKDOWN ================= -->
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-credit-card"></i>
-                <h2>Payment Details</h2>
-            </div>
+            <div class="section-title">Breakdown</div>
+            <ul class="line-items">
+                <li>
+                    <span class="label">Monthly ({{ subjects|length }} × R100)</span>
+                    <span class="value">R{{ monthly }}</span>
+                </li>
 
-            <div class="payment-details">
-                <p>
-                    <span class="label">Bank</span>
-                    <span class="value">{{ payment_info.bank_name }}</span>
-                </p>
-                <p>
-                    <span class="label">Account Name</span>
-                    <span class="value">{{ payment_info.account_name }}</span>
-                </p>
-                <p>
-                    <span class="label">Account Number</span>
-                    <span class="value">{{ payment_info.account_number }}</span>
-                </p>
-                <p>
-                    <span class="label">Reference</span>
-                    <span class="value" style="font-family: monospace; background: white; padding: 0.2rem 0.8rem; border-radius: 4px; border: 1px solid #ddd;">{{ payment_info.reference }}</span>
-                </p>
+                {# 👇 Joining fee line ONLY shows when enrollment_days == 0 #}
+                {% if is_first_time and subjects_with_fee|length > 0 %}
+                    <li class="fee">
+                        <span class="label">Joining fee ({{ subjects_with_fee|length }} × R{{ JOINING_FEE }})</span>
+                        <span class="value">R{{ joining }}</span>
+                    </li>
+                {% endif %}
 
-                <!-- Pricing summary with per-month clarity -->
-                <p>
-                    <span class="label">Subjects Enrolled</span>
-                    <span class="value">{{ subjects|length }}</span>
-                </p>
-                <p>
-                    <span class="label">Price per Subject</span>
-                    <span class="value">R100 <span style="font-weight:400; font-size:0.8rem; color:var(--text-light);">/ month</span></span>
-                </p>
-                <p class="total">
-                    <span class="label">Total Monthly Cost</span>
-                    <span class="value">R{{ subjects|length * 100 }}</span>
-                </p>
-                <p class="note">
-                    <i class="fas fa-info-circle"></i> This is a monthly subscription. You will be billed each month.
-                </p>
-            </div>
-
-            <p style="color: var(--text-light); margin-bottom: 1rem;">
-                <i class="fas fa-info-circle"></i> Please use the reference above when making payment. 
-                Send proof of payment via WhatsApp after completing the transfer.
-            </p>
-
-            <!-- WhatsApp button with pre-filled amount (monthly) -->
-            <div class="text-center">
-                <a href="https://wa.me/27782469399?text=Hello%20Edu%20Boost%20Up%2C%20I%20have%20made%20a%20payment%20of%20R{{ subjects|length * 100 }}%20for%20my%20monthly%20subscription%20(student%20{{ student.student_id }}).%20Please%20find%20attached%20proof%20of%20payment." 
-                   target="_blank"
-                   class="whatsapp-btn">
-                    <i class="fab fa-whatsapp"></i> Send Proof of Payment
-                </a>
-            </div>
-
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light); text-align: center;">
-                <i class="fas fa-phone"></i> Or contact admin directly: <strong>+27 78 246 9399</strong>
-            </p>
+                <li style="font-weight: 700; font-size: 1.05rem; padding-top: 0.8rem;">
+                    <span>Total</span>
+                    <span style="color: var(--primary);">R{{ total }}</span>
+                </li>
+            </ul>
         </div>
 
-        <!-- Quick action to dashboard (optional, but helpful) -->
-        <div style="text-align: center; margin-top: 1rem;">
-            <a href="/student/dashboard" class="btn-outline">
-                <i class="fas fa-home"></i> Back to Dashboard
+        <!-- ================= PAYMENT INFO ================= -->
+        <div class="card">
+            <div class="section-title">Pay To</div>
+            <div class="bank-info">
+                <div class="row">
+                    <span style="color: var(--text-light);">Bank</span>
+                    <span style="font-weight: 600;">{{ payment_info.bank_name }}</span>
+                </div>
+                <div class="row">
+                    <span style="color: var(--text-light);">Account</span>
+                    <span style="font-weight: 600;">{{ payment_info.account_name }}</span>
+                </div>
+                <div class="row">
+                    <span style="color: var(--text-light);">Number</span>
+                    <span style="font-weight: 600;">{{ payment_info.account_number }}</span>
+                </div>
+                <div class="row">
+                    <span style="color: var(--text-light);">Reference</span>
+                    <span class="ref">{{ payment_info.reference }}</span>
+                </div>
+            </div>
+
+            <a href="https://wa.me/27782469399?text=Hello%20Edu%20Boost%20Up%2C%20I%20paid%20R{{ total }}%20for%20my%20{% if is_first_time and subjects_with_fee|length > 0 %}registration%20(monthly%20%2B%20joining%20fee){% else %}monthly%20subscription{% endif %}%20(student%20{{ student.student_id }}).%20Proof%20attached."
+               target="_blank"
+               class="wa-btn">
+                <i class="fab fa-whatsapp" style="font-size:1.3rem;"></i> Send Proof of Payment
             </a>
         </div>
 
     </div>
+
 </body>
 
 </html>
