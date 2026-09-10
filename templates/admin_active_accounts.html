@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Active Accounts (< 20 Days) - Edu Boost Up</title>
+  <title>Active Accounts (1–20 Days) - Edu Boost Up</title>
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
   <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon-180x180.png') }}">
@@ -302,9 +302,6 @@
     .status-badge.active {
       background: var(--success);
     }
-    .status-badge.expired {
-      background: var(--danger);
-    }
     .status-badge.warning {
       background: var(--warning);
     }
@@ -319,9 +316,6 @@
     .days-cell {
       font-weight: 700;
       font-size: 1.1rem;
-    }
-    .days-cell.urgent {
-      color: var(--danger);
     }
     .days-cell.warning-cell {
       color: var(--warning);
@@ -465,7 +459,7 @@
   <!-- ====== PAGE TITLE ====== -->
   <div class="page-title">
     <div>
-      <h2><i class="fas fa-hourglass-half"></i> Students with &lt; 20 days remaining</h2>
+      <h2><i class="fas fa-hourglass-half"></i> Students with 1–20 days remaining</h2>
       <p style="color:var(--text-light); font-size:0.9rem; margin-top:0.2rem;">
         <span class="count-badge">{{ students|length }}</span> students need attention
       </p>
@@ -539,21 +533,19 @@
             </td>
             <td class="price">R{{ student.price }}</td>
             <td>
-              <span class="days-cell 
-                {% if student.days_remaining <= 0 %}urgent
-                {% elif student.days_remaining <= 5 %}warning-cell
+              <span id="days-{{ student.student_id }}" class="days-cell 
+                {% if student.days_remaining <= 5 %}warning-cell
                 {% else %}safe{% endif %}">
                 {{ student.days_remaining }}
               </span>
             </td>
             <td>
-              {% if student.days_remaining <= 0 %}
-                <span class="status-badge expired">Expired</span>
-              {% elif student.days_remaining <= 5 %}
-                <span class="status-badge warning">Critical</span>
-              {% else %}
-                <span class="status-badge active">Active</span>
-              {% endif %}
+              <span class="status-badge 
+                {% if student.days_remaining <= 5 %}warning
+                {% else %}active{% endif %}"
+                id="badge-{{ student.student_id }}">
+                {% if student.days_remaining <= 5 %}Critical{% else %}Active{% endif %}
+              </span>
             </td>
             <td>
               <div class="action-btns">
@@ -574,7 +566,7 @@
           <tr>
             <td colspan="9" style="text-align:center; color:var(--text-light); padding:2.5rem;">
               <i class="fas fa-check-circle" style="color:var(--success); font-size:2rem; display:block; margin-bottom:0.5rem;"></i>
-              No students with less than 20 days remaining.
+              No students with 1–20 days remaining. 🎉
             </td>
           </tr>
         {% endfor %}
@@ -624,7 +616,6 @@
         const studentId = this.dataset.student;
         const phone = this.dataset.phone;
         const name = this.dataset.name;
-        const currentDays = parseInt(this.dataset.days) || 0;
 
         this.disabled = true;
         const originalHtml = this.innerHTML;
@@ -641,40 +632,33 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            // Update days in table
+            // ✅ Update the days cell in-place
             const daysCell = document.getElementById('days-' + studentId);
             if (daysCell) {
               daysCell.textContent = data.days_remaining;
               daysCell.className = 'days-cell';
-              if (data.days_remaining <= 0) {
-                daysCell.classList.add('urgent');
-              } else if (data.days_remaining <= 5) {
+              if (data.days_remaining <= 5) {
                 daysCell.classList.add('warning-cell');
               } else {
                 daysCell.classList.add('safe');
               }
             }
-            // Update status badge
-            const row = document.getElementById('row-' + studentId);
-            if (row) {
-              const badge = row.querySelector('.status-badge');
-              if (badge) {
-                if (data.days_remaining <= 0) {
-                  badge.className = 'status-badge expired';
-                  badge.textContent = 'Expired';
-                } else if (data.days_remaining <= 5) {
-                  badge.className = 'status-badge warning';
-                  badge.textContent = 'Critical';
-                } else {
-                  badge.className = 'status-badge active';
-                  badge.textContent = 'Active';
-                }
+
+            // ✅ Update the status badge in-place
+            const badge = document.getElementById('badge-' + studentId);
+            if (badge) {
+              if (data.days_remaining <= 5) {
+                badge.className = 'status-badge warning';
+                badge.textContent = 'Critical';
+              } else {
+                badge.className = 'status-badge active';
+                badge.textContent = 'Active';
               }
             }
 
-            showToast('✅ ' + data.message || '31 days added successfully!', 'success');
+            showToast(data.message || '✅ 31 days added successfully!', 'success');
 
-            // WhatsApp
+            // Open WhatsApp
             const formattedPhone = formatPhone(phone);
             if (!formattedPhone) {
               showToast('⚠️ No phone number available for WhatsApp.', 'warning');
@@ -722,13 +706,12 @@ EduBoost`;
     const clearBtn = document.getElementById('clearFilter');
     const visibleCount = document.getElementById('visibleCount');
     const allRows = document.querySelectorAll('#tableBody tr');
-    const totalCount = allRows.length;
 
     function applyFilter() {
       const query = filterInput.value.trim().toLowerCase();
       let visible = 0;
       allRows.forEach(row => {
-        // Skip the "no results" row if it exists
+        // Skip the "no results" row
         if (row.querySelector('td[colspan]')) {
           row.style.display = query === '' ? '' : 'none';
           return;
